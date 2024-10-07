@@ -1,0 +1,312 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: antiquewhite;
+  padding: 0px 60px;
+  min-height: 10vh;
+}
+
+footer {
+  /* position: fixed;
+  bottom: 0; */
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: antiquewhite;
+  padding: 0px 60px;
+  min-height: 10vh;
+}
+
+header ul,
+footer ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+header ul li,
+footer ul li {
+  cursor: pointer;
+}
+
+.links {
+  text-decoration: none;
+  color: black;
+  position: relative;
+  z-index: 10;
+  margin: 2px;
+}
+
+.links::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 100%;
+  background-color: rgb(32, 180, 190);
+  z-index: -1;
+  transition: width 0.5s ease-in-out;
+}
+
+.links:hover::before {
+  width: 100%;
+  border-radius: 4px;
+  /* z-index: 10; */
+}
+
+.login form,
+.signup form {
+  margin: 80px auto;
+  max-width: 300px;
+  min-height: 400px;
+  background-color: rgb(234, 236, 235);
+  border: 1px solid black;
+  padding: 30px 70px;
+  border-radius: 5px;
+
+}
+
+form h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.inp {
+  margin: 20px 0;
+}
+
+.inp label {
+  display: block;
+  margin: 3px 0;
+  font-weight: bold;
+}
+
+.inp input {
+  width: 100%;
+  outline: none;
+  padding: 5px 5px;
+  border-radius: 5px;
+  border: none;
+}
+
+.btn {
+  text-align: center;
+  padding: 5px 10px;
+  background-color: aquamarine;
+  border-radius: 5px;
+  margin: 0px auto;
+  transform: translate(75%, 50%);
+  border: 2px solid black;
+}
+
+.signup {
+  font-size: medium;
+  margin: 30px auto;
+}
+
+.signup span {
+  color: rgb(8, 50, 236);
+  font-weight: bold;
+  font-size: small;
+  cursor: pointer;
+}
+
+.userdash {
+  height: 80vh;
+}
+
+.details {
+  margin: 50px auto;
+  width: 300px;
+  background-color: blanchedalmond;
+  min-height: 200px;
+  padding: 30px 30px;
+}
+
+.details h1 {
+  font-size: 25px;
+  margin-bottom: 30px;
+}
+
+.details .link {
+  transform: translate(50%, 50%);
+}
+
+.home {
+  height: 80vh;
+
+}
+
+.home img {
+  height: 80vh;
+  object-fit: contain;
+  width: 100vw;
+  position: relative;
+}
+
+.home h1 {
+  position: absolute;
+  top: 45%;
+  left: 45%;
+  -webkit-text-stroke: 2px red;
+}
+
+.updateform {
+  width: 240px;
+  min-height: 200px;
+  margin: 30px auto;
+  background-color: rgb(175, 175, 98);
+  padding: 10px;
+}
+
+.updateinp label {
+  display: block;
+  margin: 3px 0;
+}
+
+.updateform button {
+  margin: 20px 0;
+  padding: 5px 10px;
+  border-radius: 3px;
+  border: 2px solid black;
+}
+
+.adminlogin {
+  height: 80vh;
+
+}
+
+.adminlogin form {
+  width: 300px;
+  box-sizing: border-box;
+  margin: 50px auto;
+  background-color: bisque;
+  min-height: 300px;
+}
+
+.adminlogin form .inp {
+  width: 70%;
+}
+
+.admindashboard {
+  min-height: 80vh;
+  position: relative;
+}
+
+.tables {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+  padding: 30px 50px;
+  gap: 50px;
+  position: relative;
+}
+
+.admintable,
+.userstable {
+  width: 100%;
+}
+
+.admintable th,
+td,
+.userstable th,
+td {
+  padding: 10px 3px;
+}
+
+.admreg {
+  /* position: absolute; */
+  /* padding: 30px; */
+  width: 100%;
+
+  /* margin: 20px auto; */
+  /* width: 300px; */
+  /* transform: translateX(50%); */
+}
+
+.admreg form {
+  background-color: blanchedalmond;
+  position: fixed;
+  left: 50%;
+  top: 80%;
+
+  transform: translate(-50%, -50%);
+  width: 400px;
+  margin: 0 auto;
+  margin-top: -100px;
+  /* margin-bottom: 50px; */
+  padding: 20px;
+  z-index: 99;
+  margin-top: -100px;
+  /* margin-bottom: 20px; */
+}
+
+
+.adminp {
+  margin: 15px 0;
+}
+
+.adminp label {
+  margin: 5px 0;
+  display: block;
+}
+
+.adminp input {
+  width: 100%;
+}
+
+.close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border-radius: 50%;
+  padding: 5px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.newad {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translate(0,-50%);
+  width: 70px;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.ind {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ind form {
+  width: 300px;
+  background-color:bisque;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
+
+.ind form input {
+  margin: 10px 0;
+  padding: 5px 3px;
+}
+
+.indinp label {
+  display: block;
+}
