@@ -144,13 +144,22 @@ const createProduct = async (req, res) => {
 
 }
 
+const getProducts=async(req,res)=>{
+    try {
+        const {rows}=await pool.query('select * from product');
+        res.json({data:rows,success:true})
+    } catch (error) {
+        res.json({ message: "failed to fetch products", success: false })
+
+    }
+}
 const createBatch = async (req, res) => {
-    const { product_id, batche_no, quantity, manufactured } = req.body;
+    const { product_id, batche_no, batch_quantity, manufactured } = req.body;
 
     try {
         const { rows } = await pool.query(
-            'INSERT INTO batch (product_id, batche_no, quantity, manufactured) VALUES ($1, $2, $3, $4) RETURNING *',
-            [product_id, batche_no, quantity, manufactured]
+            'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured) VALUES ($1, $2, $3, $4) RETURNING *',
+            [product_id, batche_no, batch_quantity, manufactured]
         );
 
         res.json({ message: "Batch created successfully", success: true, data: rows[0] });
@@ -171,10 +180,12 @@ const prodBySupplier = async (req, res) => {
 
     }
 }
+
+
 const getProdBatch = async (req, res) => {
     const { batche_no } = req.body;
     try {
-        const { rows } = await pool.query('select batch.batche_no,batch.quantity,product.name,product.description,product.category,product.price from batch inner join product on batch.product_id = product.id where batche_no = $1', [batche_no]);
+        const { rows } = await pool.query('select batch.batche_no,batch.batch_quantity,product.name,product.description,product.category,product.price from batch inner join product on batch.product_id = product.id where batche_no = $1', [batche_no]);
         if (rows.length === 0) {
             return res.json({ message: "No batches found", success: false });
         }
@@ -185,35 +196,99 @@ const getProdBatch = async (req, res) => {
     }
 }
 
+// const getProdBatch = async (req, res) => {
+//     const { batche_no } = req.query;  
+//     try {
+//         const { rows } = await pool.query(
+//             'SELECT batch.batche_no, batch.batch_quantity, product.name, product.description, product.category, product.price ' +
+//             'FROM batch INNER JOIN product ON batch.product_id = product.id ' +
+//             'WHERE batche_no = $1', 
+//             [batche_no]
+//         );
 
-const placeOrder=async(req,res)=>{
-    const { customerName, customerContact, cart } = req.body;
-    const result=await pool.query('insert into orders (customerName, customerContact) values ($1,$2) returning order_id',[customerName,customerContact])
-    const orderId=result.rows[0].order_id;
+//         if (rows.length === 0) {
+//             return res.json({ message: "No batches found", success: false });
+//         }
 
-    for(const product of cart){
-        const {id,quantity}=product;
-        const ress=await pool.query('select price,quantity from product where id= $1',[id]);
-        if(ress.rows.length<1){
-            res.json({message:"Product not found for id",success:false})
+//         res.json({ data: rows, success: true });
+//     } catch (error) {
+//         res.json({ message: "Failed to fetch data", success: false });
+//     }
+// };
+
+
+const placeOrder = async (req, res) => {
+    const { customer_name, customer_contact, cart } = req.body;
+    
+    const result = await pool.query(
+        'INSERT INTO orders (customer_name, customer_contact) VALUES ($1, $2) RETURNING order_id',
+        [customer_name, customer_contact]
+    );
+    const orderId = result.rows[0].order_id;
+
+    for (const product of cart) {
+        
+        const { id, quantity } = product;
+
+        const ress = await pool.query(
+            'SELECT price, quantity FROM product WHERE id = $1', 
+            [id]
+        );
+
+        if (ress.rows.length < 1) {
+            return res.json({ message: "Product not found for id", success: false });
         }
 
-        const prod_price=ress.rows[0].price;
-        const prod_quant=ress.rows[0].quantity;
+        const prod_price = ress.rows[0].price;
+        const prod_quant = ress.rows[0].quantity;
 
-        if(prod_quant>=quantity){
-            await pool.query('insert into order_items (orderId,id,prod_price,prod_quant) values ($1,$2,$3,$4)',[orderId,id,prod_price,prod_quant]);
-            await pool.query('update product set quantity = quantity - $1 where id = $2',[quantity,id]);
-        }
-        else{
-            res.json({message:"Not in stock",success:false})
- 
+        if (prod_quant >= quantity) {
+            await pool.query(
+                'UPDATE product SET quantity = quantity - $1 WHERE id = $2', 
+                [quantity, id]
+            );
+
+            const batchResult = await pool.query(
+                'SELECT batch_id, batch_quantity FROM batch WHERE product_id = $1 ORDER BY batch_id ASC', 
+                [id]
+            );
+
+            let remainingQuantity = quantity;
+            for (const batch of batchResult.rows) {
+                if (remainingQuantity <= 0) break;
+
+                const { batch_id, batch_quantity } = batch;
+
+                if (batch_quantity >= remainingQuantity) {
+                    await pool.query(
+                        'UPDATE batch SET batch_quantity = batch_quantity - $1 WHERE batch_id = $2',
+                        [remainingQuantity, batch_id]
+                    );
+                    remainingQuantity = 0;
+                } else {
+                    await pool.query(
+                        'UPDATE batch SET batch_quantity = 0 WHERE batch_id = $1',
+                        [batch_id]
+                    );
+                    remainingQuantity -= batch_quantity; 
+                }
+            }
+
+            await pool.query(
+                'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES ($1, $2, $3, $4)', 
+                [orderId, id, quantity, prod_price]
+            );
+
+        } else {
+            return res.json({ message: "Not in stock", success: false });
         }
     }
-}
 
-const sales=async(req,res)=>{
-    const{name,prod_id,contact,email_cust,address,quantity}=req.body;
-}
+    res.json({ message: "Order placed successfully", success: true });
+};
 
-module.exports = { getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, createBatch, getProdBatch, getSupplier, addSupplier, prodBySupplier ,placeOrder};
+
+
+
+
+module.exports = { getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts,createBatch, getProdBatch, getSupplier, addSupplier, prodBySupplier, placeOrder };

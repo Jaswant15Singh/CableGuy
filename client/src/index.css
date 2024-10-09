@@ -122,9 +122,14 @@ form h1 {
 }
 
 .userdash {
-  height: 80vh;
+  min-height: 80vh;
 }
 
+.detailsdiv{
+  width: 100%;
+  background-color: aliceblue;
+  padding: 40px 0;
+}
 .details {
   margin: 50px auto;
   width: 300px;
@@ -161,6 +166,11 @@ form h1 {
   -webkit-text-stroke: 2px red;
 }
 
+.formdiv{
+  width: 100vw;
+  background-color: rgb(213, 217, 221) !important;
+  padding: 40px 0;
+}
 .updateform {
   width: 240px;
   min-height: 200px;
@@ -280,7 +290,7 @@ td {
   position: fixed;
   left: 0;
   top: 50%;
-  transform: translate(0,-50%);
+  transform: translate(0, -50%);
   width: 70px;
   padding: 2px 0;
   cursor: pointer;
@@ -296,7 +306,7 @@ td {
 
 .ind form {
   width: 300px;
-  background-color:bisque;
+  background-color: bisque;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 20px;
@@ -309,4 +319,79 @@ td {
 
 .indinp label {
   display: block;
+}
+
+.maindivprod{
+  box-sizing: border-box;
+  /* width: 100%; */
+  /* margin: 0px 50px; */
+  background-color: rgba(0, 0, 0, 0);
+  padding: 30px;
+}
+.products {
+  width: 50vw;
+  margin: 30px auto;
+  background-color: aquamarine;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-direction: column;
+  padding: 30px 30px;
+  border-radius: 5px;
+}
+
+.orderplace {
+  width: 50vw;
+  margin: 30px auto;
+  padding: 30px 30px;
+  border-radius: 5px;
+  background-color: rgb(127, 214, 255);
+
+}
+
+/* .customer {} */
+
+.customer,
+.prods {
+  margin-top: 30px;
+}
+
+.customer label,
+.prods label {
+  display: block;
+}
+
+.customer input,
+.prods select,
+.prods option {
+  margin: 5px 0;
+}
+
+.products button {
+  margin-top: 30px;
+}
+
+
+.prods select {
+  background-color: rgb(187, 214, 236);
+  padding: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 1px solid black;
+  border-radius: 3px;
+}
+
+option {
+  padding: 10px;
+  background-color: rgb(148, 215, 230);
+  color: #333;
+}
+
+.num input[type="number"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+  outline: none;
 }
