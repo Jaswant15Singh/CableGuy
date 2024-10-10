@@ -11,6 +11,8 @@ const Userdashboard = () => {
   const [selectedProduct, setSelectedProduct] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState('');
   const [addProd, setAddProd] = useState(true);
+  const [individualProduct, setIndividualProduct] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const token = localStorage.getItem("userlogintoken");
 
   const { id } = useParams();
@@ -18,6 +20,7 @@ const Userdashboard = () => {
   useEffect(() => {
     getSingleUser();
     getAllProducts();
+    getIndividyalProducts();
   }, []);
 
   useEffect(() => {
@@ -70,8 +73,26 @@ const Userdashboard = () => {
     }
 
     res = await res.json();
-    // console.log(res.data);
+    //     res.data.forEach((e)=>{
+    //       console.log(e.category);
+
+    //     })
+    // setTimeout(()=>{
+    //   console.log(`cat is ${selectedCategory}`);
+
+    // },1000)    
     setProducts(res.data);
+
+  }
+
+  const getIndividyalProducts = async () => {
+    let res = await fetch("http://localhost:5000/adminapi/indproducts");
+    if (!res.ok) {
+      alert("Some issue occured while fetching individual datas")
+    }
+    res = await res.json();
+    // console.log(res.data);
+    setIndividualProduct(res.data)
 
   }
   const handleUpdateClick = async (e) => {
@@ -144,6 +165,7 @@ const Userdashboard = () => {
       setCustomerData({ name: "", contact: "" });
       setSelectedProduct("");
       setSelectedQuantity("");
+
     } catch (error) {
       alert(error)
     }
@@ -154,93 +176,121 @@ const Userdashboard = () => {
 
     <div className='userdash'>
       {update ? (
-      <div className='formdiv'>
+        <div className='formdiv'>
           <form onSubmit={handleUpdateClick} className='updateform'>
-          <div className='updateinp'>
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={updatedata.name}
-              onChange={handleChange}
-            />
-          </div>
-          <div className='updateinp'>
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={updatedata.email}
-              onChange={handleChange}
-            />
-          </div>
-          <button type='submit'>Update Data</button>
-        </form>
-      </div>
+            <div className='updateinp'>
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                name="name"
+                value={updatedata.name}
+                onChange={handleChange}
+              />
+            </div>
+            <div className='updateinp'>
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={updatedata.email}
+                onChange={handleChange}
+              />
+            </div>
+            <button type='submit'>Update Data</button>
+          </form>
+        </div>
       ) : (
         <div className='detailsdiv'>
-              <div className="details">
-          <h1>Welcome {data.name}</h1>
-          <button className='links' onClick={() => setUpdate(true)}>Update</button>
-        </div>
+          <div className="details">
+            <h1>Welcome {data.name}</h1>
+            <button className='links' onClick={() => setUpdate(true)}>Update</button>
+          </div>
         </div>
       )}
 
       {addProd ?
-      <div className='maindivprod'>
-        <div className='products'>
-          <div className='customer'>
-            <h1>Customer's information</h1>
-            <div>
-              <label htmlFor="name">Name</label>
-              <input type="text" name="name" id="" value={customerData.name} onChange={handleCustomerChange} />
+        <div className='maindivprod'>
+          <div className='products'>
+            <div className='customer'>
+              <h1>Customer's information</h1>
+              <div>
+                <label htmlFor="name">Name</label>
+                <input type="text" name="name" id="" value={customerData.name} onChange={handleCustomerChange} />
+              </div>
+              <div>
+                <label htmlFor="contact">contact</label>
+                <input type="text" name="contact" id="" value={customerData.contact} onChange={handleCustomerChange} />
+              </div>
             </div>
-            <div>
-              <label htmlFor="contact">contact</label>
-              <input type="text" name="contact" id="" value={customerData.contact} onChange={handleCustomerChange} />
+
+
+            <div className='prods'>
+              <h1>Products in Stock</h1>
+              <select name="" id="" value={selectedCategory} onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                console.log("Selected Category:", e.target.value); // Log the selected value
+                console.log(typeof selectedCategory);
+                
+              }}>
+                <option value="">Select Category</option>
+                {
+                  individualProduct.map((e) => (
+                    <option value={e.name} key={e.id}>{e.name}</option>
+                  ))
+                }
+              </select>
+              {/* <label htmlFor="name">Name</label> */}
+              <select className='select' name="" id="" value={selectedProduct} onChange={(e) => { setSelectedProduct(e.target.value) }}>
+                <option value="">Select</option>
+                {/* {
+                  products.map((e) => (
+
+                    <option className='opt' value={e.id} key={e.id}>{e.name} - <i class="fa fa-inr"></i> {e.price} (Avaiable:{e.quantity})</option>
+
+
+                  ))
+                } */}
+
+
+
+                {
+                  products.filter((e) => e.category.toLowerCase().includes(selectedCategory)).map((e) => (
+                    <option value={e.id} key={e.id}>{e.name}</option>
+
+                  ))
+                }
+{/* 
+                {
+                  products.filter((e) => e.category === selectedCategory).map((e) => (
+                    <option value={e.id} key={e.id}>{e.name}</option>
+                  ))
+                } */}
+
+
+              </select>
             </div>
+            <div className='num'>
+              <input type="number" name="selectedNumber" id="" value={selectedQuantity < 0 ? 0 : selectedQuantity} onChange={(e) => { setSelectedQuantity(e.target.value) }} />
+            </div>
+            <button onClick={handleAddProduct}>Add Product</button>
+
           </div>
-
-        
-          <div className='prods'>
-          <h1>Products in Stock</h1>
-            {/* <label htmlFor="name">Name</label> */}
-            <select className='select' name="" id="" value={selectedProduct} onChange={(e) => { setSelectedProduct(e.target.value) }}>
-              <option value="">Select</option>
-              {
-                products.map((e) => (
-
-                  <option className='opt' value={e.id} key={e.id}>{e.name} - <i class="fa fa-inr"></i> {e.price} (Avaiable:{e.quantity})</option>
-
-
-                ))
-              }
-
-
-            </select>
-          </div>
-          <div className='num'>
-            <input type="number" name="selectedNumber" id="" value={selectedQuantity < 0 ? 0 : selectedQuantity} onChange={(e) => { setSelectedQuantity(e.target.value) }} />
-          </div>
-          <button onClick={handleAddProduct}>Add Product</button>
-
-        </div>
         </div>
         : ""}
 
-{cart.length > 0 && <div className='orderplace'>
+      {cart.length > 0 && <div className='orderplace'>
         {cart.map((e) => {
           return (
             <div>
-              <h1 style={{margin:"5px"}}>{e.name} <span>quantity:{e.quantity}</span></h1>
+              <h1 style={{ margin: "5px" }}>{e.name} <span>quantity:{e.quantity}</span></h1>
 
             </div>
           )
         })}
-        <h2 style={{margin:"5px"}}>Total amount is:{cart.reduce((total, e) => {
+        <h2 style={{ margin: "5px" }}>Total amount is:{cart.reduce((total, e) => {
           return total += e.price * e.quantity
         }, 0)} ₹</h2>
-        <button  style={{margin:"5px"}} onClick={placeOrders}>Place Order</button>
+        <button style={{ margin: "5px" }} onClick={placeOrders}>Place Order</button>
       </div>}
 
 
