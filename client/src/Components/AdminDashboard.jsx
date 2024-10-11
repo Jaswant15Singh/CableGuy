@@ -5,12 +5,17 @@ const AdminDashboard = () => {
     const [data, setData] = useState([]);
     const [inp, setInp] = useState({ name: "", email: "", password: "" });
     const [inpp, setInpp] = useState({ name: "", contact: "", address: "" });
-    const [prod, setProd] = useState([{ name: "", description: "", category: "", price: "", supp_id: "" }])
+    const [prod, setProd] = useState([{ name: "", description: "", category: "", price: "", supp_id: "" }]);
+    const [indProd, setIndProd] = useState({ name: "", description: "", category: "" })
     const [dataa, setDataa] = useState([]);
     const [supplierId, setSupplierId] = useState("")
     const [prodData, setProdData] = useState([]);
     const [products, setProducts] = useState([]);
-    const [cart, setCart] = useState([])
+    const [cart, setCart] = useState([]);
+    const [individualProduct, setIndividualProduct] = useState([]);
+    const [isIndividual, setIsIndividual] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(''); // To store the selected category
+
 
 
     const { adminid } = useParams();
@@ -28,14 +33,7 @@ const AdminDashboard = () => {
     const handleeChange = (e) => {
         setInpp({ ...inpp, [e.target.name]: e.target.value })
     }
-    // const handleProdChange = (e) => {
-    //     const { name, value } = e.target;
 
-    //     setProd(prevState => ({
-    //         ...prevState,
-    //         [name]: value
-    //     }));
-    // };
 
     const category = [{ id: 1, name: "Vegetable" }, { id: 2, name: "Fruit" }, { id: 3, name: "Gaming" }, { id: 4, name: "Study" }]
 
@@ -49,9 +47,21 @@ const AdminDashboard = () => {
         setProd(updatedProducts);
     };
 
+    const handleIndProdChange = (e) => {
+        setIndProd({ ...indProd, [e.target.name]: e.target.value })
+    }
+
+    const handleCategoryChange = (e, index) => {
+        const updatedProd = [...prod];
+        updatedProd[index].category = e.target.value;
+        setProd(updatedProd);
+        setSelectedCategory(e.target.value);
+    };
+
     useEffect(() => {
         getSingleUser();
         getAllSuppliers();
+        getIndividualProducts();
 
     }, []);
     const getSingleUser = async () => {
@@ -88,7 +98,15 @@ const AdminDashboard = () => {
         setSupplierlist(res.data);
     }
 
-
+    const getIndividualProducts = async () => {
+        let res = await fetch("http://localhost:5000/adminapi/indproducts");
+        if (!res.ok) {
+            alert("Some issue occured while fetching individual datas")
+        }
+        res = await res.json();
+        console.log(res.data);
+        setIndividualProduct(res.data);
+    }
     useEffect(() => {
         getAllAdmin();
     }, [adminreg])
@@ -216,6 +234,34 @@ const AdminDashboard = () => {
         setSupplieradd(!supplieradd);
 
     }
+
+    const addIndProducts = async (e) => {
+        e.preventDefault();
+        let res = await fetch("http://localhost:5000/adminapi/indproducts/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name: indProd.name, description: indProd.description, category: indProd.category })
+        })
+        if (!res.ok) {
+            alert("Issue occured in Individual Products");
+        }
+
+        res = await res.json();
+        console.log(res);
+
+        if (res.success) {
+
+            setIndProd({ name: "", description: "", category: "" });
+
+            alert(res.message);
+        }
+
+        else {
+            alert(res.message)
+        }
+    }
     const addMoreProducts = () => {
         const hasEmptyFields = prod.some((product) =>
             !product.name || !product.description || !product.category || !product.price || !product.batch_quantity
@@ -236,31 +282,6 @@ const AdminDashboard = () => {
         setCart(updatedProducts);
     }
     const addProduct = async (e) => {
-
-        // const requestData = {
-        //     name: prod.name,
-        //     description: prod.description,
-        //     category: prod.category,
-        //     price: Number(prod.price), 
-        //     supp_id: Number(prod.supp_id),  
-        //     batch_quantity: Number(prod.batch_quantity),  
-        //     manufactured: prod.manufactured  
-        // };
-
-
-        //    setProducts = [
-        //     prod.name,
-        //     prod.description,
-        //     prod.category,
-        //     Number(prod.price),
-        //     Number(prod.batch_quantity),
-        //     prod.manufactured
-        // ];
-        // const supp_id=Number(prod.supp_id);
-        // const combine={
-        //     supp_id,
-        //     products
-        // }
 
         if (cart.length < 1) {
             alert("No orders placed");
@@ -304,15 +325,7 @@ const AdminDashboard = () => {
 
             alert(responseData.message);
 
-            // setProd({
-            //     name: "",
-            //     description: "",
-            //     category: "",
-            //     price: "",
-            //     supp_id: "",
-            //     batch_quantity: "",
-            //     manufactured: ""
-            // });
+
             setCart([])
 
             setProdadd(!prodadd); // Assuming this toggles a state variable for UI update
@@ -322,6 +335,7 @@ const AdminDashboard = () => {
         }
     };
 
+    // const uniqueCategories = Array.from(new Set(individualProduct.map((prod) => prod.category)));
 
 
     return (
@@ -446,20 +460,20 @@ const AdminDashboard = () => {
                 </form> </div> : ""
             }
 
-            <button className='newad links' style={{ marginTop: "150px" }} onClick={() => { setProdadd(!prodadd) }}>Add new product</button>
-            {/* {
-                prodadd ? (
+            <button className='newad links' style={{ marginTop: "150px" }} onClick={() => { setIsIndividual(!isIndividual) }}>Add Individual product</button>
+            {
+                isIndividual ? (
                     <div className='admreg'>
-                        <form onSubmit={addProduct}>
-                            <button className='close' onClick={() => { setProdadd(!prodadd) }}>X</button>
+                        <form onSubmit={addIndProducts}>
+                            <button className='close' onClick={() => { setIsIndividual(!isIndividual) }}>X</button>
                             <div className='adminp'>
                                 <label htmlFor="name">Product Name</label>
                                 <input
                                     type="text"
                                     name="name"
-                                    value={prod.name}
+                                    value={indProd.name}
                                     required={true}
-                                    onChange={handleProdChange}
+                                    onChange={handleIndProdChange}
                                 />
                             </div>
                             <div className='adminp'>
@@ -467,9 +481,9 @@ const AdminDashboard = () => {
                                 <input
                                     type="text"
                                     name="description"
-                                    value={prod.description}
+                                    value={indProd.description}
                                     required={true}
-                                    onChange={handleProdChange}
+                                    onChange={handleIndProdChange}
                                 />
                             </div>
                             <div className='adminp'>
@@ -477,37 +491,19 @@ const AdminDashboard = () => {
                                 <input
                                     type="text"
                                     name="category"
-                                    value={prod.category}
+                                    value={indProd.category}
                                     required={true}
-                                    onChange={handleProdChange}
+                                    onChange={handleIndProdChange}
                                 />
                             </div>
-                            <div className='adminp'>
-                                <label htmlFor="price">Price</label>
-                                <input
-                                    type="number"
-                                    name="price"
-                                    value={prod.price}
-                                    required={true}
-                                    onChange={handleProdChange}
-                                />
-                            </div>
-                            <div className='adminp'>
-                                <label htmlFor="supplier">Supplier</label>
-                                <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} required>
-                                    <option value="">Select Supplier</option>
-                                    {supplierlist.map((supplier) => (
-                                        <option key={supplier.id} value={supplier.id}>
-                                            {supplier.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+
+
                             <button type='submit'>Add Product</button>
                         </form>
                     </div>
                 ) : ""
-            } */}
+            }
+            <button className='newad links' style={{ marginTop: "220px" }} onClick={() => { setProdadd(!prodadd) }}>Add new product</button>
 
             {prodadd ? (
                 <div className="admreg" style={{ minHeight: "80vh" }}>
@@ -537,17 +533,19 @@ const AdminDashboard = () => {
                             </select>
                         </div>
 
-                        {prod.map((product, index) => (
+                        {/* {prod.map((product, index) => (
                             <div key={index}>
                                 <div className="adminp">
                                     <label htmlFor="name">Product Name</label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={product.name}
-                                        onChange={(e) => handleProdChange(e, index)}
-                                        required
-                                    />
+                                 
+                                    <select value={product.name} name="name" id="" onChange={(e) => handleProdChange(e, index)}>
+                                        <option value="">Select</option>
+                                        {
+                                            individualProduct.map((e) => (
+                                                <option value={e.name}>{e.name}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
 
                                 <div className="adminp">
@@ -563,20 +561,92 @@ const AdminDashboard = () => {
 
                                 <div className="adminp">
                                     <label htmlFor="category">Category</label>
-                                    {/* <input
-                                        type="text"
-                                        name="category"
-                                        value={product.category}
+                                    <select name="category" value={product.category} onChange={(e) => handleCategoryChange(e, index)}>
+                                        <option value="">Select Category</option>
+                                        {
+                                            [...new Set(individualProduct.map((prod) => prod.category))].map((uniqueCategory) => (
+                                                <option key={uniqueCategory} value={uniqueCategory}>{uniqueCategory}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+
+
+                                <div className="adminp">
+                                    <label htmlFor="price">Price</label>
+                                    <input
+                                        type="number"
+                                        name="price"
+                                        value={product.price}
                                         onChange={(e) => handleProdChange(e, index)}
                                         required
-                                    /> */}
-                                    <select name="category" id="" onChange={(e) => handleProdChange(e, index)}>
+                                    />
+                                </div>
+
+                                <div className="adminp">
+                                    <label htmlFor="batch_quantity">Batch Quantity</label>
+                                    <input
+                                        type="number"
+                                        name="batch_quantity"
+                                        value={product.batch_quantity}
+                                        onChange={(e) => handleProdChange(e, index)}
+                                        required
+                                    />
+                                </div>
+
+                                {prod.length > 1 && (
+                                    <button type="button" onClick={() => removeProduct(index)}>
+                                        Remove Product
+                                    </button>
+                                )}
+                            </div>
+                        ))} */}
+                        
+                        {prod.map((product, index) => (
+                            <div key={index}>
+                                <div className="adminp">
+                                    <label htmlFor="category">Category</label>
+                                    <select
+                                        name="category"
+                                        value={product.category}
+                                        onChange={(e) => handleCategoryChange(e, index)} // Handle category change
+                                    >
                                         <option value="">Select Category</option>
-                                        {category.map((cat) => (
-                                            <option value={cat.name}>{cat.name}</option>
+                                        {[...new Set(individualProduct.map((prod) => prod.category))].map((uniqueCategory) => (
+                                            <option key={uniqueCategory} value={uniqueCategory}>
+                                                {uniqueCategory}
+                                            </option>
                                         ))}
                                     </select>
+                                </div>
 
+                                <div className="adminp">
+                                    <label htmlFor="name">Product Name</label>
+                                    <select
+                                        value={product.name}
+                                        name="name"
+                                        onChange={(e) => handleProdChange(e, index)}
+                                    >
+                                        <option value="">Select Product</option>
+                                        {individualProduct
+                                            .filter((prod) => prod.category === selectedCategory) // Filter products by selected category
+                                            .map((filteredProduct) => (
+                                                <option key={filteredProduct.name} value={filteredProduct.name}>
+                                                    {filteredProduct.name}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </div>
+
+                                <div className="adminp">
+                                    <label htmlFor="description">Description</label>
+                                    <input
+                                        type="text"
+                                        name="description"
+                                        value={product.description}
+                                        onChange={(e) => handleProdChange(e, index)}
+                                        required
+                                    />
                                 </div>
 
                                 <div className="adminp">

@@ -197,23 +197,33 @@ const getProdBatch = async (req, res) => {
 }
 
 
-const getIndProd=async(req,res)=>{
+const getIndProd = async (req, res) => {
     try {
-        const {rows}=await pool.query('select * from ref_products')
-        res.json({data:rows})
+        const { rows } = await pool.query('select * from ref_products')
+        res.json({ data: rows })
     } catch (error) {
         res.json(error)
     }
 }
 
+const addIndProduct = async (req, res) => {
+    const { name, description, category } = req.body;
+    try {
+        const { rows } = await pool.query('insert into ref_products (name,description,category) values ($1,$2,$3) returning *', [name, description, category]);
+        res.json({ message: "product added successflly", success: true });
 
+    } catch (error) {
+        console.log(error.message);
+        
+        res.json({ message: "failed to add product", success: false });
+    }
+}
 
 
 const createProductsWithBatch = async (req, res) => {
     const { supp_id, products } = req.body;
 
     try {
-        // Check if the supplier exists
         const supplierCheck = await pool.query('SELECT * FROM supplier WHERE id = $1', [supp_id]);
         if (supplierCheck.rows.length === 0) {
             return res.json({ message: "Supplier not found", success: false });
@@ -222,31 +232,29 @@ const createProductsWithBatch = async (req, res) => {
         const createdProducts = [];
 
         const batchNoResult = await pool.query('SELECT MAX(batche_no) AS max_batch_no FROM batch');
-        const maxBatchNo = batchNoResult.rows[0].max_batch_no || 0; 
-        const newBatchNo = maxBatchNo + 1; 
+        const maxBatchNo = batchNoResult.rows[0].max_batch_no || 0;
+        const newBatchNo = maxBatchNo + 1;
 
         for (const product of products) {
             const { name, description, category, price, batch_quantity, manufactured } = product;
 
-            // Check for the existing product in the ref_products table
-            const existingRefProduct = await pool.query(
-                'SELECT * FROM ref_products WHERE name = $1 AND description = $2 AND category = $3',
-                [name, description, category]
-            );
+            // const existingRefProduct = await pool.query(
+            //     'SELECT * FROM ref_products WHERE name = $1 AND description = $2 AND category = $3',
+            //     [name, description, category]
+            // );
 
             let distProductId;
 
             // If it doesn't exist, insert into ref_products and get the id
-            if (existingRefProduct.rows.length === 0) {
-                const refProductResult = await pool.query(
-                    'INSERT INTO ref_products (name, description, category) VALUES ($1, $2, $3) RETURNING id',
-                    [name, description, category]
-                );
-                distProductId = refProductResult.rows[0].id;
-            } else {
-                // Use the existing product's id
-                distProductId = existingRefProduct.rows[0].id;
-            }
+            // if (existingRefProduct.rows.length === 0) {
+            //     const refProductResult = await pool.query(
+            //         'INSERT INTO ref_products (name, description, category) VALUES ($1, $2, $3) RETURNING id',
+            //         [name, description, category]
+            //     );
+            //     distProductId = refProductResult.rows[0].id;
+            // } else {
+            //     distProductId = existingRefProduct.rows[0].id;
+            // }
 
             // Now check for the existing product in the product table
             const existingProduct = await pool.query(
@@ -258,7 +266,7 @@ const createProductsWithBatch = async (req, res) => {
                 const product_id = existingProduct.rows[0].id;
 
                 // Update the quantity
-                const newQuantity = existingProduct.rows[0].quantity + batch_quantity; 
+                const newQuantity = existingProduct.rows[0].quantity + batch_quantity;
                 await pool.query(
                     'UPDATE product SET quantity = $1, dist_value = $2 WHERE id = $3',
                     [newQuantity, distProductId, product_id]
@@ -277,7 +285,7 @@ const createProductsWithBatch = async (req, res) => {
             } else {
                 const productResult = await pool.query(
                     'INSERT INTO product (name, description, category, price, supp_id, quantity, received_quantity, dist_value) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-                    [name, description, category, price, supp_id, batch_quantity, batch_quantity, distProductId] 
+                    [name, description, category, price, supp_id, batch_quantity, batch_quantity, distProductId]
                 );
                 const product_id = productResult.rows[0].id;
 
@@ -357,7 +365,7 @@ const placeOrder = async (req, res) => {
 
         const prod_price = ress.rows[0].price;
         const prod_quant = ress.rows[0].quantity;
-      
+
 
         if (prod_quant >= quantity) {
             await pool.query(
@@ -371,7 +379,7 @@ const placeOrder = async (req, res) => {
             );
 
             let remainingQuantity = quantity;
-            const prod_total =prod_price* remainingQuantity;
+            const prod_total = prod_price * remainingQuantity;
             for (const batch of batchResult.rows) {
                 if (remainingQuantity <= 0) break;
 
@@ -394,7 +402,7 @@ const placeOrder = async (req, res) => {
 
             await pool.query(
                 'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase,total_price) VALUES ($1, $2, $3, $4,$5)',
-                [orderId, id, quantity, prod_price,prod_total]
+                [orderId, id, quantity, prod_price, prod_total]
             );
 
         } else {
@@ -409,4 +417,4 @@ const placeOrder = async (req, res) => {
 
 
 
-module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch,getIndProd, getSupplier, addSupplier, prodBySupplier, placeOrder };
+module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd,addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder };

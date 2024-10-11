@@ -70,9 +70,15 @@ const Userdashboard = () => {
     });
     if (!res.ok) {
       alert("Failed to fetch products");
+      return;
     }
 
     res = await res.json();
+    // console.log(res.data);
+    // console.log(12);
+
+
+
     //     res.data.forEach((e)=>{
     //       console.log(e.category);
 
@@ -82,13 +88,16 @@ const Userdashboard = () => {
 
     // },1000)    
     setProducts(res.data);
+    console.log([...new Set(products.map((e) => e.category))]);
+
 
   }
 
   const getIndividyalProducts = async () => {
     let res = await fetch("http://localhost:5000/adminapi/indproducts");
     if (!res.ok) {
-      alert("Some issue occured while fetching individual datas")
+      alert("Some issue occured while fetching individual datas");
+      return;
     }
     res = await res.json();
     // console.log(res.data);
@@ -155,7 +164,8 @@ const Userdashboard = () => {
       body: JSON.stringify(orderData)
     });
     if (!res.ok) {
-      alert("Failed to Place Orders")
+      alert("Failed to Place Orders");
+      return;
     }
     try {
       res = await res.json();
@@ -230,14 +240,20 @@ const Userdashboard = () => {
                 setSelectedCategory(e.target.value);
                 console.log("Selected Category:", e.target.value); // Log the selected value
                 console.log(typeof selectedCategory);
-                
+
               }}>
                 <option value="">Select Category</option>
                 {
-                  individualProduct.map((e) => (
-                    <option value={e.name} key={e.id}>{e.name}</option>
+                  [...new Set(products.map((prod) => prod.category))].map((e,index) => (
+                    <option value={e} key={index}>{e}</option>
                   ))
                 }
+
+                {/* {
+                  [...new Set(products.map((prod) => prod.category))].map((e, index) => (
+                    <option value={e} key={index}>{e}</option>
+                  ))
+                } */}
               </select>
               {/* <label htmlFor="name">Name</label> */}
               <select className='select' name="" id="" value={selectedProduct} onChange={(e) => { setSelectedProduct(e.target.value) }}>
@@ -254,12 +270,12 @@ const Userdashboard = () => {
 
 
                 {
-                  products.filter((e) => e.category.toLowerCase().includes(selectedCategory)).map((e) => (
-                    <option value={e.id} key={e.id}>{e.name}</option>
+                  products.filter((e) => e.category.toLowerCase().includes(selectedCategory.toLocaleLowerCase())).map((e) => (
+                    <option value={e.id} key={e.id}>{e.name}-{e.price}(Available{e.quantity})-{e.description}</option>
 
                   ))
                 }
-{/* 
+                {/* 
                 {
                   products.filter((e) => e.category === selectedCategory).map((e) => (
                     <option value={e.id} key={e.id}>{e.name}</option>
