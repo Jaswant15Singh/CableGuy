@@ -5,7 +5,7 @@ const AdminDashboard = () => {
     const [data, setData] = useState([]);
     const [inp, setInp] = useState({ name: "", email: "", password: "" });
     const [inpp, setInpp] = useState({ name: "", contact: "", address: "" });
-    const [prod, setProd] = useState([{ name: "", description: "", category: "", price: "", supp_id: "" }]);
+    const [prod, setProd] = useState([{ name: "", prod_desc: "", description: "", category: "", price: "", supp_id: "" }]);
     const [indProd, setIndProd] = useState({ name: "", description: "", category: "" })
     const [dataa, setDataa] = useState([]);
     const [supplierId, setSupplierId] = useState("")
@@ -14,7 +14,7 @@ const AdminDashboard = () => {
     const [cart, setCart] = useState([]);
     const [individualProduct, setIndividualProduct] = useState([]);
     const [isIndividual, setIsIndividual] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(''); 
+    const [selectedCategory, setSelectedCategory] = useState('');
 
 
 
@@ -99,14 +99,14 @@ const AdminDashboard = () => {
     }
 
     const getIndividualProducts = async () => {
-        let res = await fetch("http://localhost:5000/adminapi/indproducts",{
-      method: "GET",
+        let res = await fetch("http://localhost:5000/adminapi/indproducts", {
+            method: "GET",
 
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
-    });
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
         if (!res.ok) {
             alert("Some issue occured while fetching individual datas")
         }
@@ -483,6 +483,7 @@ const AdminDashboard = () => {
                                     onChange={handleIndProdChange}
                                 />
                             </div>
+
                             <div className='adminp'>
                                 <label htmlFor="description">Description</label>
                                 <input
@@ -616,7 +617,7 @@ const AdminDashboard = () => {
                                     <select
                                         name="category"
                                         value={product.category}
-                                        onChange={(e) => handleCategoryChange(e, index)} // Handle category change
+                                        onChange={(e) => handleCategoryChange(e, index)}
                                     >
                                         <option value="">Select Category</option>
                                         {[...new Set(individualProduct.map((prod) => prod.category))].map((uniqueCategory) => (
@@ -636,10 +637,29 @@ const AdminDashboard = () => {
                                     >
                                         <option value="">Select Product</option>
                                         {individualProduct
-                                            .filter((prod) => prod.category === selectedCategory) // Filter products by selected category
+                                            .filter((prod) => prod.category === selectedCategory)
                                             .map((filteredProduct) => (
                                                 <option key={filteredProduct.name} value={filteredProduct.name}>
                                                     {filteredProduct.name}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </div>
+
+                                <div className="adminp">
+                                    <label htmlFor="prod_desc">Product Description</label>
+                                    <select
+                                        disabled={true}
+                                        value={product.prod_desc}
+                                        name="prod_desc"
+                                        onChange={(e) => handleProdChange(e, index)}
+                                    >
+                                        {/* <option value="">Product Description</option> */}
+                                        {individualProduct
+                                            .filter((prod) => prod.name === product.name)
+                                            .map((filteredProduct) => (
+                                                <option key={filteredProduct.description} value={filteredProduct.description}>
+                                                    {filteredProduct.description}
                                                 </option>
                                             ))}
                                     </select>
