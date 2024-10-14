@@ -99,7 +99,14 @@ const AdminDashboard = () => {
     }
 
     const getIndividualProducts = async () => {
-        let res = await fetch("http://localhost:5000/adminapi/indproducts");
+        let res = await fetch("http://localhost:5000/adminapi/indproducts",{
+      method: "GET",
+
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
         if (!res.ok) {
             alert("Some issue occured while fetching individual datas")
         }

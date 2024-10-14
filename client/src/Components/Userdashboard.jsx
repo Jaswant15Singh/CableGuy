@@ -14,7 +14,7 @@ const Userdashboard = () => {
   const [individualProduct, setIndividualProduct] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const token = localStorage.getItem("userlogintoken");
-  
+
 
   const { id } = useParams();
 
@@ -95,7 +95,14 @@ const Userdashboard = () => {
   }
 
   const getIndividyalProducts = async () => {
-    let res = await fetch("http://localhost:5000/adminapi/indproducts");
+    let res = await fetch("http://localhost:5000/adminapi/indproducts", {
+      method: "GET",
+
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
     if (!res.ok) {
       alert("Some issue occured while fetching individual datas");
       return;
@@ -171,17 +178,29 @@ const Userdashboard = () => {
     try {
       res = await res.json();
       console.log(res);
-      alert("Order placed successfully");
-      setCart([]);
-      setCustomerData({ name: "", contact: "" });
-      setSelectedProduct("");
-      setSelectedQuantity("");
-
+      if (res.success) {
+        alert("Order placed successfully");
+        setCart([]);
+        setCustomerData({ name: "", contact: "" });
+        setSelectedProduct("");
+        setSelectedQuantity("");
+      }
+      else {
+        alert(res.message)
+      }
     } catch (error) {
       alert(error)
     }
 
   }
+
+  const removeProduct = (index) => {
+    const newCart = [...cart];
+    newCart.splice(index, 1)
+    setCart(newCart)
+  }
+
+  
   return (
 
 
@@ -239,7 +258,7 @@ const Userdashboard = () => {
               <h1>Products in Stock</h1>
               <select name="" id="" value={selectedCategory} onChange={(e) => {
                 setSelectedCategory(e.target.value);
-                console.log("Selected Category:", e.target.value); // Log the selected value
+                console.log("Selected Category:", e.target.value);
                 console.log(typeof selectedCategory);
 
               }}>
@@ -269,25 +288,31 @@ const Userdashboard = () => {
                 } */}
 
 
-{
-  products
-    .filter((e) =>
-      e.category.toLowerCase().includes(selectedCategory.toLowerCase())
-    )
-    .sort((a, b) => {
-      // Sort by price first
-      if (a.price !== b.price) {
-        return a.price - b.price; // Ascending order of price
-      }
-      // If prices are the same, sort by name
-      return a.name.localeCompare(b.name); // Alphabetical order
-    })
-    .map((e) => (
-      <option value={e.id} key={e.id}>
-        {e.name} - ${e.price} (Available: {e.quantity}) - {e.description}
-      </option>
-    ))
-}
+                {
+                  products
+                    .filter((e) =>
+                      e.category.toLowerCase().includes(selectedCategory.toLowerCase())
+                    )
+                    // .sort((a, b) => {
+                    //   if (a.price !== b.price) {
+                    //     return a.price - b.price; 
+                    //   }
+                    //   return a.name.localeCompare(b.name); 
+                    // })
+                    .sort((a,b)=>{
+                      if(a.name!==b.name){
+                        return a.name.localeCompare(b.name)
+                      }
+                      else{
+                        return a.price-b.price
+                      }
+                    })
+                    .map((e) => (
+                      <option value={e.id} key={e.id}>
+                        {e.name} - ${e.price} (Available: {e.quantity}) - {e.description}
+                      </option>
+                    ))
+                }
 
 
                 {/* 
@@ -310,10 +335,14 @@ const Userdashboard = () => {
         : ""}
 
       {cart.length > 0 && <div className='orderplace'>
-        {cart.map((e) => {
+        {cart.map((e, index) => {
           return (
             <div>
               <h1 style={{ margin: "5px" }}>{e.name} <span>quantity:{e.quantity}</span></h1>
+              <button onClick={() => {
+                removeProduct(index)
+              }}>remove</button>
+
 
             </div>
           )

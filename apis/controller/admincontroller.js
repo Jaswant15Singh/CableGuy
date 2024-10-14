@@ -214,7 +214,7 @@ const addIndProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        
+
         res.json({ message: "failed to add product", success: false });
     }
 }
@@ -351,35 +351,35 @@ const placeOrder = async (req, res) => {
     const orderId = result.rows[0].order_id;
 
     for (const product of cart) {
-
         const { id, quantity } = product;
 
-        const ress = await pool.query(
+        const productResult = await pool.query(
             'SELECT price, quantity FROM product WHERE id = $1',
             [id]
         );
 
-        if (ress.rows.length < 1) {
-            return res.json({ message: "Product not found for id", success: false });
+        if (productResult.rows.length < 1) {
+            return res.json({ message: "Product not found", success: false });
         }
 
-        const prod_price = ress.rows[0].price;
-        const prod_quant = ress.rows[0].quantity;
+        const prod_price = productResult.rows[0].price;
+        const prod_quant = productResult.rows[0].quantity;
 
+        const batchResult = await pool.query(
+            'SELECT batch_id, batch_quantity FROM batch WHERE product_id = $1 ORDER BY batch_id ASC',
+            [id]
+        );
 
-        if (prod_quant >= quantity) {
-            await pool.query(
-                'UPDATE product SET quantity = quantity - $1 WHERE id = $2',
-                [quantity, id]
-            );
+        let totalAvailableQuantity = 0;
+        for (const batch of batchResult.rows) {
+            totalAvailableQuantity += batch.batch_quantity;
+        }
 
-            const batchResult = await pool.query(
-                'SELECT batch_id, batch_quantity FROM batch WHERE product_id = $1 ORDER BY batch_id ASC',
-                [id]
-            );
-
+        if (totalAvailableQuantity >= quantity) {
             let remainingQuantity = quantity;
-            const prod_total = prod_price * remainingQuantity;
+            const prod_total = prod_price * quantity;
+
+            // Deduct stock from batches in FIFO order
             for (const batch of batchResult.rows) {
                 if (remainingQuantity <= 0) break;
 
@@ -401,12 +401,17 @@ const placeOrder = async (req, res) => {
             }
 
             await pool.query(
-                'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase,total_price) VALUES ($1, $2, $3, $4,$5)',
+                'UPDATE product SET quantity = quantity - $1 WHERE id = $2',
+                [quantity, id]
+            );
+
+            await pool.query(
+                'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase, total_price) VALUES ($1, $2, $3, $4, $5)',
                 [orderId, id, quantity, prod_price, prod_total]
             );
 
         } else {
-            return res.json({ message: "Not in stock", success: false });
+            return res.json({ message: "Not enough stock available", success: false });
         }
     }
 
@@ -415,6 +420,4 @@ const placeOrder = async (req, res) => {
 
 
 
-
-
-module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd,addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder };
+module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder };

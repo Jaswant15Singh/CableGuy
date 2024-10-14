@@ -9,15 +9,15 @@ Route.post("/loginadmin", adminLogin);
 Route.get("/admin/:id", mainmiddleware,adminmiddleware, getSingleAdmin);
 Route.put("/admin/update/:id", mainmiddleware,adminmiddleware, updateAdmin);
 Route.delete("/admin/delete/:id", mainmiddleware,adminmiddleware, deleteAdmin);
-Route.post("/product/add",createProduct);
-Route.get("/products",getProducts);
-Route.get("/indproducts",getIndProd);
-Route.post("/indproducts/add",addIndProduct);
-Route.post("/batch/add",createBatch);
-Route.get("/product/batch",getProdBatch);
-Route.get("/supplier",getSupplier);
-Route.post("/supplier/add",addSupplier);
-Route.get("/supplier/prod",prodBySupplier);
+Route.post("/product/add",mainmiddleware,createProduct);
+Route.get("/products",mainmiddleware,getProducts);
+Route.get("/indproducts",mainmiddleware,getIndProd);
+Route.post("/indproducts/add",mainmiddleware,addIndProduct);
+Route.post("/batch/add",mainmiddleware,createBatch);
+Route.get("/product/batch",mainmiddleware,getProdBatch);
+Route.get("/supplier",mainmiddleware,getSupplier);
+Route.post("/supplier/add",mainmiddleware,addSupplier);
+Route.get("/supplier/prod",mainmiddleware,prodBySupplier);
 Route.post("/placeorder",placeOrder);
-Route.post("/cr",createProductsWithBatch)
+Route.post("/cr",mainmiddleware,createProductsWithBatch)
 module.exports = Route;
