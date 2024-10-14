@@ -14,7 +14,7 @@ const AdminDashboard = () => {
     const [cart, setCart] = useState([]);
     const [individualProduct, setIndividualProduct] = useState([]);
     const [isIndividual, setIsIndividual] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(''); // To store the selected category
+    const [selectedCategory, setSelectedCategory] = useState(''); 
 
 
 
@@ -601,7 +601,7 @@ const AdminDashboard = () => {
                                 )}
                             </div>
                         ))} */}
-                        
+
                         {prod.map((product, index) => (
                             <div key={index}>
                                 <div className="adminp">

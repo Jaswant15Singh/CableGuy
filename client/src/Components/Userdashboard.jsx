@@ -14,6 +14,7 @@ const Userdashboard = () => {
   const [individualProduct, setIndividualProduct] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const token = localStorage.getItem("userlogintoken");
+  
 
   const { id } = useParams();
 
@@ -244,7 +245,7 @@ const Userdashboard = () => {
               }}>
                 <option value="">Select Category</option>
                 {
-                  [...new Set(products.map((prod) => prod.category))].map((e,index) => (
+                  [...new Set(products.map((prod) => prod.category))].map((e, index) => (
                     <option value={e} key={index}>{e}</option>
                   ))
                 }
@@ -268,13 +269,27 @@ const Userdashboard = () => {
                 } */}
 
 
+{
+  products
+    .filter((e) =>
+      e.category.toLowerCase().includes(selectedCategory.toLowerCase())
+    )
+    .sort((a, b) => {
+      // Sort by price first
+      if (a.price !== b.price) {
+        return a.price - b.price; // Ascending order of price
+      }
+      // If prices are the same, sort by name
+      return a.name.localeCompare(b.name); // Alphabetical order
+    })
+    .map((e) => (
+      <option value={e.id} key={e.id}>
+        {e.name} - ${e.price} (Available: {e.quantity}) - {e.description}
+      </option>
+    ))
+}
 
-                {
-                  products.filter((e) => e.category.toLowerCase().includes(selectedCategory.toLocaleLowerCase())).map((e) => (
-                    <option value={e.id} key={e.id}>{e.name}-{e.price}(Available{e.quantity})-{e.description}</option>
 
-                  ))
-                }
                 {/* 
                 {
                   products.filter((e) => e.category === selectedCategory).map((e) => (
