@@ -166,6 +166,7 @@ const AdminDashboard = () => {
         let res = await fetch(`http://localhost:5000/adminapi/admin/delete/${idd}`, {
             method: "Delete",
             headers: {
+                
                 "Authorization": `Bearer ${token}`
             }
         });
@@ -221,6 +222,7 @@ const AdminDashboard = () => {
         let res = await fetch("http://localhost:5000/adminapi/supplier/add", {
             method: "POST",
             headers: {
+                'Authorization': `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(inpp)
@@ -247,6 +249,7 @@ const AdminDashboard = () => {
         let res = await fetch("http://localhost:5000/adminapi/indproducts/add", {
             method: "POST",
             headers: {
+                'Authorization': `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ name: indProd.name, description: indProd.description, category: indProd.category })
@@ -263,6 +266,7 @@ const AdminDashboard = () => {
             setIndProd({ name: "", description: "", category: "" });
 
             alert(res.message);
+            setIsIndividual(!isIndividual)
         }
 
         else {
@@ -335,7 +339,7 @@ const AdminDashboard = () => {
 
             setCart([])
 
-            setProdadd(!prodadd); // Assuming this toggles a state variable for UI update
+            setProdadd(false);
         } catch (error) {
             console.error("Error while adding product:", error);
             alert("Failed to add product");
@@ -715,40 +719,45 @@ const AdminDashboard = () => {
                 ""
             )}
 
-            <table className='admintable' style={{ width: "50%", margin: "0 auto" }} border={2}>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Remove</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        cart.map((e, index) => {
-                            return (
-                                <tr key={e.id}>
-                                    <td>{e.name}</td>
-                                    <td>{e.description}</td>
-                                    <td>{e.category}</td>
-                                    <td>{e.price}</td>
-                                    <td>{e.batch_quantity}</td>
-                                    <td><button onClick={() => { removeProduct(index) }}>Remove</button></td>
-                                </tr>
-                            )
-                        })
 
-                    }
+            {cart.length > 0 && (
+                <table className='admintable' style={{ width: "50%", margin: "0 auto" }} border={2}>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
 
-                </tbody>
-            </table>
+                            cart.map((e, index) => {
+                                return (
+                                    <tr key={e.id}>
+                                        <td>{e.name}</td>
+                                        <td>{e.description}</td>
+                                        <td>{e.category}</td>
+                                        <td>{e.price}</td>
+                                        <td>{e.batch_quantity}</td>
+                                        <td><button onClick={() => { removeProduct(index) }}>Remove</button></td>
+                                    </tr>
+                                )
+                            })
 
 
+                        }
 
-            <button style={{ width: "60px", margin: "10px auto", display: "block" }} onClick={addProduct}>Submit Products</button>
+                    </tbody>
+                </table>
+            )}
+
+
+            {cart.length > 0 && <button style={{ width: "60px", margin: "10px auto", display: "block" }} onClick={addProduct}>Submit Products</button>
+            }
         </div>
     )
 }

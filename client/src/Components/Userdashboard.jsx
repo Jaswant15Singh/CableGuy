@@ -5,7 +5,7 @@ const Userdashboard = () => {
   const [data, setData] = useState({ name: "", email: "" });
   const [update, setUpdate] = useState(false);
   const [updatedata, setUpdatedata] = useState({ name: "", email: "" });
-  const [customerData, setCustomerData] = useState({ name: "", contact: "" });
+  const [customerData, setCustomerData] = useState({ name: "", contact: "",email:"" });
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');
@@ -13,6 +13,7 @@ const Userdashboard = () => {
   const [addProd, setAddProd] = useState(true);
   const [individualProduct, setIndividualProduct] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [sortBasis, setSortBasis] = useState("default");
   const token = localStorage.getItem("userlogintoken");
 
 
@@ -145,21 +146,59 @@ const Userdashboard = () => {
   };
 
 
-  const handleAddProduct = (e) => {
+  const handleAddProduct = (e) => {  
     console.log(typeof selectedProduct);
     if (selectedProduct && selectedQuantity) {
+      const existingProduct=cart.find((e)=>e.id===Number(selectedProduct));
+      if(existingProduct){
+        const updatedCart = cart.map((e) =>
+          e.id === Number(selectedProduct)
+            ? { ...e, quantity: e.quantity + Number(selectedQuantity) } 
+            : e
+        );
+          setCart(updatedCart)
+      }
+      else{
       const prod = products.find((e) => e.id === Number(selectedProduct));
       console.log(prod);
-      setCart([...cart, { ...prod, quantity: selectedQuantity }])
-
+      if(prod){
+        setCart([...cart, { ...prod, quantity: Number(selectedQuantity) }])
+      }
+      }
     }
-
   }
 
+  // const handleAddProduct = (e) => {
+  //   if (selectedProduct && selectedQuantity) {
+  //     const existingProduct = cart.find((e) => e.id === Number(selectedProduct));
+  //     if (existingProduct) {
+  //       // Update the quantity of the existing product
+  //       const updatedCart = cart.map((e) =>
+  //         e.id === Number(selectedProduct)
+  //           ? { ...e, quantity: e.quantity + Number(selectedQuantity) }
+  //           : e
+  //       );
+  //       setCart(updatedCart);
+  //     } else {
+  //       // Add new product to cart
+  //       const prod = products.find((e) => e.id === Number(selectedProduct));
+  //       if (prod) {
+  //         setCart([...cart, { ...prod, quantity: Number(selectedQuantity) }]);
+  //       }
+  //     }
+  //   }
+  // };
+  
+
   const placeOrders = async () => {
+    if (!customerData.name || !customerData.contact) {
+      alert("Enter User Details ");
+      return;
+    }
     const orderData = {
       customer_name: customerData.name,
       customer_contact: customerData.contact,
+      email:customerData.email,
       cart: cart.map(item => ({ id: item.id, quantity: item.quantity }))
     }
 
@@ -200,7 +239,39 @@ const Userdashboard = () => {
     setCart(newCart)
   }
 
-  
+  const sortedBasis = () => {
+    const prod = products.filter((e) =>
+      e.category.toLowerCase().includes(selectedCategory.toLowerCase())
+    );
+
+    switch (sortBasis) {
+      case "low-price": return prod.sort((a, b) => {
+        if (a.price !== b.name) {
+          return a.price - b.price
+
+        }
+        else {
+          return a.name.localeCompare(b.name)
+        }
+      });
+
+      case "high-price": return prod.sort((a, b) => {
+        if (a.price !== b.name) {
+          return b.price - a.price
+
+        }
+        else {
+          return a.name.localeCompare(b.name)
+        }
+      });
+
+      case "name": return prod.sort((a, b) => a.name.localeCompare(b.name))
+      default: return prod
+
+    }
+
+  };
+
   return (
 
 
@@ -245,11 +316,15 @@ const Userdashboard = () => {
               <h1>Customer's information</h1>
               <div>
                 <label htmlFor="name">Name</label>
-                <input type="text" name="name" id="" value={customerData.name} onChange={handleCustomerChange} />
+                <input type="text" required={true} name="name" id="" value={customerData.name} onChange={handleCustomerChange} />
               </div>
               <div>
-                <label htmlFor="contact">contact</label>
-                <input type="text" name="contact" id="" value={customerData.contact} onChange={handleCustomerChange} />
+                <label htmlFor="email">Email</label>
+                <input type="email" required={true} name="email" id="" value={customerData.email} onChange={handleCustomerChange} />
+              </div>
+              <div>
+                <label htmlFor="contact">Contact</label>
+                <input type="text" required={true} name="contact" id="" value={customerData.contact} onChange={handleCustomerChange} />
               </div>
             </div>
 
@@ -275,52 +350,27 @@ const Userdashboard = () => {
                   ))
                 } */}
               </select>
-              {/* <label htmlFor="name">Name</label> */}
+              <select name="" id="" onChange={(event) => {
+                setSortBasis(event.target.value);
+              }}>
+                <option value="default">Select Sorting Method</option>
+                <option value="low-price"><button>Price-Lower to Higher</button></option>
+                <option value="high-price"><button>Price-Higher to Lower</button></option>
+                <option value="name">Sort By name</option>
+              </select>
               <select className='select' name="" id="" value={selectedProduct} onChange={(e) => { setSelectedProduct(e.target.value) }}>
                 <option value="">Select</option>
-                {/* {
-                  products.map((e) => (
-
-                    <option className='opt' value={e.id} key={e.id}>{e.name} - <i class="fa fa-inr"></i> {e.price} (Avaiable:{e.quantity})</option>
-
-
-                  ))
-                } */}
-
 
                 {
-                  products
-                    .filter((e) =>
-                      e.category.toLowerCase().includes(selectedCategory.toLowerCase())
-                    )
-                    // .sort((a, b) => {
-                    //   if (a.price !== b.price) {
-                    //     return a.price - b.price; 
-                    //   }
-                    //   return a.name.localeCompare(b.name); 
-                    // })
-                    .sort((a,b)=>{
-                      if(a.name!==b.name){
-                        return a.name.localeCompare(b.name)
-                      }
-                      else{
-                        return a.price-b.price
-                      }
-                    })
+
+                  sortedBasis()
                     .map((e) => (
                       <option value={e.id} key={e.id}>
                         {e.name} - ${e.price} (Available: {e.quantity}) - {e.description}
                       </option>
                     ))
+
                 }
-
-
-                {/* 
-                {
-                  products.filter((e) => e.category === selectedCategory).map((e) => (
-                    <option value={e.id} key={e.id}>{e.name}</option>
-                  ))
-                } */}
 
 
               </select>
@@ -337,20 +387,23 @@ const Userdashboard = () => {
       {cart.length > 0 && <div className='orderplace'>
         {cart.map((e, index) => {
           return (
-            <div>
-              <h1 style={{ margin: "5px" }}>{e.name} <span>quantity:{e.quantity}</span></h1>
-              <button onClick={() => {
-                removeProduct(index)
-              }}>remove</button>
+            <>
+              <div className='orderdet'>
+                <h1 style={{ margin: "10px 5px" }}>{e.name} <span>quantity:{e.quantity}</span></h1>
+                <button style={{ height: "30px", padding: "0 10px", cursor: "pointer" }} onClick={() => {
+                  removeProduct(index)
+                }}>Remove</button>
 
 
-            </div>
+              </div>
+              <hr/></>
           )
         })}
+        <div className='totalitems' style={{ margin: "5px" }}>{cart.length}</div>
         <h2 style={{ margin: "5px" }}>Total amount is:{cart.reduce((total, e) => {
           return total += e.price * e.quantity
         }, 0)} ₹</h2>
-        <button style={{ margin: "5px" }} onClick={placeOrders}>Place Order</button>
+        <button style={{ margin: "20px 5px", padding: "5px 10px", cursor: "pointer" }} onClick={placeOrders}>Place Order</button>
       </div>}
 
 

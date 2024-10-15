@@ -236,7 +236,7 @@ const createProductsWithBatch = async (req, res) => {
         const newBatchNo = maxBatchNo + 1;
 
         for (const product of products) {
-            const { name, description, category, price, batch_quantity, manufactured } = product;
+            const { name, description, category, price, batch_quantity, manufactured,received_data} = product;
 
             // const existingRefProduct = await pool.query(
             //     'SELECT * FROM ref_products WHERE name = $1 AND description = $2 AND category = $3',
@@ -268,8 +268,8 @@ const createProductsWithBatch = async (req, res) => {
                 // Update the quantity
                 const newQuantity = existingProduct.rows[0].quantity + batch_quantity;
                 await pool.query(
-                    'UPDATE product SET quantity = $1, dist_value = $2 WHERE id = $3',
-                    [newQuantity, distProductId, product_id]
+                    'UPDATE product SET quantity = $1 WHERE id = $32',
+                    [newQuantity, product_id]
                 );
 
                 const manufacturedDate = manufactured || new Date();
@@ -284,8 +284,8 @@ const createProductsWithBatch = async (req, res) => {
                 });
             } else {
                 const productResult = await pool.query(
-                    'INSERT INTO product (name, description, category, price, supp_id, quantity, received_quantity, dist_value) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-                    [name, description, category, price, supp_id, batch_quantity, batch_quantity, distProductId]
+                    'INSERT INTO product (name, description, category, price, supp_id, quantity, received_quantity,received_data) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+                    [name, description, category, price, supp_id, batch_quantity, batch_quantity,new Date()]
                 );
                 const product_id = productResult.rows[0].id;
 
@@ -342,11 +342,16 @@ const createProductsWithBatch = async (req, res) => {
 
 
 const placeOrder = async (req, res) => {
-    const { customer_name, customer_contact, cart } = req.body;
+    const { customer_name, customer_contact, email, cart } = req.body;
+
+    // const isEmail=await pool.query('select * from orders where email = $1',[email]);
+    // if(isEmail){
+    //     return res.json({messsage:"Email already exists",success:false})
+    // }
 
     const result = await pool.query(
-        'INSERT INTO orders (customer_name, customer_contact) VALUES ($1, $2) RETURNING order_id',
-        [customer_name, customer_contact]
+        'INSERT INTO orders (customer_name, customer_contact,email) VALUES ($1, $2,$3) RETURNING order_id',
+        [customer_name, customer_contact, email]
     );
     const orderId = result.rows[0].order_id;
 
@@ -406,8 +411,8 @@ const placeOrder = async (req, res) => {
             );
 
             await pool.query(
-                'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase, total_price) VALUES ($1, $2, $3, $4, $5)',
-                [orderId, id, quantity, prod_price, prod_total]
+                'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase, total_price,order_time) VALUES ($1, $2, $3, $4, $5,$6)',
+                [orderId, id, quantity, prod_price, prod_total, new Date()]
             );
 
         } else {

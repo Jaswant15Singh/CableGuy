@@ -3,21 +3,22 @@ const Route = express.Router();
 const { getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, createBatch, getProdBatch, getSupplier, addSupplier, prodBySupplier, placeOrder, getProducts, createProductsWithBatch, getIndProd, addIndProduct } = require("../controller/admincontroller");
 const mainmiddleware=require("../middleware/mainmiddleware");
 const adminmiddleware=require("../middleware/adminmiddleware");
+const usermiddleware=require("../middleware/usermiddleware")
 Route.get("/admin", mainmiddleware,adminmiddleware, getAdmin);
 Route.post("/signupadmin", mainmiddleware,adminmiddleware, signupadmin);
 Route.post("/loginadmin", adminLogin);
 Route.get("/admin/:id", mainmiddleware,adminmiddleware, getSingleAdmin);
 Route.put("/admin/update/:id", mainmiddleware,adminmiddleware, updateAdmin);
 Route.delete("/admin/delete/:id", mainmiddleware,adminmiddleware, deleteAdmin);
-Route.post("/product/add",mainmiddleware,createProduct);
+Route.post("/product/add",mainmiddleware,adminmiddleware,createProduct);
 Route.get("/products",mainmiddleware,getProducts);
-Route.get("/indproducts",mainmiddleware,getIndProd);
-Route.post("/indproducts/add",mainmiddleware,addIndProduct);
-Route.post("/batch/add",mainmiddleware,createBatch);
+Route.get("/indproducts",mainmiddleware,adminmiddleware,getIndProd);
+Route.post("/indproducts/add",mainmiddleware,adminmiddleware,addIndProduct);
+Route.post("/batch/add",mainmiddleware,adminmiddleware,createBatch);
 Route.get("/product/batch",mainmiddleware,getProdBatch);
-Route.get("/supplier",mainmiddleware,getSupplier);
-Route.post("/supplier/add",mainmiddleware,addSupplier);
-Route.get("/supplier/prod",mainmiddleware,prodBySupplier);
+Route.get("/supplier",mainmiddleware,adminmiddleware,getSupplier);
+Route.post("/supplier/add",mainmiddleware,adminmiddleware,addSupplier);
+Route.get("/supplier/prod",mainmiddleware,adminmiddleware,prodBySupplier);
 Route.post("/placeorder",placeOrder);
-Route.post("/cr",mainmiddleware,createProductsWithBatch)
+Route.post("/cr",createProductsWithBatch)
 module.exports = Route;
