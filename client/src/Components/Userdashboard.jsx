@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const Userdashboard = () => {
   const [data, setData] = useState({ name: "", email: "" });
@@ -406,7 +406,7 @@ const Userdashboard = () => {
         <button style={{ margin: "20px 5px", padding: "5px 10px", cursor: "pointer" }} onClick={placeOrders}>Place Order</button>
       </div>}
 
-
+<Link style={{textDecoration:"underline",display:"block",width:"70px",margin:"10px auto"}}  className='links' to={`/orderhistory`}>Order History</Link>
     </div>
 
 

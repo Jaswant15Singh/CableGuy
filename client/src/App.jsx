@@ -12,6 +12,7 @@ import AdminUpdate from './Components/AdminUpdate'
 import IndUsers from './Components/IndUsers'
 import { jwtDecode } from "jwt-decode";
 import { useParams } from 'react-router-dom';
+import OrderHistory from './Pages/OrderHistory'
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path='/admindashboard/:adminid' element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
           <Route path='/admin/update/:id' element={<AdminProtectedRoute><AdminUpdate /></AdminProtectedRoute>} />
           <Route path='/admin/ind/:id' element={<AdminProtectedRoute><IndUsers /></AdminProtectedRoute>} />
+          <Route path='/orderhistory' element={<protRoute><OrderHistory/></protRoute>}/>
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>
         <Footer />
@@ -85,6 +87,14 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/userlogin" />;
   }
 };
+
+
+const protRoute=({children})=>{
+  const token = localStorage.getItem("userlogintoken");
+  if(token){
+    return children
+  }
+}
 
 const AdminProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("adminlogintoken");

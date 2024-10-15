@@ -236,7 +236,7 @@ const createProductsWithBatch = async (req, res) => {
         const newBatchNo = maxBatchNo + 1;
 
         for (const product of products) {
-            const { name, description, category, price, batch_quantity, manufactured,received_data} = product;
+            const { name, description, category, price, batch_quantity, manufactured, received_data } = product;
 
             // const existingRefProduct = await pool.query(
             //     'SELECT * FROM ref_products WHERE name = $1 AND description = $2 AND category = $3',
@@ -285,7 +285,7 @@ const createProductsWithBatch = async (req, res) => {
             } else {
                 const productResult = await pool.query(
                     'INSERT INTO product (name, description, category, price, supp_id, quantity, received_quantity,received_data) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-                    [name, description, category, price, supp_id, batch_quantity, batch_quantity,new Date()]
+                    [name, description, category, price, supp_id, batch_quantity, batch_quantity, new Date()]
                 );
                 const product_id = productResult.rows[0].id;
 
@@ -424,5 +424,31 @@ const placeOrder = async (req, res) => {
 };
 
 
+const orderHistory = async (req, res) => {
+    try {
+        const { rows } = await pool.query(
+            `SELECT 
+           oi.quantity, 
+                oi.price_at_purchase, 
+           oi.total_price, 
+      
+           o.customer_name, 
+           o.customer_contact, 
+           o.email, 
+           p.name, 
+           p.category 
+         FROM order_items oi 
+         JOIN orders o ON oi.order_id = o.order_id 
+         JOIN product p ON oi.product_id = p.id`
+        );
 
-module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder };
+        res.json({ data: rows, success: true });
+    } catch (error) {
+        console.error("Error fetching order history:", error); // Log the actual error
+        res.json({ message: "Failed to fetch order history", success: false });
+    }
+};
+
+
+
+module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
