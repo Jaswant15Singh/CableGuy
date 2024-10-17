@@ -23,7 +23,7 @@ const Userdashboard = () => {
   const decoded = jwtDecode(token);
   console.log(decoded);
 
-  
+
 
 
   useEffect(() => {
@@ -205,7 +205,7 @@ const Userdashboard = () => {
     const orderData = {
       customer_name: customerData.name,
       customer_contact: customerData.contact,
-      
+
       user_id: decoded.userId,
       email: customerData.email,
       cart: cart.map(item => ({ id: item.id, quantity: item.quantity }))

@@ -1,9 +1,10 @@
+
 import React, { useEffect, useState } from 'react'
 import { jwtDecode } from "jwt-decode";
 import { Link } from 'react-router-dom';
 
 const OrderHistory = () => {
-    const token = localStorage.getItem("userlogintoken");
+    const token = localStorage.getItem("userlogintoken") || localStorage.getItem("adminlogintoken");
     const [orderhis, setOrderhis] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [filterPrice, setFilterPrice] = useState("");
@@ -11,12 +12,14 @@ const OrderHistory = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    const decoded = jwtDecode(token);
-    console.log(decoded);
-    let isAdmin=decoded.role;
-    
-    console.log(isAdmin==="admin"?true:false);
 
+    let isAdmin = "";
+    let decoded;
+
+    if (token) {
+        decoded = jwtDecode(token);
+        isAdmin = decoded.role;
+    }
     useEffect(() => {
         getOrderHistory();
     }, []);
@@ -27,9 +30,10 @@ const OrderHistory = () => {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
-                      "Content-Type": "application/json"
+                    "Content-Type": "application/json"
                 },
-                body:JSON.stringify({user_id:decoded.userId,isAdmin:isAdmin==="admin"?true:false})
+
+                body: JSON.stringify({ user_id: decoded.userId, isAdmin: isAdmin === "admin" })
             });
 
             if (!res.ok) throw new Error("Failed to fetch order history");
@@ -88,9 +92,9 @@ const OrderHistory = () => {
     };
 
     const handleSearchKeyDown = (e) => {
-        
-            handleSearchSubmit();
-        
+
+        handleSearchSubmit();
+
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -103,8 +107,11 @@ const OrderHistory = () => {
     };
 
     return (
-        <div className='orderhistory' style={{minHeight:"80vh"}}>
-            <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }} to={`/userdashboard/${decoded.userId}`}>Back</Link>
+        <div className='orderhistory' style={{ minHeight: "80vh" }}>
+
+            <Link to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }}>
+                Back
+            </Link>
 
             <div style={{ display: "flex", justifyContent: "space-around" }}>
                 <button onClick={() => setFilteredProducts(orderhis)}>See all</button>

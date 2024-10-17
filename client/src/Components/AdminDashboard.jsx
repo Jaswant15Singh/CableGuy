@@ -166,7 +166,7 @@ const AdminDashboard = () => {
         let res = await fetch(`http://localhost:5000/adminapi/admin/delete/${idd}`, {
             method: "Delete",
             headers: {
-                
+
                 "Authorization": `Bearer ${token}`
             }
         });
@@ -758,6 +758,8 @@ const AdminDashboard = () => {
 
             {cart.length > 0 && <button style={{ width: "60px", margin: "10px auto", display: "block" }} onClick={addProduct}>Submit Products</button>
             }
+            <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
+
         </div>
     )
 }

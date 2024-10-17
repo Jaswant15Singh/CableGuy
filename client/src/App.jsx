@@ -91,8 +91,13 @@ const ProtectedRoute = ({ children }) => {
 
 const protRoute = ({ children }) => {
   const token = localStorage.getItem("userlogintoken");
-  if (token) {
+  const admin_token = localStorage.getItem("adminlogintoken");
+
+  if (token || admin_token) {
     return children
+  }
+  else{
+    return <h1>Cannot Access Order History</h1>
   }
 }
 

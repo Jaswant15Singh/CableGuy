@@ -419,9 +419,8 @@ const placeOrder = async (req, res) => {
     res.json({ message: "Order placed successfully", success: true });
 };
 
-
 const orderHistory = async (req, res) => {
-    const { user_id, isAdmin } = req.body;
+    const { user_id, isAdmin } = req.body; 
     try {
         let query = `
             SELECT 
@@ -431,7 +430,7 @@ const orderHistory = async (req, res) => {
                 o.customer_name, 
                 o.customer_contact, 
                 o.email, 
-                p.name, 
+                p.name AS product_name, 
                 p.category 
             FROM order_items oi 
             JOIN orders o ON oi.order_id = o.order_id 
@@ -444,14 +443,21 @@ const orderHistory = async (req, res) => {
             params.push(user_id);
         }
 
-        const { rows } = await pool.query(query, params);
+        const result = await pool.query(query, params);
+        
+        const rows = result.rows;
 
-        res.json({ data: rows, success: true });
+        if (rows.length > 0) {
+            res.json({ data: rows, success: true });
+        } else {
+            res.json({ data: [], success: true });
+        }
     } catch (error) {
         console.error("Error fetching order history:", error);
-        res.json({ message: "Failed to fetch order history", success: false });
+        res.json({ message: "Failed to fetch orders history", success: false });
     }
 };
+
 
 
 

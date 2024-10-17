@@ -55,7 +55,7 @@ const login = async (req, res) => {
             return res.json({ message: "password doesnt match", success: false });
         }
 
-        const token = jwt.sign({ userId: users.id, email: users.email, role: "user" }, process.env.Secret_key);
+        const token = jwt.sign({ userId: users.id,name:users.name, email: users.email, role: "user" }, process.env.Secret_key);
         res.status(200).json({ success: true, message: "Logged in successfully", token })
     } catch (error) {
         res.json(error)
