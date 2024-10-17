@@ -53,7 +53,7 @@ const adminLogin = async (req, res) => {
             return res.json({ message: "password doesnt match", success: false });
         }
 
-        const token = jwt.sign({ adminId: admins.id, email: admins.email, role: "admin" }, process.env.Secret_key);
+        const token = jwt.sign({ adminId: admins.id, name: admins.name, email: admins.email, role: "admin" }, process.env.Secret_key);
         res.json({ message: "Logged in successfully", token, success: true })
     } catch (error) {
         res.json(error)
@@ -185,7 +185,8 @@ const prodBySupplier = async (req, res) => {
 const getProdBatch = async (req, res) => {
     const { batche_no } = req.body;
     try {
-        const { rows } = await pool.query('select batch.batche_no,batch.batch_quantity,product.name,product.description,product.category,product.price from batch inner join product on batch.product_id = product.id where batche_no = $1', [batche_no]);
+        const { rows } = await pool.query('select batch.batche_no,batch.batch_quantity,product.name,product.description,product.category,product.price from batch inner join product on batch.product_id = product.id');
+        // const {rows}=await pool.query('select * from batch');
         if (rows.length === 0) {
             return res.json({ message: "No batches found", success: false });
         }
@@ -420,7 +421,7 @@ const placeOrder = async (req, res) => {
 };
 
 const orderHistory = async (req, res) => {
-    const { user_id, isAdmin } = req.body; 
+    const { user_id, isAdmin } = req.body;
     try {
         let query = `
             SELECT 
@@ -444,7 +445,7 @@ const orderHistory = async (req, res) => {
         }
 
         const result = await pool.query(query, params);
-        
+
         const rows = result.rows;
 
         if (rows.length > 0) {

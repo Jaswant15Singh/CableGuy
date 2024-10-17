@@ -1,8 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html,body{
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
 }
 
 header {
@@ -25,7 +32,7 @@ footer {
   justify-content: space-between;
   align-items: center;
   background-color: antiquewhite;
-  padding: 0px 60px;
+  padding: 0px 0px;
   min-height: 10vh;
   font-family: "Roboto Condensed", sans-serif;
   font-weight: bold;
@@ -57,7 +64,7 @@ footer ul li {
   position: absolute;
   left: 0;
   bottom: 0;
-  width:100%;
+  width: 100%;
   height: 100%;
 
   z-index: -1;
@@ -131,13 +138,15 @@ form h1 {
 
 .userdash {
   min-height: 80vh;
+  /* margin: 0 100px; */
 }
 
-.detailsdiv{
+.detailsdiv {
   width: 100%;
   background-color: aliceblue;
   padding: 40px 0;
 }
+
 .details {
   margin: 50px auto;
   width: 300px;
@@ -174,11 +183,12 @@ form h1 {
   -webkit-text-stroke: 2px red;
 }
 
-.formdiv{
+.formdiv {
   width: 100vw;
   background-color: rgb(213, 217, 221) !important;
   padding: 40px 0;
 }
+
 .updateform {
   width: 240px;
   min-height: 200px;
@@ -229,12 +239,37 @@ form h1 {
   padding: 30px 50px;
   gap: 50px;
   position: relative;
+  /* display: flex;
+  flex-direction: column; */
 }
 
 .admintable,
 .userstable {
   width: 100%;
 }
+
+.productss {
+  width: 50%; 
+  position: fixed; 
+  top: 50%;
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  z-index: 10; 
+  background: rgb(238, 174, 202); 
+}
+
+.product-table {
+  width: 100%; 
+  border-collapse: collapse; 
+}
+
+.product-table th,
+.product-table td {
+  padding: 8px; 
+  text-align: left; 
+  border: 1px solid #0f0f0f; 
+}
+
 
 .admintable th,
 td,
@@ -286,18 +321,31 @@ td {
 
 .close {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: -15px;
+  right: -15px;
   border-radius: 50%;
   padding: 5px;
   border: 1px solid black;
+  min-width: 30px;
+  min-height: 30px;
+  border-radius: 50%;
   cursor: pointer;
 }
 
+.prod-close {
+  position: absolute;
+  top: -15px !important;
+  right: -15px !important;
+  min-width: 30px;
+  min-height: 30px;
+  border-radius: 50%;
+  border: 1px solid black;
+  cursor: pointer;
+}
 .newad {
   position: fixed;
   left: 0;
-  top: 50%;
+  top: 20%;
   transform: translate(0, -50%);
   width: 70px;
   padding: 2px 0;
@@ -329,15 +377,16 @@ td {
   display: block;
 }
 
-.maindivprod{
+.maindivprod {
   box-sizing: border-box;
   /* width: 100%; */
-  /* margin: 0px 50px; */
+  margin: 0px 50px;
   background-color: rgba(0, 0, 0, 0);
   padding: 30px;
 }
+
 .products {
-  width: 60vw;
+  min-width: 70vw ;
   margin: 30px auto;
   background-color: aquamarine;
   display: flex;
@@ -358,7 +407,7 @@ td {
 
 }
 
-.orderdet{
+.orderdet {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -366,12 +415,12 @@ td {
 
 }
 
-.orderdet h1{
-  margin: 5px 0 ;
+.orderdet h1 {
+  margin: 5px 0;
   font-size: 24px;
 }
 
-.totalitems{
+.totalitems {
   position: absolute;
   top: -10px;
   right: -10px;
@@ -386,9 +435,11 @@ td {
   align-items: center;
   border-radius: 50%;
 }
-.orderdet h1 span{
+
+.orderdet h1 span {
   /* color: rgb(234, 16, 16); */
 }
+
 /* .customer {} */
 
 .customer,
@@ -407,9 +458,9 @@ td {
   margin: 5px 0;
 }
 
-.prods select{
-  max-height: 200px; 
-  overflow-y: auto;  
+.prods select {
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .products button {

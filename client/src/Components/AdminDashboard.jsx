@@ -11,6 +11,11 @@ const AdminDashboard = () => {
     const [supplierId, setSupplierId] = useState("")
     const [prodData, setProdData] = useState([]);
     const [products, setProducts] = useState([]);
+    const [isProd, setIsProd] = useState(false);
+    const [getProd, setGetProd] = useState([]);
+    const [isallProd, setIsallProd] = useState(false);
+    const [getallProd, setGetAllProd] = useState([])
+
     const [cart, setCart] = useState([]);
     const [individualProduct, setIndividualProduct] = useState([]);
     const [isIndividual, setIsIndividual] = useState(false);
@@ -62,6 +67,8 @@ const AdminDashboard = () => {
         getSingleUser();
         getAllSuppliers();
         getIndividualProducts();
+        getProducts();
+        getAllProducts()
 
     }, []);
     const getSingleUser = async () => {
@@ -77,7 +84,7 @@ const AdminDashboard = () => {
         }
 
         res = await res.json();
-        console.log(res);
+        // console.log(res);
         setDataa(res);
 
     }
@@ -111,12 +118,58 @@ const AdminDashboard = () => {
             alert("Some issue occured while fetching individual datas")
         }
         res = await res.json();
-        console.log(res.data);
+        // console.log(res.data);
         setIndividualProduct(res.data);
     }
     useEffect(() => {
         getAllAdmin();
     }, [adminreg])
+
+    const getProducts = async () => {
+        let res = await fetch("http://localhost:5000/adminapi//product/batch", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        if (!res.ok) {
+            alert("Some issue occured in fetchinf products")
+        }
+
+        res = await res.json();
+        console.log(res.message);
+
+        if (res.success) {
+            setGetProd(res.message)
+        }
+
+        else {
+            alert(res.message)
+        }
+    }
+
+    const getAllProducts = async () => {
+        let res = await fetch("http://localhost:5000/adminapi/products", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        if (!res.ok) {
+            alert("Some issue occured in fetching products")
+        }
+
+        res = await res.json();
+        console.log(res.data);
+
+        if (res.success) {
+            setGetAllProd(res.data)
+        }
+
+        else {
+            alert(res.message)
+        }
+    }
 
     const getAllAdmin = async () => {
         let res = await fetch(`http://localhost:5000/adminapi/admin/`, {
@@ -718,6 +771,60 @@ const AdminDashboard = () => {
             ) : (
                 ""
             )}
+            <button className='newad links ' style={{ marginTop: "290px" }} onClick={() => { setIsProd(!isProd) }}>See Batch Products</button>
+            {
+                isProd ? <div className='productss'><button className='prod-close' style={{ top: "0" }} onClick={() => { setIsProd(!isProd) }}>X</button><table className='product-table ' border={2}>
+                    <thead>
+                        <tr>
+                            <th>batche_no</th>
+                            <th>batch_quantity</th>
+                            <th>Name</th>
+
+                            <th>Price</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {getProd.map((e) => {
+                            return (
+                                <tr>
+                                    <td>{e.batche_no}</td>
+                                    <td>{e.batch_quantity}</td>
+                                    <td>{e.name}</td>
+                                    <td>{e.price}</td>
+                                    <td>{e.category}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table> </div> : ""
+            }
+
+            <button className='newad links ' style={{ marginTop: "360px" }} onClick={() => { setIsallProd(!isallProd) }}>See All Products</button>
+            {
+                isallProd ? <div className='productss'><button className='prod-close' style={{ top: "0" }} onClick={() => { setIsallProd(!isallProd) }}>X</button><table className='product-table ' border={2}>
+                    <thead>
+                        <tr>
+
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {getallProd.map((e) => {
+                            return (
+                                <tr>
+
+                                    <td>{e.name}</td>
+                                    <td>{e.price}</td>
+                                    <td>{e.category}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table> </div> : ""
+            }
 
 
             {cart.length > 0 && (

@@ -12,13 +12,15 @@ const OrderHistory = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
+    console.log(window.location.href);
 
     let isAdmin = "";
     let decoded;
-
+    let name = ""
     if (token) {
         decoded = jwtDecode(token);
         isAdmin = decoded.role;
+        name = decoded.name;
     }
     useEffect(() => {
         getOrderHistory();
@@ -108,7 +110,7 @@ const OrderHistory = () => {
 
     return (
         <div className='orderhistory' style={{ minHeight: "80vh" }}>
-
+            <h1 style={{ textAlign: "center", margin: "15px" }}>Hello {name}</h1>
             <Link to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }}>
                 Back
             </Link>
