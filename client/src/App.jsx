@@ -30,7 +30,7 @@ function App() {
           <Route path='/admindashboard/:adminid' element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
           <Route path='/admin/update/:id' element={<AdminProtectedRoute><AdminUpdate /></AdminProtectedRoute>} />
           <Route path='/admin/ind/:id' element={<AdminProtectedRoute><IndUsers /></AdminProtectedRoute>} />
-          <Route path='/orderhistory' element={<protRoute><OrderHistory/></protRoute>}/>
+          <Route path='/orderhistory' element={<protRoute><OrderHistory /></protRoute>} />
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>
         <Footer />
@@ -89,9 +89,9 @@ const ProtectedRoute = ({ children }) => {
 };
 
 
-const protRoute=({children})=>{
+const protRoute = ({ children }) => {
   const token = localStorage.getItem("userlogintoken");
-  if(token){
+  if (token) {
     return children
   }
 }

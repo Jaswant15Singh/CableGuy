@@ -6,139 +6,123 @@ const OrderHistory = () => {
     const token = localStorage.getItem("userlogintoken");
     const [orderhis, setOrderhis] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [filtertotalprice, setFiltertotalprice] = useState("");
     const [filterPrice, setFilterPrice] = useState("");
-    const [search, setSearch] = useState('')
-    console.log(token);
-    const decoded = jwtDecode(token);
+    const [search, setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
+    const decoded = jwtDecode(token);
     console.log(decoded);
+    
+
     useEffect(() => {
         getOrderHistory();
-    }, [])
+    }, []);
 
     const getOrderHistory = async () => {
-        let res = await fetch("http://localhost:5000/adminapi/orderhistory", {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
+        try {
+            let res = await fetch("http://localhost:5000/adminapi/orderhistory", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                      "Content-Type": "application/json"
+                },
+                body:JSON.stringify({user_id:decoded.userId})
+            });
+
+            if (!res.ok) throw new Error("Failed to fetch order history");
+
+            const data = await res.json();
+            if (data.success) {
+                setOrderhis(data.data);
+                setFilteredProducts(data.data);
+            } else {
+                alert(data.message);
             }
-        });
-
-        if (!res.ok) {
-            alert("Some issue occured while fetching order history")
+        } catch (error) {
+            alert(error.message);
         }
-
-        res = await res.json();
-        if (res.success) {
-            console.log(res.data);
-            setOrderhis(res.data);
-            setFilteredProducts(res.data)
-        }
-
-        else {
-            alert(res.message)
-        }
-    }
+    };
 
     const handleFilterChange = () => {
         let filteredData = [...orderhis];
-
         if (filterPrice) {
-            filteredData = filteredData.filter((e) => {
-                return e.price <= filterPrice
-            })
+            filteredData = filteredData.filter((e) => e.price <= filterPrice);
         }
-
-        else if (nameasc) {
-            filteredData = filteredData.sort((a, b) => {
-                return a.customer_name.localeCompare(b.customer_name)
-            })
-        }
-        setFilteredProducts(filteredData)
-    }
+        setFilteredProducts(filteredData);
+        setCurrentPage(1);
+    };
 
     const handleSort = (type) => {
-        const sortedData = [...orderhis];
-        sortedData.sort((a, b) => (
+        const sortedData = [...filteredProducts].sort((a, b) => (
             type === "asc" ? a.customer_name.localeCompare(b.customer_name) : b.customer_name.localeCompare(a.customer_name)
-        ))
-        setFilteredProducts(sortedData)
-    }
+        ));
+        setFilteredProducts(sortedData);
+        setCurrentPage(1);
+    };
 
     const handleSortPrice = (type) => {
-        const sortedData = [...orderhis];
-
-        sortedData.sort((a, b) => (
+        const sortedData = [...filteredProducts].sort((a, b) => (
             type === "asc" ? a.price_at_purchase - b.price_at_purchase : b.price_at_purchase - a.price_at_purchase
-        ))
-        setFilteredProducts(sortedData)
-    }
-
-    const handleSortQuan = (type) => {
-        const sortedData = [...orderhis];
-
-        sortedData.sort((a, b) => {
-            return type === "asc" ? a.quantity - b.quantity : b.quantity - a.quantity
-        })
-        setFilteredProducts(sortedData)
-
-    }
-
-    const handleSortTotal=(type)=>{
-        let sortedData=[...orderhis];
-        sortedData=sortedData.sort((a,b)=>{
-            return type==='asc'?a.total_price-b.total_price:b.total_price-a.total_price
-        })
+        ));
         setFilteredProducts(sortedData);
-    }
+        setCurrentPage(1);
+    };
+
+    const handleSortTotal = (type) => {
+        const sortedData = [...filteredProducts].sort((a, b) => (
+            type === "asc" ? a.total_price - b.total_price : b.total_price - a.total_price
+        ));
+        setFilteredProducts(sortedData);
+        setCurrentPage(1);
+    };
 
     const handleSearchSubmit = () => {
-        let sorteddata = [...orderhis];
+        const filteredData = orderhis.filter((e) =>
+            e.customer_name.toLowerCase().includes(search.toLowerCase())
+        );
+        setFilteredProducts(filteredData);
+        setCurrentPage(1);
+    };
 
-        sorteddata = sorteddata.filter((e) => {
-            return e.customer_name.toLowerCase().includes(search.toLocaleLowerCase())
-        })
-        setFilteredProducts(sorteddata)
-    }
+    const handleSearchKeyDown = (e) => {
+        
+            handleSearchSubmit();
+        
+    };
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     return (
-        <div className='orderhistory'>
+        <div className='orderhistory' style={{minHeight:"80vh"}}>
+            <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }} to={`/userdashboard/${decoded.userId}`}>Back</Link>
 
-            <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }} className='links' to={`/userdashboard/${decoded.userId}`}>Back</Link>
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
+                <button onClick={() => setFilteredProducts(orderhis)}>See all</button>
+                <button onClick={() => handleSortPrice("asc")}>Sort by Price(asc)</button>
+                <button onClick={() => handleSortPrice("desc")}>Sort by Price(desc)</button>
+                <button onClick={() => handleSort("asc")}>Sort by Name(asc)</button>
+                <button onClick={() => handleSort("desc")}>Sort by Name(desc)</button>
+                <button onClick={() => handleSortTotal("asc")}>Sort by Total Price(asc)</button>
+                <button onClick={() => handleSortTotal("desc")}>Sort by Total Price(desc)</button>
+            </div>
 
+            <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                placeholder="Search by customer name"
+            />
+            <button onClick={handleSearchSubmit}>Search</button>
 
-
-
-
-            {/* <select name="" id="" onChange={(e) => { setFilterPrice(e.target.value); handleFilterChange() }}>
-                <option value="">Filter by Max Price</option>
-                <option value="50">Up to 50</option>
-                <option value="100">Up to 100</option>
-                <option value="200">Up to 200</option>
-                <option value="500">Up to 500</option>
-                <option value="1000">Up to 1000</option>
-            </select> */}
-           <div style={{display:"flex",justifyContent:"space-around"}}>
-           <button className='links' onClick={() => { setFilteredProducts(orderhis) }}>See all</button>
-            <button className='links' onClick={() => { handleSortPrice("asc") }}>Sort by Price(asc)</button>
-            <button className='links' onClick={() => { handleSortPrice("desc") }}>Sort by Price(dsc)</button>
-            <button className='links' onClick={() => { handleSortQuan("asc") }}>Sort by Quantity(asc)</button>
-            <button className='links' onClick={() => { handleSortQuan("desc") }}>Sort by Quantity(dsc)</button>
-            <button className='links' onClick={() => { handleSort("asc") }}>Sort by Name(asc)</button>
-            <button className='links' onClick={() => { handleSort("desc") }}>Sort by Name(dsc)</button>
-            <button className='links' onClick={() => { handleSortTotal("asc") }}>Sort by Total Price(asc)</button>
-            <button className='links' onClick={() => { handleSortTotal("desc") }}>Sort by Total Price(dsc)</button>
-           </div>
-            <br />
-            <br />
-            <input onKeyDown={()=>{handleSearchSubmit()}} type="text" value={search} onChange={(e) => { setSearch(e.target.value) }} name="" id="" />
-            <button className='links' onClick={handleSearchSubmit}>Search</button>
-
-            {/* <select name="" id="" value={filtertotalprice} onChange={(e) => { setFiltertotalprice(e.target.value); handleFilterChange() }}>
-
-            </select> */}
             <table border={2} style={{ width: "80vw", margin: "10px auto" }}>
                 <thead>
                     <tr>
@@ -153,25 +137,35 @@ const OrderHistory = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {
-                        filteredProducts.map((e) => (
-                            <tr>
-                                <td>{e.customer_name}</td>
-                                <td>{e.customer_contact}</td>
-                                <td>{e.email}</td>
-                                <td>{e.name}</td>
-                                <td>{e.category}</td>
-                                <td>{e.quantity}</td>
-                                <td>{e.price_at_purchase}</td>
-                                <td>{e.total_price}</td>
-                            </tr>
-                        ))
-                    }
+                    {currentItems.map((e, index) => (
+                        <tr key={index}>
+                            <td>{e.customer_name}</td>
+                            <td>{e.customer_contact}</td>
+                            <td>{e.email}</td>
+                            <td>{e.name}</td>
+                            <td>{e.category}</td>
+                            <td>{e.quantity}</td>
+                            <td>{e.price_at_purchase}</td>
+                            <td>{e.total_price}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
 
+            <div style={{ textAlign: "center" }}>
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                        key={index}
+                        style={{ margin: "5px" }}
+                        onClick={() => handlePageChange(index + 1)}
+                        disabled={currentPage === index + 1}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
         </div>
-    )
+    );
 }
 
 export default OrderHistory

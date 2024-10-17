@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
+
 
 const Userdashboard = () => {
   const [data, setData] = useState({ name: "", email: "" });
   const [update, setUpdate] = useState(false);
   const [updatedata, setUpdatedata] = useState({ name: "", email: "" });
-  const [customerData, setCustomerData] = useState({ name: "", contact: "",email:"" });
+  const [customerData, setCustomerData] = useState({ name: "", contact: "", email: "" });
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');
@@ -18,6 +20,9 @@ const Userdashboard = () => {
 
 
   const { id } = useParams();
+  const decoded = jwtDecode(token);
+  console.log(decoded);
+
 
   useEffect(() => {
     getSingleUser();
@@ -146,24 +151,24 @@ const Userdashboard = () => {
   };
 
 
-  const handleAddProduct = (e) => {  
+  const handleAddProduct = (e) => {
     console.log(typeof selectedProduct);
     if (selectedProduct && selectedQuantity) {
-      const existingProduct=cart.find((e)=>e.id===Number(selectedProduct));
-      if(existingProduct){
+      const existingProduct = cart.find((e) => e.id === Number(selectedProduct));
+      if (existingProduct) {
         const updatedCart = cart.map((e) =>
           e.id === Number(selectedProduct)
-            ? { ...e, quantity: e.quantity + Number(selectedQuantity) } 
+            ? { ...e, quantity: e.quantity + Number(selectedQuantity) }
             : e
         );
-          setCart(updatedCart)
+        setCart(updatedCart)
       }
-      else{
-      const prod = products.find((e) => e.id === Number(selectedProduct));
-      console.log(prod);
-      if(prod){
-        setCart([...cart, { ...prod, quantity: Number(selectedQuantity) }])
-      }
+      else {
+        const prod = products.find((e) => e.id === Number(selectedProduct));
+        console.log(prod);
+        if (prod) {
+          setCart([...cart, { ...prod, quantity: Number(selectedQuantity) }])
+        }
       }
     }
   }
@@ -188,7 +193,7 @@ const Userdashboard = () => {
   //     }
   //   }
   // };
-  
+
 
   const placeOrders = async () => {
     if (!customerData.name || !customerData.contact) {
@@ -198,7 +203,9 @@ const Userdashboard = () => {
     const orderData = {
       customer_name: customerData.name,
       customer_contact: customerData.contact,
-      email:customerData.email,
+      
+      user_id: decoded.userId,
+      email: customerData.email,
       cart: cart.map(item => ({ id: item.id, quantity: item.quantity }))
     }
 
@@ -396,7 +403,7 @@ const Userdashboard = () => {
 
 
               </div>
-              <hr/></>
+              <hr /></>
           )
         })}
         <div className='totalitems' style={{ margin: "5px" }}>{cart.length}</div>
@@ -406,7 +413,7 @@ const Userdashboard = () => {
         <button style={{ margin: "20px 5px", padding: "5px 10px", cursor: "pointer" }} onClick={placeOrders}>Place Order</button>
       </div>}
 
-<Link style={{textDecoration:"underline",display:"block",width:"70px",margin:"10px auto"}}  className='links' to={`/orderhistory`}>Order History</Link>
+      <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
     </div>
 
 

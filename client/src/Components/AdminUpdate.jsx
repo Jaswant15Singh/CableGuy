@@ -3,10 +3,11 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 
 const AdminUpdate = () => {
     const { id } = useParams();
+    console.log(id);
+    
     const token = localStorage.getItem("adminlogintoken");
     const [data, setData] = useState({ name: "", email: "" });
-    const navigate = useNavigate(); // To redirect after update
-
+    const navigate = useNavigate(); 
     useEffect(() => {
         const getSingleUser = async () => {
             let res = await fetch(`http://localhost:5000/adminapi/admin/${id}`, {

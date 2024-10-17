@@ -245,7 +245,6 @@ const createProductsWithBatch = async (req, res) => {
 
             let distProductId;
 
-            // If it doesn't exist, insert into ref_products and get the id
             // if (existingRefProduct.rows.length === 0) {
             //     const refProductResult = await pool.query(
             //         'INSERT INTO ref_products (name, description, category) VALUES ($1, $2, $3) RETURNING id',
@@ -256,7 +255,6 @@ const createProductsWithBatch = async (req, res) => {
             //     distProductId = existingRefProduct.rows[0].id;
             // }
 
-            // Now check for the existing product in the product table
             const existingProduct = await pool.query(
                 'SELECT * FROM product WHERE name = $1 AND price = $2 AND supp_id = $3',
                 [name, price, supp_id]
@@ -265,7 +263,6 @@ const createProductsWithBatch = async (req, res) => {
             if (existingProduct.rows.length > 0) {
                 const product_id = existingProduct.rows[0].id;
 
-                // Update the quantity
                 const newQuantity = existingProduct.rows[0].quantity + batch_quantity;
                 await pool.query(
                     'UPDATE product SET quantity = $1 WHERE id = $32',
@@ -279,8 +276,8 @@ const createProductsWithBatch = async (req, res) => {
                 );
 
                 createdProducts.push({
-                    product: existingProduct.rows[0], // Include the existing product details
-                    batch: { batche_no: newBatchNo, batch_quantity } // Add the new batch details
+                    product: existingProduct.rows[0],
+                    batch: { batche_no: newBatchNo, batch_quantity }
                 });
             } else {
                 const productResult = await pool.query(
@@ -342,7 +339,7 @@ const createProductsWithBatch = async (req, res) => {
 
 
 const placeOrder = async (req, res) => {
-    const { customer_name, customer_contact, email, cart } = req.body;
+    const { customer_name, customer_contact, user_id, email, cart } = req.body;
 
     // const isEmail=await pool.query('select * from orders where email = $1',[email]);
     // if(isEmail){
@@ -384,7 +381,6 @@ const placeOrder = async (req, res) => {
             let remainingQuantity = quantity;
             const prod_total = prod_price * quantity;
 
-            // Deduct stock from batches in FIFO order
             for (const batch of batchResult.rows) {
                 if (remainingQuantity <= 0) break;
 
@@ -411,8 +407,8 @@ const placeOrder = async (req, res) => {
             );
 
             await pool.query(
-                'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase, total_price,order_time) VALUES ($1, $2, $3, $4, $5,$6)',
-                [orderId, id, quantity, prod_price, prod_total, new Date()]
+                'INSERT INTO order_items (order_id, product_id,user_id, quantity, price_at_purchase, total_price,order_time) VALUES ($1, $2,$3, $4, $5,$6,$7)',
+                [orderId, id, user_id, quantity, prod_price, prod_total, new Date()]
             );
 
         } else {
@@ -425,6 +421,7 @@ const placeOrder = async (req, res) => {
 
 
 const orderHistory = async (req, res) => {
+    const { user_id } = req.body;
     try {
         const { rows } = await pool.query(
             `SELECT 
@@ -439,12 +436,12 @@ const orderHistory = async (req, res) => {
            p.category 
          FROM order_items oi 
          JOIN orders o ON oi.order_id = o.order_id 
-         JOIN product p ON oi.product_id = p.id`
+         JOIN product p ON oi.product_id = p.id where user_id = $1`, [user_id]
         );
 
         res.json({ data: rows, success: true });
     } catch (error) {
-        console.error("Error fetching order history:", error); // Log the actual error
+        console.error("Error fetching order history:", error);
         res.json({ message: "Failed to fetch order history", success: false });
     }
 };

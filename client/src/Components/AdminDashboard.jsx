@@ -19,7 +19,7 @@ const AdminDashboard = () => {
 
 
     const { adminid } = useParams();
-    // console.log(adminid);
+    console.log(adminid);
 
     const token = localStorage.getItem("adminlogintoken");
     const [adminreg, setAdminreg] = useState(false);
