@@ -421,23 +421,30 @@ const placeOrder = async (req, res) => {
 
 
 const orderHistory = async (req, res) => {
-    const { user_id } = req.body;
+    const { user_id, isAdmin } = req.body;
     try {
-        const { rows } = await pool.query(
-            `SELECT 
-           oi.quantity, 
+        let query = `
+            SELECT 
+                oi.quantity, 
                 oi.price_at_purchase, 
-           oi.total_price, 
-      
-           o.customer_name, 
-           o.customer_contact, 
-           o.email, 
-           p.name, 
-           p.category 
-         FROM order_items oi 
-         JOIN orders o ON oi.order_id = o.order_id 
-         JOIN product p ON oi.product_id = p.id where user_id = $1`, [user_id]
-        );
+                oi.total_price, 
+                o.customer_name, 
+                o.customer_contact, 
+                o.email, 
+                p.name, 
+                p.category 
+            FROM order_items oi 
+            JOIN orders o ON oi.order_id = o.order_id 
+            JOIN product p ON oi.product_id = p.id`;
+
+        let params = [];
+
+        if (!isAdmin) {
+            query += " WHERE user_id = $1";
+            params.push(user_id);
+        }
+
+        const { rows } = await pool.query(query, params);
 
         res.json({ data: rows, success: true });
     } catch (error) {
@@ -445,6 +452,7 @@ const orderHistory = async (req, res) => {
         res.json({ message: "Failed to fetch order history", success: false });
     }
 };
+
 
 
 

@@ -13,7 +13,9 @@ const OrderHistory = () => {
 
     const decoded = jwtDecode(token);
     console.log(decoded);
+    let isAdmin=decoded.role;
     
+    console.log(isAdmin==="admin"?true:false);
 
     useEffect(() => {
         getOrderHistory();
@@ -27,7 +29,7 @@ const OrderHistory = () => {
                     "Authorization": `Bearer ${token}`,
                       "Content-Type": "application/json"
                 },
-                body:JSON.stringify({user_id:decoded.userId})
+                body:JSON.stringify({user_id:decoded.userId,isAdmin:isAdmin==="admin"?true:false})
             });
 
             if (!res.ok) throw new Error("Failed to fetch order history");
