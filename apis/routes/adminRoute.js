@@ -1,6 +1,6 @@
 const express = require("express");
 const Route = express.Router();
-const { getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, createBatch, getProdBatch, getSupplier, addSupplier, prodBySupplier, placeOrder, getProducts, createProductsWithBatch, getIndProd, addIndProduct, orderHistory } = require("../controller/admincontroller");
+const { getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, createBatch, getProdBatch, getSupplier, addSupplier, prodBySupplier, placeOrder, getProducts, createProductsWithBatch, getIndProd, addIndProduct, orderHistory, getReceiptRecord } = require("../controller/admincontroller");
 const mainmiddleware = require("../middleware/mainmiddleware");
 const adminmiddleware = require("../middleware/adminmiddleware");
 const usermiddleware = require("../middleware/usermiddleware")
@@ -21,5 +21,6 @@ Route.post("/supplier/add", mainmiddleware, adminmiddleware, addSupplier);
 Route.get("/supplier/prod", mainmiddleware, adminmiddleware, prodBySupplier);
 Route.post("/cr", createProductsWithBatch)
 Route.post("/placeorder", placeOrder);;
-Route.post("/orderhistory", orderHistory);
+Route.post("/orderhistory",mainmiddleware, orderHistory);
+Route.post("/receipt",getReceiptRecord)
 module.exports = Route;

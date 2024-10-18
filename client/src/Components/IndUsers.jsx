@@ -7,11 +7,11 @@ const IndUsers = () => {
     const [updatedata, setUpdatedata] = useState({ name: "", email: "" });
     const { id } = useParams();
     const token = localStorage.getItem("adminlogintoken");
-    const decoded=jwtDecode(token);
+    const decoded = jwtDecode(token);
     // console.log(decoded);
-    const adminidd=decoded.adminId;
+    const adminidd = decoded.adminId;
     console.log(adminidd);
-    
+
 
     useEffect(() => {
         if (token) {

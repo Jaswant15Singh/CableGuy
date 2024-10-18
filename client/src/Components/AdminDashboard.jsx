@@ -20,12 +20,15 @@ const AdminDashboard = () => {
     const [individualProduct, setIndividualProduct] = useState([]);
     const [isIndividual, setIsIndividual] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
+    const [currentPageBatch, setCurrentPageBatch] = useState(1);
+    const itemsPerPageBatch = 5;
 
 
     const { adminid } = useParams();
     console.log(adminid);
-
     const token = localStorage.getItem("adminlogintoken");
     const [adminreg, setAdminreg] = useState(false);
     const [supplieradd, setSupplieradd] = useState(false);
@@ -402,6 +405,24 @@ const AdminDashboard = () => {
     // const uniqueCategories = Array.from(new Set(individualProduct.map((prod) => prod.category)));
 
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = getallProd.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(getallProd.length / itemsPerPage);
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
+
+
+    const indexOfLastItemBatch = currentPageBatch * itemsPerPageBatch;
+    const indexOfFirstItemBatch = indexOfLastItemBatch - itemsPerPageBatch;
+    const currentItemss = getProd.slice(indexOfFirstItemBatch, indexOfLastItemBatch);
+    const totalpagess = Math.ceil(getProd.length / itemsPerPageBatch);
+
+    const handlePageChangee = (newPage) => {
+        setCurrentPageBatch(newPage);
+    };
     return (
         <div className='admindashboard'>
             <div className="tables">
@@ -771,61 +792,98 @@ const AdminDashboard = () => {
             ) : (
                 ""
             )}
-            <button className='newad links ' style={{ marginTop: "290px" }} onClick={() => { setIsProd(!isProd) }}>See Batch Products</button>
-            {
-                isProd ? <div className='productss'><button className='prod-close' style={{ top: "0" }} onClick={() => { setIsProd(!isProd) }}>X</button><table className='product-table ' border={2}>
-                    <thead>
-                        <tr>
-                            <th>batche_no</th>
-                            <th>batch_quantity</th>
-                            <th>Name</th>
+            <div>
+                <button className='newad links' style={{ marginTop: "290px" }} onClick={() => { setIsProd(!isProd) }}>
+                    See Batch Products
+                </button>
+                {
+                    isProd && (
+                        <div className='productss'>
+                            <button className='prod-close' style={{ top: "0" }} onClick={() => { setIsProd(!isProd) }}>
+                                X
+                            </button>
+                            <table className='product-table' border={2}>
+                                <thead>
+                                    <tr>
+                                        <th>batche_no</th>
+                                        <th>batch_quantity</th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {currentItemss.map((e) => (
+                                        <tr key={e.id}>
+                                            <td>{e.batche_no}</td>
+                                            <td>{e.batch_quantity}</td>
+                                            <td>{e.name}</td>
+                                            <td>{e.price}</td>
+                                            <td>{e.category}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <div style={{ textAlign: "center" }}>
+                                {Array.from({ length: totalpagess }, (_, index) => (
+                                    <button
+                                        key={index}
+                                        style={{ margin: "5px" }}
+                                        onClick={() => handlePageChangee(index + 1)}
+                                        disabled={currentPageBatch === index + 1}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
 
-                            <th>Price</th>
-                            <th>Category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {getProd.map((e) => {
-                            return (
+            <div>
+                <button className='newad links' style={{ marginTop: "360px" }} onClick={() => setIsallProd(!isallProd)}>
+                    See All Products
+                </button>
+
+                {isallProd && (
+                    <div className='productss'>
+                        <button className='prod-close' style={{ top: "0" }} onClick={() => setIsallProd(false)}>
+                            X
+                        </button>
+                        <table className='product-table' border={2}>
+                            <thead>
                                 <tr>
-                                    <td>{e.batche_no}</td>
-                                    <td>{e.batch_quantity}</td>
-                                    <td>{e.name}</td>
-                                    <td>{e.price}</td>
-                                    <td>{e.category}</td>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Category</th>
                                 </tr>
-                            )
-                        })}
-                    </tbody>
-                </table> </div> : ""
-            }
-
-            <button className='newad links ' style={{ marginTop: "360px" }} onClick={() => { setIsallProd(!isallProd) }}>See All Products</button>
-            {
-                isallProd ? <div className='productss'><button className='prod-close' style={{ top: "0" }} onClick={() => { setIsallProd(!isallProd) }}>X</button><table className='product-table ' border={2}>
-                    <thead>
-                        <tr>
-
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {getallProd.map((e) => {
-                            return (
-                                <tr>
-
-                                    <td>{e.name}</td>
-                                    <td>{e.price}</td>
-                                    <td>{e.category}</td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table> </div> : ""
-            }
-
+                            </thead>
+                            <tbody>
+                                {currentItems.map((e) => (
+                                    <tr key={e.id}>
+                                        <td>{e.name}</td>
+                                        <td>{e.price}</td>
+                                        <td>{e.category}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div style={{ textAlign: "center" }}>
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index}
+                                    style={{ margin: "5px" }}
+                                    onClick={() => handlePageChange(index + 1)}
+                                    disabled={currentPage === index + 1}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
 
             {cart.length > 0 && (
                 <table className='admintable' style={{ width: "50%", margin: "0 auto" }} border={2}>

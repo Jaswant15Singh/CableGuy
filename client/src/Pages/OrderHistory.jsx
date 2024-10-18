@@ -11,8 +11,9 @@ const OrderHistory = () => {
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
-
-    console.log(window.location.href);
+    const [isReceipt,setIsReceipt]=useState(false);
+    // const [Receipt,setReceipt]=useState({customer_name:"",customer_contact:"",email:"",name:"",category:"",quantity:"",price_at_purchase:"",total_price:""});
+    // console.log(window.location.href);
 
     let isAdmin = "";
     let decoded;
@@ -111,7 +112,7 @@ const OrderHistory = () => {
     return (
         <div className='orderhistory' style={{ minHeight: "80vh" }}>
             <h1 style={{ textAlign: "center", margin: "15px" }}>Hello {name}</h1>
-            <Link to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }}>
+            <Link className='links' to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }}>
                 Back
             </Link>
 

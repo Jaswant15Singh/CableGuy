@@ -109,7 +109,6 @@ const deleteAdmin = async (req, res) => {
     }
 }
 
-
 const getSupplier = async (req, res) => {
     try {
         const { rows } = await pool.query('select * from supplier');
@@ -153,6 +152,7 @@ const getProducts = async (req, res) => {
 
     }
 }
+
 const createBatch = async (req, res) => {
     const { product_id, batche_no, batch_quantity, manufactured } = req.body;
 
@@ -177,7 +177,6 @@ const prodBySupplier = async (req, res) => {
         res.json(rows)
     } catch (error) {
         res.json({ message: "failed", success: false })
-
     }
 }
 
@@ -190,7 +189,6 @@ const getProdBatch = async (req, res) => {
         if (rows.length === 0) {
             return res.json({ message: "No batches found", success: false });
         }
-
         res.json({ message: rows, success: true });
     } catch (error) {
         res.json({ message: "failed", success: false })
@@ -209,6 +207,11 @@ const getIndProd = async (req, res) => {
 
 const addIndProduct = async (req, res) => {
     const { name, description, category } = req.body;
+
+    // const {rows}=await pool.query('select * from ref_products where name=$1,description=$2 and category=$3',[name,description,category]);
+    // if(rows.length>0){
+    //     return res.json({message:"Product already exists in Inventory",success:false})
+    // }
     try {
         const { rows } = await pool.query('insert into ref_products (name,description,category) values ($1,$2,$3) returning *', [name, description, category]);
         res.json({ message: "product added successflly", success: true });
@@ -216,7 +219,7 @@ const addIndProduct = async (req, res) => {
     } catch (error) {
         console.log(error.message);
 
-        res.json({ message: "failed to add product", success: false });
+        res.json({ message: "Product Already Exists In Inventory", success: false });
     }
 }
 
@@ -311,10 +314,6 @@ const createProductsWithBatch = async (req, res) => {
         res.json({ message: "Failed to add/update products and batches", success: false });
     }
 };
-
-
-
-
 
 
 
@@ -459,8 +458,21 @@ const orderHistory = async (req, res) => {
     }
 };
 
+const getReceiptRecord = async (req, res) => {
+    const {order_id}=req.body;
+   try {
+    const { rows } = await pool.query(`
+        SELECT  oi.quantity, oi.price_at_purchase, oi.total_price, o.customer_name, o.customer_contact, o.email, p.name AS product_name, p.category 
+        FROM order_items oi JOIN orders o ON oi.order_id = o.order_id 
+        JOIN product p ON oi.product_id = p.id where oi.order_id=$1`,[order_id]);
+
+        res.json({data:rows,success:true})
+   } catch (error) {
+        res.json({message:"failed to fetch receipt",success:false})
+   }
+}
 
 
 
 
-module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
+module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin,getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };

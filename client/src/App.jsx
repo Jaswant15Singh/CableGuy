@@ -28,10 +28,10 @@ function App() {
           <Route path='/userdashboard/:id' element={<ProtectedRoute><Userdashboard /></ProtectedRoute>} />
           <Route path='/userlogin' element={<Userlogin />} />
           <Route path='/adminlogin' element={<Adminlogin />} />
-          <Route path='/admindashboard/:adminid' element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
-          <Route path='/admin/update/:id' element={<AdminProtectedRoute><AdminUpdate /></AdminProtectedRoute>} />
-          <Route path='/admin/ind/:id' element={<AdminProtectedRoute><IndUsers /></AdminProtectedRoute>} />
-          <Route path='/orderhistory' element={<protRoute><OrderHistory /></protRoute>} />
+          <Route path='/admindashboard/:adminid' element={<AdminProtRoute><AdminDashboard /></AdminProtRoute>} />
+          <Route path='/admin/update/:id' element={<AdminProtRoute><AdminUpdate /></AdminProtRoute>} />
+          <Route path='/admin/ind/:id' element={<AdminProtRoute><IndUsers /></AdminProtRoute>} />
+          <Route path='/orderhistory' element={<ProtRoute><OrderHistory /></ProtRoute>} />
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>
         <Footer />
@@ -90,7 +90,7 @@ const ProtectedRoute = ({ children }) => {
 };
 
 
-const protRoute = ({ children }) => {
+const ProtRoute = ({ children }) => {
   const token = localStorage.getItem("userlogintoken");
   const admin_token = localStorage.getItem("adminlogintoken");
 
@@ -101,6 +101,19 @@ const protRoute = ({ children }) => {
     return <h1>Cannot Access Order History</h1>
   }
 }
+
+
+const AdminProtRoute = ({ children }) => {
+  const admin_token = localStorage.getItem("adminlogintoken");
+
+  if (admin_token) {
+    return children
+  }
+  else{
+    return <h1>Cannot Access Order History</h1>
+  }
+}
+
 
 const AdminProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("adminlogintoken");
