@@ -304,24 +304,30 @@ const Userdashboard = () => {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-
-    doc.setFontSize(18);
-    doc.text('Order Receipt', 14, 22);
-
-    receipt.forEach((e, index) => {
+    if (receipt.length > 0) {
       doc.setFontSize(12);
-      doc.text(`Customer Name: ${e.customer_name}`, 14, 40 + (index * 40));
-      doc.text(`Contact: ${e.customer_contact}`, 14, 46 + (index * 40));
-      doc.text(`Email: ${e.email}`, 14, 52 + (index * 40));
-      doc.text(`Product Name: ${e.product_name}`, 14, 58 + (index * 40));
-      doc.text(`Category: ${e.category}`, 14, 64 + (index * 40));
-      doc.text(`Quantity: ${e.quantity}`, 14, 70 + (index * 40));
-      doc.text(`Price at Purchase: ${e.price_at_purchase}`, 14, 76 + (index * 40));
-      doc.text(`Total Price: ${e.total_price}`, 14, 82 + (index * 40));
-      doc.line(14, 85 + (index * 40), 200, 85 + (index * 40)); 
-    });
 
-    doc.save('Product receipt.pdf'); 
+      doc.text(`Customer Name: ${receipt[0].customer_name}`, 14, 40);
+      doc.text(`Contact: ${receipt[0].customer_contact}`, 14, 46);
+      doc.text(`Email: ${receipt[0].email}`, 14, 52);
+
+      doc.line(14, 55, 200, 55);
+
+      receipt.forEach((e, index) => {
+        const yOffset = 60 + (index * 40);
+
+        doc.text(`Product Name: ${e.product_name}`, 14, yOffset);
+        doc.text(`Category: ${e.category}`, 14, yOffset + 6);
+        doc.text(`Quantity: ${e.quantity}`, 14, yOffset + 12);
+        doc.text(`Price at Purchase: ${e.price_at_purchase}`, 14, yOffset + 18);
+        doc.text(`Total Price: ${e.total_price}`, 14, yOffset + 24);
+
+        doc.line(14, yOffset + 27, 200, yOffset + 27);
+      });
+    }
+
+    doc.save("receipt.pdf");
+
   };
 
   return (
@@ -461,20 +467,26 @@ const Userdashboard = () => {
       {receipt.length > 0 ? (
         <div className='receipt'>
           <h1 style={{ textAlign: "center" }}>Payment Receipt</h1>
+          <p><strong>Customer Name:</strong> {receipt[0].customer_name}</p>
+          <p><strong>Contact:</strong> {receipt[0].customer_contact}</p>
+          <p><strong>Email:</strong> {receipt[0].email}</p>
+          <hr />
           {receipt.map((e, index) => (
             <div key={index}>
-              <p><strong>Customer Name:</strong> {e.customer_name}</p>
-              <p><strong>Contact:</strong> {e.customer_contact}</p>
-              <p><strong>Email:</strong> {e.email}</p>
+
               <p><strong>Product Name:</strong> {e.product_name}</p>
               <p><strong>Category:</strong> {e.category}</p>
               <p><strong>Quantity:</strong> {e.quantity}</p>
               <p><strong>Price at Purchase:</strong> {e.price_at_purchase}</p>
               <p><strong>Total Price:</strong> {e.total_price}</p>
-             
+              <hr />
+              <hr />
             </div>
           ))}
-
+          <h2>Cumulative Total</h2>
+          <p><strong>Total Amount Paid:</strong> ₹{
+            receipt.reduce((acc, curr) => acc + curr.total_price, 0)
+          }</p>
 
           <button onClick={generatePDF}>Download Receipt as PDF</button>
         </div>

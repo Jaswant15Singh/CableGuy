@@ -11,7 +11,6 @@ const OrderHistory = () => {
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
-
     let isAdmin = "";
     let decoded;
     let name = ""
