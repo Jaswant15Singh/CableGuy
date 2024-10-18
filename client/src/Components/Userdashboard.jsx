@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
-
+import { jsPDF } from 'jspdf';
 
 const Userdashboard = () => {
   const [data, setData] = useState({ name: "", email: "" });
@@ -15,15 +15,13 @@ const Userdashboard = () => {
   const [addProd, setAddProd] = useState(true);
   const [individualProduct, setIndividualProduct] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [receipt, setReceipt] = useState([]);
   const [sortBasis, setSortBasis] = useState("default");
   const token = localStorage.getItem("userlogintoken");
 
-
   const { id } = useParams();
   const decoded = jwtDecode(token);
-  console.log(decoded);
-
-
+  // console.log(decoded);
 
 
   useEffect(() => {
@@ -225,13 +223,35 @@ const Userdashboard = () => {
     }
     try {
       res = await res.json();
-      console.log(res);
+      const order_id = res.orderId;
+      // console.log(res);
       if (res.success) {
         alert("Order placed successfully");
         setCart([]);
         setCustomerData({ name: "", contact: "" });
         setSelectedProduct("");
         setSelectedQuantity("");
+        let res = await fetch("http://localhost:5000/adminapi/receipt", {
+          method: "POST",
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ order_id })
+        });
+        if (!res.ok) {
+          alert("Issue dring receipts !200")
+        }
+
+        try {
+          res = await res.json();
+          console.log(res);
+          setReceipt(res.data)
+        } catch (error) {
+          console.log(res);
+
+        }
+
       }
       else {
         alert(res.message)
@@ -281,10 +301,34 @@ const Userdashboard = () => {
 
   };
 
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text('Order Receipt', 14, 22);
+
+    receipt.forEach((e, index) => {
+      doc.setFontSize(12);
+      doc.text(`Customer Name: ${e.customer_name}`, 14, 40 + (index * 40));
+      doc.text(`Contact: ${e.customer_contact}`, 14, 46 + (index * 40));
+      doc.text(`Email: ${e.email}`, 14, 52 + (index * 40));
+      doc.text(`Product Name: ${e.product_name}`, 14, 58 + (index * 40));
+      doc.text(`Category: ${e.category}`, 14, 64 + (index * 40));
+      doc.text(`Quantity: ${e.quantity}`, 14, 70 + (index * 40));
+      doc.text(`Price at Purchase: ${e.price_at_purchase}`, 14, 76 + (index * 40));
+      doc.text(`Total Price: ${e.total_price}`, 14, 82 + (index * 40));
+      doc.line(14, 85 + (index * 40), 200, 85 + (index * 40)); 
+    });
+
+    doc.save('Product receipt.pdf'); 
+  };
+
   return (
 
 
     <div className='userdash'>
+
       {update ? (
         <div className='formdiv'>
           <form onSubmit={handleUpdateClick} className='updateform'>
@@ -414,6 +458,30 @@ const Userdashboard = () => {
         }, 0)} ₹</h2>
         <button style={{ margin: "20px 5px", padding: "5px 10px", cursor: "pointer" }} onClick={placeOrders}>Place Order</button>
       </div>}
+      {receipt.length > 0 ? (
+        <div className='receipt'>
+          <h1 style={{ textAlign: "center" }}>Payment Receipt</h1>
+          {receipt.map((e, index) => (
+            <div key={index}>
+              <p><strong>Customer Name:</strong> {e.customer_name}</p>
+              <p><strong>Contact:</strong> {e.customer_contact}</p>
+              <p><strong>Email:</strong> {e.email}</p>
+              <p><strong>Product Name:</strong> {e.product_name}</p>
+              <p><strong>Category:</strong> {e.category}</p>
+              <p><strong>Quantity:</strong> {e.quantity}</p>
+              <p><strong>Price at Purchase:</strong> {e.price_at_purchase}</p>
+              <p><strong>Total Price:</strong> {e.total_price}</p>
+             
+            </div>
+          ))}
+
+
+          <button onClick={generatePDF}>Download Receipt as PDF</button>
+        </div>
+      ) : (
+        ""
+      )}
+
 
       <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
     </div>

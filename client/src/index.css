@@ -488,3 +488,25 @@ option {
   color: #333;
   outline: none;
 }
+
+.receipt{
+  text-align: start;
+  max-width: 400px;
+  margin: 50px auto;
+  background-color: rgb(215, 228, 228);
+  padding: 30px;
+  border-radius: 5px;
+}
+
+.receipt p{
+  margin: 10px 5px;
+}
+
+.receipt button{
+  padding: 7px;
+  background-color: aliceblue;
+  margin: 10px 0;
+  border: 2px solid black;
+  border-radius: 2px;
+  cursor: pointer;
+}

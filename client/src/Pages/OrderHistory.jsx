@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from 'react'
 import { jwtDecode } from "jwt-decode";
 import { Link } from 'react-router-dom';
+import { jsPDF } from 'jspdf';
 
 const OrderHistory = () => {
     const token = localStorage.getItem("userlogintoken") || localStorage.getItem("adminlogintoken");
@@ -11,9 +11,6 @@ const OrderHistory = () => {
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
-    const [isReceipt,setIsReceipt]=useState(false);
-    // const [Receipt,setReceipt]=useState({customer_name:"",customer_contact:"",email:"",name:"",category:"",quantity:"",price_at_purchase:"",total_price:""});
-    // console.log(window.location.href);
 
     let isAdmin = "";
     let decoded;
@@ -23,6 +20,7 @@ const OrderHistory = () => {
         isAdmin = decoded.role;
         name = decoded.name;
     }
+
     useEffect(() => {
         getOrderHistory();
     }, []);
@@ -35,7 +33,6 @@ const OrderHistory = () => {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({ user_id: decoded.userId, isAdmin: isAdmin === "admin" })
             });
 
@@ -95,18 +92,32 @@ const OrderHistory = () => {
     };
 
     const handleSearchKeyDown = (e) => {
-
         handleSearchSubmit();
-
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    console.log(currentItems);
+
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
+    };
+
+    const generatePDF = (order) => {
+        const doc = new jsPDF();
+        doc.text(`Receipt for Order: ${order.order_id}`, 10, 10);
+        doc.text(`Customer Name: ${order.customer_name}`, 10, 20);
+        doc.text(`Customer Contact: ${order.customer_contact}`, 10, 30);
+        doc.text(`Product: ${order.product_name}`, 10, 40);
+        doc.text(`Category: ${order.category}`, 10, 50);
+        doc.text(`Quantity: ${order.quantity}`, 10, 60);
+        doc.text(`Price at Purchase: ${order.price_at_purchase}`, 10, 70);
+        doc.text(`Total Price: ${order.total_price}`, 10, 80);
+        doc.save(`receipt_${order.order_id}.pdf`);
+
     };
 
     return (
@@ -146,6 +157,7 @@ const OrderHistory = () => {
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Total Price</th>
+                        <th>Receipt</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -154,11 +166,12 @@ const OrderHistory = () => {
                             <td>{e.customer_name}</td>
                             <td>{e.customer_contact}</td>
                             <td>{e.email}</td>
-                            <td>{e.name}</td>
+                            <td>{e.product_name}</td>
                             <td>{e.category}</td>
                             <td>{e.quantity}</td>
                             <td>{e.price_at_purchase}</td>
                             <td>{e.total_price}</td>
+                            <td><button className='links' onClick={() => generatePDF(e)}>Download</button></td>
                         </tr>
                     ))}
                 </tbody>
@@ -180,4 +193,4 @@ const OrderHistory = () => {
     );
 }
 
-export default OrderHistory
+export default OrderHistory;

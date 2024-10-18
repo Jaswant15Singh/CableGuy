@@ -21,6 +21,6 @@ Route.post("/supplier/add", mainmiddleware, adminmiddleware, addSupplier);
 Route.get("/supplier/prod", mainmiddleware, adminmiddleware, prodBySupplier);
 Route.post("/cr", createProductsWithBatch)
 Route.post("/placeorder", placeOrder);;
-Route.post("/orderhistory",mainmiddleware, orderHistory);
+Route.post("/orderhistory", orderHistory);
 Route.post("/receipt",getReceiptRecord)
 module.exports = Route;

@@ -416,7 +416,7 @@ const placeOrder = async (req, res) => {
         }
     }
 
-    res.json({ message: "Order placed successfully", success: true });
+    res.json({ message: "Order placed successfully", orderId: orderId, success: true });
 };
 
 const orderHistory = async (req, res) => {
@@ -430,6 +430,7 @@ const orderHistory = async (req, res) => {
                 o.customer_name, 
                 o.customer_contact, 
                 o.email, 
+                oi.order_id,
                 p.name AS product_name, 
                 p.category 
             FROM order_items oi 
@@ -459,20 +460,20 @@ const orderHistory = async (req, res) => {
 };
 
 const getReceiptRecord = async (req, res) => {
-    const {order_id}=req.body;
-   try {
-    const { rows } = await pool.query(`
+    const { order_id } = req.body;
+    try {
+        const { rows } = await pool.query(`
         SELECT  oi.quantity, oi.price_at_purchase, oi.total_price, o.customer_name, o.customer_contact, o.email, p.name AS product_name, p.category 
         FROM order_items oi JOIN orders o ON oi.order_id = o.order_id 
-        JOIN product p ON oi.product_id = p.id where oi.order_id=$1`,[order_id]);
+        JOIN product p ON oi.product_id = p.id where oi.order_id=$1`, [order_id]);
 
-        res.json({data:rows,success:true})
-   } catch (error) {
-        res.json({message:"failed to fetch receipt",success:false})
-   }
+        res.json({ data: rows, success: true })
+    } catch (error) {
+        res.json({ message: "failed to fetch receipt", success: false })
+    }
 }
 
 
 
 
-module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin,getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
+module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
