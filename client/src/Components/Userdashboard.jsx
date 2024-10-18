@@ -304,32 +304,74 @@ const Userdashboard = () => {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-    if (receipt.length > 0) {
-      doc.setFontSize(12);
 
+    if (receipt.length > 0) {
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      const title = "Payment Receipt";
+      const titleWidth = doc.getStringUnitWidth(title) * doc.getFontSize() / doc.internal.scaleFactor;
+      const titleX = (doc.internal.pageSize.width - titleWidth) / 2; // Center title
+      doc.text(title, titleX, 20); // Title
+
+      // Add a line under the title
+      doc.setDrawColor(0, 0, 0); // Line color
+      doc.line(10, 25, 200, 25);
+
+      // Customer details
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
       doc.text(`Customer Name: ${receipt[0].customer_name}`, 14, 40);
       doc.text(`Contact: ${receipt[0].customer_contact}`, 14, 46);
       doc.text(`Email: ${receipt[0].email}`, 14, 52);
 
+      // Add a line after customer details
       doc.line(14, 55, 200, 55);
 
+      // Table Header
+      const startY = 60; // Starting position for table
+      const headerHeight = 10; // Height for header
+      doc.setFillColor(220, 220, 220); // Light gray for header background
+      doc.rect(14, startY, 182, headerHeight, "F"); // Header background
+
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Product Name", 15, startY + 7);
+      doc.text("Category", 75, startY + 7);
+      doc.text("Quantity", 110, startY + 7);
+      doc.text("Price", 140, startY + 7);
+      doc.text("Total", 170, startY + 7);
+
+      // Reset font for details
+      doc.setFont("helvetica", "normal");
+
+      // Add lines for the table header
+      doc.setDrawColor(0, 0, 0); // Set line color
+      doc.line(14, startY + headerHeight, 200, startY + headerHeight); // Line below header
+
+      // Adding product details in table format
       receipt.forEach((e, index) => {
-        const yOffset = 60 + (index * 40);
+        const yOffset = startY + headerHeight + 10 + (index * 30); // Dynamic yOffset for each product
 
-        doc.text(`Product Name: ${e.product_name}`, 14, yOffset);
-        doc.text(`Category: ${e.category}`, 14, yOffset + 6);
-        doc.text(`Quantity: ${e.quantity}`, 14, yOffset + 12);
-        doc.text(`Price at Purchase: ${e.price_at_purchase}`, 14, yOffset + 18);
-        doc.text(`Total Price: ${e.total_price}`, 14, yOffset + 24);
+        doc.text(e.product_name, 15, yOffset);
+        doc.text(e.category, 75, yOffset);
+        doc.text(e.quantity.toString(), 110, yOffset);
+        doc.text(e.price_at_purchase, 140, yOffset);
+        doc.text(e.total_price.toFixed(2), 170, yOffset);
 
-        doc.line(14, yOffset + 27, 200, yOffset + 27);
+        // Add a line below each product detail
+        doc.line(14, yOffset + 3, 200, yOffset + 3);
       });
+
+      // Add a footer with cumulative price
+      const totalPrice = receipt.reduce((acc, e) => acc + e.total_price, 0).toFixed(2);
+      doc.setFontSize(12);
+      doc.text(`Total Amount: ${totalPrice}`, 14, startY + headerHeight + 10 + (receipt.length * 30) + 10);
+      doc.text("Thank you for your purchase!", 14, startY + headerHeight + 10 + (receipt.length * 30) + 20);
     }
 
+    // Save the PDF
     doc.save("receipt.pdf");
-
   };
-
   return (
 
 

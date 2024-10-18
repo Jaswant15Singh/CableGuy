@@ -886,7 +886,7 @@ const AdminDashboard = () => {
             </div>
 
             {cart.length > 0 && (
-                <table className='admintable' style={{ width: "50%", margin: "0 auto" }} border={2}>
+                <table className='productplaced' style={{ width: "50%", margin: "0 auto" }} border={2}>
                     <thead>
                         <tr>
                             <th>Name</th>

@@ -37,6 +37,7 @@ footer {
   min-height: 10vh;
   font-family: "Roboto Condensed", sans-serif;
   font-weight: bold;
+  /* margin-top: 100px; */
 }
 
 header ul,
@@ -244,10 +245,30 @@ form h1 {
   flex-direction: column; */
 }
 
+
+/* .admintable {
+  margin-top: -300px !important;
+
+} */
+
 .admintable,
 .userstable {
   width: 100%;
 }
+
+.productplaced{
+  width: 100%;
+/* margin-top: -340px !important; */
+}
+
+
+.productplaced th,
+td,
+.productplaced th,
+td {
+  padding: 10px 3px;
+}
+
 
 .productss {
   width: 50%;
@@ -489,7 +510,7 @@ option {
   outline: none;
 }
 
-.receipt{
+.receipt {
   text-align: start;
   max-width: 400px;
   margin: 50px auto;
@@ -498,15 +519,29 @@ option {
   border-radius: 5px;
 }
 
-.receipt p{
+.receipt p {
   margin: 10px 5px;
 }
 
-.receipt button{
+.receipt button {
   padding: 7px;
   background-color: aliceblue;
   margin: 10px 0;
   border: 2px solid black;
   border-radius: 2px;
   cursor: pointer;
+}
+
+.sort {
+  background-color: rgb(160, 226, 226);
+  padding: 10px 0;
+  margin: 10px 0px;
+}
+
+.searchsort {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 30px 40px;
 }
