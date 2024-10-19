@@ -106,23 +106,89 @@ const OrderHistory = () => {
     };
 
 
+    // const generatePDF = (order) => {
+    //     const doc = new jsPDF();
+
+    //     doc.setFontSize(20);
+    //     doc.setFont("helvetica", "bold");
+    //     const title = `Receipt for Order: ${order.order_id}`;
+    //     const titleWidth = doc.getStringUnitWidth(title) * doc.getFontSize() / doc.internal.scaleFactor;
+    //     const titleX = (doc.internal.pageSize.width - titleWidth) / 2; 
+    //     doc.text(title, titleX, 20); 
+
+    //     doc.setDrawColor(0, 0, 0); 
+    //     doc.line(10, 25, 200, 25); 
+
+    //     doc.setFontSize(12);
+    //     doc.setFont("helvetica", "normal");
+    //     doc.setTextColor(0, 0, 0);
+
+    //     const details = [
+    //         { label: "Customer Name:", value: order.customer_name },
+    //         { label: "Customer Contact:", value: order.customer_contact },
+    //         { label: "Product:", value: order.product_name },
+    //         { label: "Category:", value: order.category },
+    //         { label: "Quantity:", value: order.quantity },
+    //         { label: "Price at Purchase:", value: order.price_at_purchase },
+    //         { label: "Total Price:", value: order.total_price }
+    //     ];
+
+    //     doc.line(10, 30, 200, 30); 
+
+    //     const startY = 35; 
+    //     const headerHeight = 10; 
+    //     doc.setFillColor(220, 220, 220);
+    //     doc.rect(10, startY, 190, headerHeight, "F"); 
+
+    //     doc.setFont("helvetica", "bold");
+    //     doc.text("Receipt Details", 15, startY + 7); 
+
+    //     doc.setDrawColor(0, 0, 0); 
+    //     doc.line(10, startY + headerHeight, 200, startY + headerHeight); 
+
+    //     let y = startY + headerHeight + 5; 
+    //     doc.setFont("helvetica", "normal");
+
+    //     details.forEach((detail, index) => {
+    //         if (index % 2 === 0) {
+    //             doc.setFillColor(240, 240, 240); 
+    //         } else {
+    //             doc.setFillColor(255, 255, 255); 
+    //         }
+
+    //         doc.rect(10, y - 7, 190, 10, "F"); 
+    //         doc.text(`${detail.label} ${detail.value}`, 15, y);
+    //         y += 10; 
+    //     });
+
+    //     doc.setDrawColor(0, 0, 0); 
+    //     doc.line(10, y, 200, y); 
+
+    //     doc.setFontSize(10);
+    //     doc.text("Thank you for your purchase!", 10, y + 10); 
+
+    //     doc.save(`receipt_${order.order_id}.pdf`);
+    // };
+
+
+
     const generatePDF = (order) => {
         const doc = new jsPDF();
-    
+
         doc.setFontSize(20);
         doc.setFont("helvetica", "bold");
         const title = `Receipt for Order: ${order.order_id}`;
         const titleWidth = doc.getStringUnitWidth(title) * doc.getFontSize() / doc.internal.scaleFactor;
-        const titleX = (doc.internal.pageSize.width - titleWidth) / 2; 
-        doc.text(title, titleX, 20); 
-    
-        doc.setDrawColor(0, 0, 0); 
-        doc.line(10, 25, 200, 25); 
-    
+        const titleX = (doc.internal.pageSize.width - titleWidth) / 2;
+        doc.text(title, titleX, 20);
+
+        doc.setDrawColor(0, 0, 0);
+        doc.line(10, 25, 200, 25);
+
         doc.setFontSize(12);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(0, 0, 0);
-    
+
         const details = [
             { label: "Customer Name:", value: order.customer_name },
             { label: "Customer Contact:", value: order.customer_contact },
@@ -132,44 +198,46 @@ const OrderHistory = () => {
             { label: "Price at Purchase:", value: order.price_at_purchase },
             { label: "Total Price:", value: order.total_price }
         ];
-    
-        doc.line(10, 30, 200, 30); 
-    
-        const startY = 35; 
-        const headerHeight = 10; 
+
+        doc.line(10, 30, 200, 30);
+
+        const startY = 35;
+        const headerHeight = 10;
         doc.setFillColor(220, 220, 220);
-        doc.rect(10, startY, 190, headerHeight, "F"); 
-    
+        doc.rect(10, startY, 190, headerHeight, "F");
+
         doc.setFont("helvetica", "bold");
-        doc.text("Receipt Details", 15, startY + 7); 
-    
-        doc.setDrawColor(0, 0, 0); 
-        doc.line(10, startY + headerHeight, 200, startY + headerHeight); 
-    
-        let y = startY + headerHeight + 5; 
+        doc.text("Receipt Details", 15, startY + 7);
+
+        doc.setDrawColor(0, 0, 0);
+        doc.line(10, startY + headerHeight, 200, startY + headerHeight);
+
+        let y = startY + headerHeight + 5;
         doc.setFont("helvetica", "normal");
-    
+
         details.forEach((detail, index) => {
             if (index % 2 === 0) {
-                doc.setFillColor(240, 240, 240); 
+                doc.setFillColor(240, 240, 240);
             } else {
-                doc.setFillColor(255, 255, 255); 
+                doc.setFillColor(255, 255, 255);
             }
-    
-            doc.rect(10, y - 7, 190, 10, "F"); 
+
+            doc.rect(10, y - 7, 190, 10, "F");
             doc.text(`${detail.label} ${detail.value}`, 15, y);
-            y += 10; 
+            y += 10;
         });
-    
-        doc.setDrawColor(0, 0, 0); 
-        doc.line(10, y, 200, y); 
-    
+
+        doc.setDrawColor(0, 0, 0);
+        doc.line(10, y, 200, y);
+
         doc.setFontSize(10);
-        doc.text("Thank you for your purchase!", 10, y + 10); 
-    
+        doc.text("Thank you for your purchase!", 10, y + 10);
+
         doc.save(`receipt_${order.order_id}.pdf`);
     };
-    
+
+
+
     return (
         <div className='orderhistory' style={{ minHeight: "80vh" }}>
             <h1 style={{ textAlign: "center", margin: "15px" }}>Hello {name}</h1>
@@ -202,6 +270,7 @@ const OrderHistory = () => {
             <table border={2} style={{ width: "80vw", margin: "10px auto" }}>
                 <thead>
                     <tr>
+                        <th>Order Id</th>
                         <th>Customer Name</th>
                         <th>Customer Contact</th>
                         <th>Customer Email</th>
@@ -216,6 +285,7 @@ const OrderHistory = () => {
                 <tbody>
                     {currentItems.map((e, index) => (
                         <tr key={index}>
+                            <td>{e.order_id}</td>
                             <td>{e.customer_name}</td>
                             <td>{e.customer_contact}</td>
                             <td>{e.email}</td>
