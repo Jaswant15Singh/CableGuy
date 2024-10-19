@@ -38,6 +38,8 @@ const OrderHistory = () => {
             if (!res.ok) throw new Error("Failed to fetch order history");
 
             const data = await res.json();
+            console.log(data);
+
             if (data.success) {
                 setOrderhis(data.data);
                 setFilteredProducts(data.data);
@@ -98,8 +100,11 @@ const OrderHistory = () => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-    console.log(currentItems);
 
+    // console.log("Current Page:", currentPage);
+    // console.log("Index of First Item:", indexOfFirstItem);
+    // console.log("Index of Last Item:", indexOfLastItem);
+    // console.log("Current Items:", currentItems);
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
@@ -274,31 +279,38 @@ const OrderHistory = () => {
                         <th>Customer Name</th>
                         <th>Customer Contact</th>
                         <th>Customer Email</th>
-                        <th>Product Name</th>
+                        <th>View Order</th>
+                        {/* <th>Product Name</th>
                         <th>Product Category</th>
                         <th>Quantity</th>
-                        <th>Price</th>
+                        <th>Price</th> */}
                         <th>Total Price</th>
                         <th>Receipt</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {currentItems.map((e, index) => (
-                        <tr key={index}>
-                            <td>{e.order_id}</td>
-                            <td>{e.customer_name}</td>
-                            <td>{e.customer_contact}</td>
-                            <td>{e.email}</td>
-                            <td>{e.product_name}</td>
-                            <td>{e.category}</td>
-                            <td>{e.quantity}</td>
-                            <td>{e.price_at_purchase}</td>
-                            <td>{e.total_price}</td>
-                            <td><button className='links' onClick={() => generatePDF(e)}>Download</button></td>
-                        </tr>
-                    ))}
+                    {
+                        currentItems.filter((order, index, self) =>
+                            index === self.findIndex((o) => o.order_id === order.order_id)
+                        ).map((order, index) => (
+                            <tr key={index}>
+                                <td>{order.order_id}</td>
+                                <td>{order.customer_name}</td>
+                                <td>{order.customer_contact}</td>
+                                <td>{order.email}</td>
+                                <td><Link className='links' to={`/individualorders/${order.order_id}`}>View Here</Link></td>
+                                {/* <td>{order.product_name}</td>
+                                <td>{order.category}</td>
+                                <td>{order.quantity}</td>
+                                <td>{order.price_at_purchase}</td> */}
+                                <td>{order.total_price} <span> &#8377;</span></td>
+                                <td><button className='links' onClick={() => generatePDF(order)}>Download</button></td>
+                            </tr>
+                        ))
+                    }
                 </tbody>
             </table>
+
 
             <div style={{ textAlign: "center" }}>
                 {Array.from({ length: totalPages }, (_, index) => (
@@ -312,6 +324,7 @@ const OrderHistory = () => {
                     </button>
                 ))}
             </div>
+
         </div>
     );
 }

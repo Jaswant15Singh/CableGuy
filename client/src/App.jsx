@@ -13,6 +13,7 @@ import IndUsers from './Components/IndUsers'
 import { jwtDecode } from "jwt-decode";
 import { useParams } from 'react-router-dom';
 import OrderHistory from './Pages/OrderHistory'
+import IndividualOrders from './Pages/IndividualOrders'
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path='/admin/update/:id' element={<AdminProtRoute><AdminUpdate /></AdminProtRoute>} />
           <Route path='/admin/ind/:id' element={<AdminProtRoute><IndUsers /></AdminProtRoute>} />
           <Route path='/orderhistory' element={<ProtRoute><OrderHistory /></ProtRoute>} />
+          <Route path='/individualorders/:order_id' element={<IndividualOrders/>}/>
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>
         <Footer />

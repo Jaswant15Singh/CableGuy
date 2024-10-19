@@ -310,28 +310,24 @@ const Userdashboard = () => {
       doc.setFont("helvetica", "bold");
       const title = "Payment Receipt";
       const titleWidth = doc.getStringUnitWidth(title) * doc.getFontSize() / doc.internal.scaleFactor;
-      const titleX = (doc.internal.pageSize.width - titleWidth) / 2; // Center title
-      doc.text(title, titleX, 20); // Title
+      const titleX = (doc.internal.pageSize.width - titleWidth) / 2; 
+      doc.text(title, titleX, 20); 
 
-      // Add a line under the title
-      doc.setDrawColor(0, 0, 0); // Line color
+      doc.setDrawColor(0, 0, 0); 
       doc.line(10, 25, 200, 25);
 
-      // Customer details
       doc.setFontSize(12);
       doc.setFont("helvetica", "normal");
       doc.text(`Customer Name: ${receipt[0].customer_name}`, 14, 40);
       doc.text(`Contact: ${receipt[0].customer_contact}`, 14, 46);
       doc.text(`Email: ${receipt[0].email}`, 14, 52);
 
-      // Add a line after customer details
       doc.line(14, 55, 200, 55);
 
-      // Table Header
-      const startY = 60; // Starting position for table
-      const headerHeight = 10; // Height for header
-      doc.setFillColor(220, 220, 220); // Light gray for header background
-      doc.rect(14, startY, 182, headerHeight, "F"); // Header background
+      const startY = 60; 
+      const headerHeight = 10; 
+      doc.setFillColor(220, 220, 220); 
+      doc.rect(14, startY, 182, headerHeight, "F"); 
 
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
@@ -341,35 +337,28 @@ const Userdashboard = () => {
       doc.text("Price", 140, startY + 7);
       doc.text("Total", 170, startY + 7);
 
-      // Reset font for details
       doc.setFont("helvetica", "normal");
 
-      // Add lines for the table header
-      doc.setDrawColor(0, 0, 0); // Set line color
-      doc.line(14, startY + headerHeight, 200, startY + headerHeight); // Line below header
+      doc.setDrawColor(0, 0, 0); 
+      doc.line(14, startY + headerHeight, 200, startY + headerHeight); 
 
-      // Adding product details in table format
       receipt.forEach((e, index) => {
-        const yOffset = startY + headerHeight + 10 + (index * 30); // Dynamic yOffset for each product
-
+        const yOffset = startY + headerHeight + 10 + (index * 30); 
         doc.text(e.product_name, 15, yOffset);
         doc.text(e.category, 75, yOffset);
         doc.text(e.quantity.toString(), 110, yOffset);
         doc.text(e.price_at_purchase, 140, yOffset);
         doc.text(e.total_price.toFixed(2), 170, yOffset);
 
-        // Add a line below each product detail
         doc.line(14, yOffset + 3, 200, yOffset + 3);
       });
 
-      // Add a footer with cumulative price
       const totalPrice = receipt.reduce((acc, e) => acc + e.total_price, 0).toFixed(2);
       doc.setFontSize(12);
       doc.text(`Total Amount: ${totalPrice}`, 14, startY + headerHeight + 10 + (receipt.length * 30) + 10);
       doc.text("Thank you for your purchase!", 14, startY + headerHeight + 10 + (receipt.length * 30) + 20);
     }
 
-    // Save the PDF
     doc.save("receipt.pdf");
   };
   return (
