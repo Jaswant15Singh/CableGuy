@@ -96,10 +96,14 @@ const OrderHistory = () => {
         handleSearchSubmit();
     };
 
+    const dataa = [...new Set(filteredProducts.map((e) => e.order_id))];
+    console.log(dataa);
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const totalPages = Math.ceil(dataa.length / itemsPerPage);
+    console.log(totalPages);
 
     // console.log("Current Page:", currentPage);
     // console.log("Index of First Item:", indexOfFirstItem);
@@ -251,13 +255,13 @@ const OrderHistory = () => {
             </Link>
 
             <div className='sort' style={{ display: "flex", justifyContent: "space-around" }}>
-                <button onClick={() => setFilteredProducts(orderhis)}>See all</button>
-                <button onClick={() => handleSortPrice("asc")}>Sort by Price(asc)</button>
-                <button onClick={() => handleSortPrice("desc")}>Sort by Price(desc)</button>
-                <button onClick={() => handleSort("asc")}>Sort by Name(asc)</button>
-                <button onClick={() => handleSort("desc")}>Sort by Name(desc)</button>
-                <button onClick={() => handleSortTotal("asc")}>Sort by Total Price(asc)</button>
-                <button onClick={() => handleSortTotal("desc")}>Sort by Total Price(desc)</button>
+                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => setFilteredProducts(orderhis)}>See all</button>
+                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSortPrice("asc")}>Sort by Price(asc)</button>
+                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSortPrice("desc")}>Sort by Price(desc)</button>
+                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSort("asc")}>Sort by Name(asc)</button>
+                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSort("desc")}>Sort by Name(desc)</button>
+                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSortTotal("asc")}>Sort by Total Price(asc)</button>
+                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSortTotal("desc")}>Sort by Total Price(desc)</button>
             </div>
 
             <div className='searchsort'>
@@ -279,13 +283,14 @@ const OrderHistory = () => {
                         <th>Customer Name</th>
                         <th>Customer Contact</th>
                         <th>Customer Email</th>
+                        <th>Total Price</th>
+
                         <th>View Order</th>
                         {/* <th>Product Name</th>
                         <th>Product Category</th>
                         <th>Quantity</th>
                         <th>Price</th> */}
-                        <th>Total Price</th>
-                        <th>Receipt</th>
+                        {/* <th>Receipt</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -298,13 +303,13 @@ const OrderHistory = () => {
                                 <td>{order.customer_name}</td>
                                 <td>{order.customer_contact}</td>
                                 <td>{order.email}</td>
+                                <td>{order.total_price} <span> &#8377;</span></td>
                                 <td><Link className='links' to={`/individualorders/${order.order_id}`}>View Here</Link></td>
                                 {/* <td>{order.product_name}</td>
                                 <td>{order.category}</td>
                                 <td>{order.quantity}</td>
                                 <td>{order.price_at_purchase}</td> */}
-                                <td>{order.total_price} <span> &#8377;</span></td>
-                                <td><button className='links' onClick={() => generatePDF(order)}>Download</button></td>
+                                {/* <td><button className='links' onClick={() => generatePDF(order)}>Download</button></td> */}
                             </tr>
                         ))
                     }
