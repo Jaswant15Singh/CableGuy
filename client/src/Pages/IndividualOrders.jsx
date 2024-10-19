@@ -130,8 +130,10 @@ const IndividualOrders = () => {
             <div style={{ textAlign: "center" }}>
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
+                    className='links'
+                   
                         key={index}
-                        style={{ margin: "5px" }}
+                        style={{ margin: "5px" ,padding:"5px"}}
                         onClick={() => handlePageChange(index + 1)}
                         disabled={currentPage === index + 1}
                     >
