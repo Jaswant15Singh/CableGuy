@@ -82,7 +82,7 @@ const IndividualOrders = () => {
             });
 
             const totalBill = values.reduce((accum, e) => accum + e.total_price, 0);
-            doc.text(`Total Bill: ₹${totalBill}`, 10, y + 10);
+            doc.text(`Total Bill: ${totalBill}`, 10, y + 10);
         } else {
             doc.text("No products found for this order.", 10, 30);
         }
