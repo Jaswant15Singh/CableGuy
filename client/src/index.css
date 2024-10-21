@@ -40,6 +40,11 @@ footer {
   /* margin-top: 100px; */
 }
 
+
+#X {
+  display: none;
+}
+
 header ul,
 footer ul {
   display: flex;
@@ -245,7 +250,7 @@ form h1 {
   flex-direction: column; */
 }
 
-.supptable{
+.supptable {
   width: 50%;
 }
 
@@ -260,9 +265,9 @@ form h1 {
   width: 100%;
 }
 
-.productplaced{
+.productplaced {
   width: 100%;
-/* margin-top: -340px !important; */
+  /* margin-top: -340px !important; */
 }
 
 
@@ -378,6 +383,10 @@ td {
   width: 70px;
   padding: 2px 0;
   cursor: pointer;
+  min-height: 60px;
+  background-color: #ccc;
+  border-radius: 5px;
+  border: none;
 }
 
 .ind {
@@ -550,19 +559,230 @@ option {
   margin: 30px 40px;
 }
 
-@media (max-width:500px){
+@media (max-width:500px) {
+
+  .home img {
+    object-fit: cover;
+  }
+
   .tables {
     flex-direction: column;
     padding: 30px 10px;
     align-items: center;
-   
+
   }
 
-  .admintable,.userstable{
+  .admintable,
+  .userstable {
     width: 82vw;
   }
 
-  .supptable{
+  .supptable {
+    margin: 0 auto;
+  }
+
+  .stickylinks {
+    display: flex;
+    /* flex-wrap: wrap; */
+    justify-content: space-between;
+    align-items: center;
+    /* position: sticky !important;
+    top: 20 !important;
+    left: 0; */
+    padding: 10px;
+  }
+
+  .newad {
+    margin-top: 30px !important;
+    position: sticky !important;
+    left: 0;
+    top: 0;
+    /* transform: translate(0, -50%); */
+    width: 70px;
+    padding: 2px 0;
+    cursor: pointer;
+    height: 50px;
+    font-size: 12px;
+  }
+
+  .admreg {
+    width: 100%;
+    padding: 0px 50px;
+  }
+
+  .admreg form {
+    background-color: blanchedalmond;
+    position: fixed;
+    left: 50%;
+    top: 60%;
+
+    transform: translate(-50%, -50%);
+    width: calc(100vw - 100px) !important;
+    margin: 0 auto;
+    margin-top: -100px;
+    /* margin-bottom: 50px; */
+    padding: 20px;
+    z-index: 99;
+    margin-top: -100px;
+    /* margin-bottom: 20px; */
+  }
+
+  .productss {
+    width: 70%;
+  }
+
+  .sort {
+    width: 100vw;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sort .links {
+    min-width: calc(100% / 2 - 20px);
+    cursor: pointer;
+    border: 1px solid black !important;
+  }
+
+
+  footer {
+    padding: 10px 10px;
+  }
+
+  /* #X {
+    display: block;
+    z-index: 300;
+  }
+
+   header {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    flex-direction: column;
+    justify-content: start;
+    width: 100vw;
+    background-color: #ccc !important;
+    height: 40vh;
+    z-index: 200;
+    gap: 20px;
+    float: left;
+  } */
+  /*
+  .closes {
+    display: none;
+  } */
+
+  .orderhistorytable {
+    font-size: x-small;
+    width: 90vw !important;
+  }
+
+  .orderhistorytable th,
+  .orderhistorytable td {
+    width: 30px !important;
+  }
+
+  .productplaced {
+    font-size: small;
+    width: 90vw;
+    margin: 30px auto;
+  }
+
+  .customer h1,
+  .prods h1 {
+    font-size: large;
+  }
+
+  .maindivprod select {
+    display: block;
+    width: 100%;
+  }
+
+  .maindivprod {
+    padding: 0;
+  }
+
+  .orderplace {
+    width: 80vw;
+  }
+
+  .receipt {
+    width: 80vw;
+  }
+
+}
+
+@media (min-width:500px) and (max-width:750px) {
+  .maindivprod select {
+    display: block;
+    width: 100%;
+  }
+
+  .maindivprod {
+    padding: 0;
+  }
+
+  .orderplace {
+    width: 80vw;
+  }
+
+  .sort {
+    /* gap: 20px; */
+    /* padding: 10px; */
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .sort .links {
+    min-width: calc(100% / 2 - 20px);
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .customer input {
+    width: 100% !important;
+  }
+
+
+  .stickylinks {
+    display: flex;
+    /* flex-wrap: wrap; */
+    justify-content: space-between;
+    align-items: center;
+    /* position: sticky !important;
+    top: 20 !important;
+    left: 0; */
+    padding: 30px 50px;
+    padding-bottom: 0;
+  }
+
+  .newad {
+    margin-top: 30px !important;
+    position: sticky !important;
+    left: 0;
+    top: 0;
+    /* transform: translate(0, -50%); */
+    width: 70px;
+    padding: 2px 0;
+    cursor: pointer;
+    height: 50px;
+    font-size: 12px;
+  }
+
+  .tables {
+    flex-direction: column;
+    padding: 30px 10px;
+    align-items: center;
+
+  }
+
+  .admintable,
+  .userstable {
+    width: 82vw;
+  }
+
+  .supptable {
     margin: 0 auto;
   }
 }

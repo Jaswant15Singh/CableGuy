@@ -221,7 +221,7 @@ const OrderHistory = () => {
                 <button onClick={handleSearchSubmit}>Search</button>
             </div>
 
-            <table border={2} style={{ width: "80vw", margin: "10px auto" }}>
+            <table className='orderhistorytable' border={2} style={{ width: "80vw", margin: "10px auto" }}>
                 <thead>
                     <tr>
                         <th>Order Id</th>

@@ -425,6 +425,18 @@ const AdminDashboard = () => {
     };
     return (
         <div className='admindashboard'>
+            <div className='stickylinks'>
+                <button className='newad links' onClick={() => { setAdminreg(!adminreg) }}>Add new admin</button>
+                <button className='newad links' style={{ marginTop: "80px" }} onClick={() => { setSupplieradd(!supplieradd) }}>Add new supplier</button>
+                <button className='newad links' style={{ marginTop: "150px" }} onClick={() => { setIsIndividual(!isIndividual) }}>Add Individual product</button>
+                <button className='newad links' style={{ marginTop: "220px" }} onClick={() => { setProdadd(!prodadd) }}>Add new product</button>
+                <button className='newad links' style={{ marginTop: "290px" }} onClick={() => { setIsProd(!isProd) }}>
+                    See Batch Products
+                </button>
+                <button className='newad links' style={{ marginTop: "360px" }} onClick={() => setIsallProd(!isallProd)}>
+                    See All Products
+                </button>
+            </div>
             <div className="tables">
                 <table className='admintable' border={2}>
                     <thead>
@@ -505,7 +517,6 @@ const AdminDashboard = () => {
                     </tbody>
                 </table>
             </div>
-            <button className='newad links' onClick={() => { setAdminreg(!adminreg) }}>Add new admin</button>
             {
                 adminreg ? <div className='admreg'><form onSubmit={addAdmin}>
                     <button className='close' onClick={() => { setAdminreg(!adminreg) }}>X</button>
@@ -525,7 +536,6 @@ const AdminDashboard = () => {
                 </form> </div> : ""
             }
 
-            <button className='newad links' style={{ marginTop: "80px" }} onClick={() => { setSupplieradd(!supplieradd) }}>Add new supplier</button>
             {
                 supplieradd ? <div className='admreg'><form onSubmit={addSupplier}>
                     <button className='close' onClick={() => { setSupplieradd(!supplieradd) }}>X</button>
@@ -545,7 +555,6 @@ const AdminDashboard = () => {
                 </form> </div> : ""
             }
 
-            <button className='newad links' style={{ marginTop: "150px" }} onClick={() => { setIsIndividual(!isIndividual) }}>Add Individual product</button>
             {
                 isIndividual ? (
                     <div className='admreg'>
@@ -589,7 +598,6 @@ const AdminDashboard = () => {
                     </div>
                 ) : ""
             }
-            <button className='newad links' style={{ marginTop: "220px" }} onClick={() => { setProdadd(!prodadd) }}>Add new product</button>
 
             {prodadd ? (
                 <div className="admreg" style={{ minHeight: "80vh" }}>
@@ -793,9 +801,7 @@ const AdminDashboard = () => {
                 ""
             )}
             <div>
-                <button className='newad links' style={{ marginTop: "290px" }} onClick={() => { setIsProd(!isProd) }}>
-                    See Batch Products
-                </button>
+
                 {
                     isProd && (
                         <div className='productss'>
@@ -842,9 +848,7 @@ const AdminDashboard = () => {
             </div>
 
             <div>
-                <button className='newad links' style={{ marginTop: "360px" }} onClick={() => setIsallProd(!isallProd)}>
-                    See All Products
-                </button>
+
 
                 {isallProd && (
                     <div className='productss'>
