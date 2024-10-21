@@ -483,8 +483,8 @@ const AdminDashboard = () => {
                 </table>
 
             </div>
-            <div className='tables' style={{ width: "50%" }}>
-                <table className='userstable' border={2}>
+            <div className='tables supptable'>
+                <table className='userstable ' border={2}>
                     <thead>
                         <tr>
                             <th>Name</th>

@@ -245,6 +245,10 @@ form h1 {
   flex-direction: column; */
 }
 
+.supptable{
+  width: 50%;
+}
+
 
 /* .admintable {
   margin-top: -300px !important;
@@ -544,4 +548,21 @@ option {
   justify-content: center;
   gap: 10px;
   margin: 30px 40px;
+}
+
+@media (max-width:500px){
+  .tables {
+    flex-direction: column;
+    padding: 30px 10px;
+    align-items: center;
+   
+  }
+
+  .admintable,.userstable{
+    width: 82vw;
+  }
+
+  .supptable{
+    margin: 0 auto;
+  }
 }
