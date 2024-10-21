@@ -25,6 +25,10 @@ header {
   font-weight: bold;
 }
 
+.head {
+  display: none;
+}
+
 footer {
   /* position: fixed;
   bottom: 0; */
@@ -616,7 +620,7 @@ option {
     left: 50%;
     top: 60%;
 
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -90%) !important;
     width: calc(100vw - 100px) !important;
     margin: 0 auto;
     margin-top: -100px;
@@ -648,6 +652,44 @@ option {
 
   footer {
     padding: 10px 10px;
+  }
+
+  .open {
+    position: sticky !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    min-height: 10vh;
+    width: 100vw;
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+    background-color: #F3E8FF;
+    transition: 0.3s;
+  }
+
+  .head {
+    display: block;
+  }
+
+  .closes {
+    display: none;
+  }
+
+  .open ul {
+    display: block !important;
+    gap: 40px !important;
+  }
+
+  .open ul li {
+    display: block;
+   
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .open ul li a{
+    color: #7E22CE !important;
   }
 
   /* #X {
