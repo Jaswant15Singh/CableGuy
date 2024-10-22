@@ -90,7 +90,7 @@ const Userlogin = () => {
 
                     </form>
                 </div> :
-                <div className='signup'>
+                <div className='signup' style={{backgroundColor: "#D8E3DB"}}>
                     <form onSubmit={handleSignupSubmit}>
                         <h1>Signup</h1>
                         <div className='inp'>

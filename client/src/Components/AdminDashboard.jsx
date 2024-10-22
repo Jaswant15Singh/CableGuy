@@ -1,6 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 const AdminDashboard = () => {
     const [data, setData] = useState([]);
     const [inp, setInp] = useState({ name: "", email: "", password: "" });
@@ -34,6 +54,138 @@ const AdminDashboard = () => {
     const [supplieradd, setSupplieradd] = useState(false);
     const [prodadd, setProdadd] = useState(false);
     const [supplierlist, setSupplierlist] = useState([]);
+
+    const StyledTableCell = styled(TableCell)(({ theme }) => ({
+        [`&.${tableCellClasses.head}`]: {
+            backgroundColor: theme.palette.common.black,
+            color: theme.palette.common.white,
+        },
+        [`&.${tableCellClasses.body}`]: {
+            fontSize: 14,
+        },
+    }));
+
+    const StyledTableRow = styled(TableRow)(({ theme }) => ({
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
+        // hide last border
+        '&:last-child td, &:last-child th': {
+            border: 0,
+        },
+    }));
+
+    function createData(name, calories, fat, carbs, protein) {
+        return { name, calories, fat, carbs, protein };
+    }
+
+    const rows = [
+        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+        createData('Eclair', 262, 16.0, 24, 6.0),
+        createData('Cupcake', 305, 3.7, 67, 4.3),
+        createData('Gingerbread', 356, 16.0, 49, 3.9),
+    ];
+
+
+    const [state, setState] = React.useState({
+
+        bottom: false,
+
+    });
+
+
+    const toggleDrawer = (anchor, open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setState({ ...state, [anchor]: open });
+    };
+
+    const list = (anchor) => (
+        <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            onClick={toggleDrawer(anchor, false)}
+            onKeyDown={toggleDrawer(anchor, false)}
+        >
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <Button
+                            className="newad links"
+                            onClick={() => setAdminreg(!adminreg)}
+                            sx={{ width: '100%', mt: 3 }}
+                        >
+                            Add New Admin
+                        </Button>
+                    </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <Button
+                            className="newad links"
+                            sx={{ width: '100%', mt: 1 }}
+                            onClick={() => setSupplieradd(!supplieradd)}
+                        >
+                            Add New Supplier
+                        </Button>
+                    </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <Button
+                            className="newad links"
+                            sx={{ width: '100%', mt: 1 }}
+                            onClick={() => setIsIndividual(!isIndividual)}
+                        >
+                            Add Individual Product
+                        </Button>
+                    </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <Button
+                            className="newad links"
+                            sx={{ width: '100%', mt: 1 }}
+                            onClick={() => setProdadd(!prodadd)}
+                        >
+                            Add New Product
+                        </Button>
+                    </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <Button
+                            className="newad links"
+                            sx={{ width: '100%', mt: 1 }}
+                            onClick={() => setIsProd(!isProd)}
+                        >
+                            See Batch Products
+                        </Button>
+                    </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <Button
+                            className="newad links"
+                            sx={{ width: '100%', mt: 1 }}
+                            onClick={() => setIsallProd(!isallProd)}
+                        >
+                            See All Products
+                        </Button>
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
+        </Box>
+    );
+
 
     const handleChange = (e) => {
         setInp({ ...inp, [e.target.name]: e.target.value })
@@ -425,7 +577,17 @@ const AdminDashboard = () => {
     };
     return (
         <div className='admindashboard'>
-            <div className='stickylinks'>
+            <div style={{ float: "right" }} className='dropdown'>
+                <Button style={{zIndex:"999"}} onClick={toggleDrawer('right', true)}><ArrowDropDownIcon /> Add/See</Button>
+                <Drawer
+                    anchor="right"
+                    open={state['right']}
+                    onClose={toggleDrawer('right', false)}
+                >
+                    {list('right')}
+                </Drawer>
+            </div>
+            {/* <div className='stickylinks'>
                 <button className='newad links' onClick={() => { setAdminreg(!adminreg) }}>Add new admin</button>
                 <button className='newad links' style={{ marginTop: "80px" }} onClick={() => { setSupplieradd(!supplieradd) }}>Add new supplier</button>
                 <button className='newad links' style={{ marginTop: "150px" }} onClick={() => { setIsIndividual(!isIndividual) }}>Add Individual product</button>
@@ -436,87 +598,150 @@ const AdminDashboard = () => {
                 <button className='newad links' style={{ marginTop: "360px" }} onClick={() => setIsallProd(!isallProd)}>
                     See All Products
                 </button>
-            </div>
-            <div className="tables">
-                <table className='admintable' border={2}>
-                    <thead>
-                        <tr>
-                            <th>Role</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Update/Delete</th>
-                        </tr>
+            </div> */}
 
-                    </thead>
-                    <tbody>
-                        {
-                            data.map((e) => {
-                                return (
-                                    <tr key={e.id}>
-                                        <td>Admin</td>
-                                        <td>{e.name}</td>
-                                        <td>{e.email}</td>
-                                        <td style={{ gap: "2px" }}>
-                                            <Link className='links' to={`/admin/update/${e.id}`} >Update</Link>
-                                            <button onClick={() => { handleDelete(e.id) }} className='links'>Delete</button>
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
-                <table className='userstable' border={2}>
-                    <thead>
-                        <tr>
-                            <th>Role</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Update/Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            dataa.map((e) => {
-                                return (
-                                    <tr>
-                                        <td>User</td>
-                                        <td>{e.name}</td>
-                                        <td>{e.email}</td>
-                                        <td>
-                                            <Link className='links' to={`/admin/ind/${e.id}`}>Update</Link>
-                                            <button className='links' onClick={() => { handleUserDelete(e.id) }}>Delete</button>
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
+            <div style={{ padding: "0px 30px" }}>
+                <h1 style={{ textAlign: "center", marginBottom: "10px", transform: "translateX(40px)", color: "#444444" }}>Admin Table</h1>
 
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align='left'>Role</StyledTableCell>
+                                <StyledTableCell align="left"> Name</StyledTableCell>
+                                <StyledTableCell align="left"> Email</StyledTableCell>
+                                <StyledTableCell align="left">Update/Delete</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data.map((row) => (
+                                <StyledTableRow key={row.name}>
+
+                                    <StyledTableCell align="left">Admin</StyledTableCell>
+                                    <StyledTableCell align="left">{row.name}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.email}</StyledTableCell>
+                                    <StyledTableCell align="left"><Link className='links' to={`/admin/update/${row.id}`} >Update</Link>
+                                        <button onClick={() => { handleDelete(row.id) }} className='links'>Delete</button></StyledTableCell>
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </div>
-            <div className='tables supptable'>
-                <table className='userstable ' border={2}>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Contact</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            supplierlist.map((e) => {
-                                return (
-                                    <tr>
-                                        <td>{e.name}</td>
-                                        <td>{e.contact}</td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
+            <div style={{ padding: "20px 30px", marginTop: "40px" }}>
+                <h1 style={{ textAlign: "center", marginBottom: "10px", color: "#444444" }}>User Table</h1>
+
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align='left'>Role</StyledTableCell>
+                                <StyledTableCell align="left"> Name</StyledTableCell>
+                                <StyledTableCell align="left"> Email</StyledTableCell>
+                                <StyledTableCell align="left">Update/Delete</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {dataa.map((row) => (
+                                <StyledTableRow key={row.name}>
+
+                                    <StyledTableCell align="left">User</StyledTableCell>
+                                    <StyledTableCell align="left">{row.name}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.email}</StyledTableCell>
+                                    <StyledTableCell align="left"><Link className='links' to={`/admin/ind/${row.id}`} >Update</Link>
+                                        <button className='links' onClick={() => { handleUserDelete(row.id) }}>Delete</button>
+                                    </StyledTableCell>
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </div>
+
+            {/* <div style={{ padding: "20px 30px", marginTop: "40px" }}>
+                <h1 style={{ textAlign: "center", marginBottom: "10px", color: "#444444" }}>User Table</h1>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow style={{ borderBottom: "2px solid black" }}>
+                                <TableCell align="left">Role</TableCell>
+                                <TableCell align="left"> Name</TableCell>
+                                <TableCell align="left">Email</TableCell>
+                                <TableCell align="left">Update/Delete</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {dataa.map((row) => (
+                                <TableRow
+                                    key={row.name}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                            
+                                    <TableCell align="left">User</TableCell>
+                                    <TableCell align="left">{row.name}</TableCell>
+                                    <TableCell align="left">{row.email}</TableCell>
+
+                                    <TableCell align="left"> <Link className='links' to={`/admin/update/${data.id}`} >Update</Link>
+                                        <button onClick={() => { handleDelete(data.id) }} className='links'>Delete</button></TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div> */}
+
+            <div style={{ padding: "20px 30px", marginTop: "40px" }}>
+                <h1 style={{ textAlign: "center", marginBottom: "10px", color: "#444444" }}>Suppliers Table</h1>
+
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="left"> Name</StyledTableCell>
+                                <StyledTableCell align="left"> Email</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {supplierlist.map((row) => (
+                                <StyledTableRow key={row.name}>
+
+                                    <StyledTableCell align="left">{row.name}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.contact}</StyledTableCell>
+
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+            {/* <div style={{ padding: "20px 30px", marginTop: "40px" }}>
+                <h1 style={{ textAlign: "center", marginBottom: "10px", color: "#444444" }}>Suppliers Table</h1>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow style={{ borderBottom: "2px solid black" }}>
+                                <TableCell align="left"> Name</TableCell>
+                                <TableCell align="left">Contact</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {supplierlist.map((row) => (
+                                <TableRow
+                                    key={row.name}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+
+                                    <TableCell align="left">{row.name}</TableCell>
+                                    <TableCell align="left">{row.contact}</TableCell>
+
+
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+          */}
             {
                 adminreg ? <div className='admreg'><form onSubmit={addAdmin}>
                     <button className='close' onClick={() => { setAdminreg(!adminreg) }}>X</button>
@@ -532,7 +757,7 @@ const AdminDashboard = () => {
                         <label htmlFor="password">Password</label>
                         <input type="text" name="password" id="" value={inp.password} required={true} onChange={handleChange} />
                     </div>
-                    <button type='submit'>Add</button>
+                    <button type='submit' className='links'>Add Admin</button>
                 </form> </div> : ""
             }
 

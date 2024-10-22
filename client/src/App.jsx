@@ -14,6 +14,7 @@ import { jwtDecode } from "jwt-decode";
 import { useParams } from 'react-router-dom';
 import OrderHistory from './Pages/OrderHistory'
 import IndividualOrders from './Pages/IndividualOrders'
+import About from './Components/About'
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
 
         <Routes>
           <Route exact path='/' element={<Home />} />
+          <Route path='/about' element={<About/>}/>
           <Route path='/userdashboard/:id' element={<ProtectedRoute><Userdashboard /></ProtectedRoute>} />
           <Route path='/userlogin' element={<Userlogin />} />
           <Route path='/adminlogin' element={<Adminlogin />} />

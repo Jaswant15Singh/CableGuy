@@ -1,64 +1,139 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from "react-router-dom";
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+import { Link, useNavigate } from 'react-router-dom';
+import { Drawer, Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import InboxIcon from '@mui/icons-material/Inbox';
+import MailIcon from '@mui/icons-material/Mail';
+import { jwtDecode } from 'jwt-decode';
 
-const Headers = () => {
+
+const Header = () => {
+    const navigate = useNavigate();
     const usertoken = localStorage.getItem("userlogintoken");
     const admintoken = localStorage.getItem("adminlogintoken");
-    const [open, setOpen] = useState(false); // Start with the menu closed
+    const [open, setOpen] = useState(false);
 
-    const navigate = useNavigate();
+    let id = "";
+    if (usertoken) {
+        const decoded = jwtDecode(usertoken);
+        id = decoded.userId
+    }
 
-    const handleOpen = () => {
-        setOpen(!open);
+    else if (admintoken) {
+        const decoded = jwtDecode(admintoken);
+        id = decoded.adminId;
+    }
+
+    const toggleDrawer = (isOpen) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setOpen(isOpen);
     };
+
+    const handleUserLogout = () => {
+        localStorage.removeItem("userlogintoken");
+        navigate("/userlogin");
+    };
+
+    const handleAdminLogout = () => {
+        localStorage.removeItem("adminlogintoken");
+        navigate("/adminlogin");
+    };
+
+    const DrawerList = (
+        // <div style={{background:"aliceblue",marginTop:"0px",zIndex:"300",position:"sticky",top:"",left:"0"}} >
+        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <ListItemText primary={<Link className="links" to="/">Home</Link>} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <ListItemText primary={<Link to="/about" className="links">About</Link>} />
+                    </ListItemButton>
+                </ListItem>
+                {usertoken ? (
+                    <>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={handleUserLogout}>
+                                <ListItemText primary="Logout" />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemText primary={<Link to={`/userdashboard/${id}`} className="links">Dashboard</Link>} />
+                            </ListItemButton>
+                        </ListItem>
+                    </>
+                ) : (
+                    !admintoken && (
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemText primary={<Link className="links" to="/userlogin">Login</Link>} />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                )}
+                {admintoken ? (
+                    <>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={handleAdminLogout}>
+                                <ListItemText primary="Logout" />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemText primary={<Link to={`/admindashboard/${id}`} className="links">Dashboard</Link>} />
+                            </ListItemButton>
+                        </ListItem>
+                    </>
+                ) : (
+                    !usertoken && (
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemText primary={<Link className="links" to="/adminlogin">Admin Login</Link>} />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                )}
+            </List>
+            <Divider />
+        </Box>
+        // </div>
+    );
 
     return (
         <div>
-            <Box sx={{ flexGrow: 1 }} className="head" style={{background:"antiquewhite"}}>
-                <AppBar position="static">
-                    <Toolbar variant="regular">
-                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleOpen} sx={{ mr: 2 }}>
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography variant="h6" color="inherit" component="div">
-                            <Link to="/" className="links" style={{ color: 'inherit', textDecoration: 'none' }}>
-                                CableGuy
-                            </Link>
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-            </Box>
-            <header className={open ? "open" : "closes"}>
+            <header>
                 <ul>
                     <li><Link className="links" to="/">Home</Link></li>
+                    <li><Link to="/about" className="links">About</Link></li>
                     {usertoken ? (
-                        <li>
-                            <Link className="links" to="/" onClick={() => {
-                                localStorage.removeItem("userlogintoken");
-                                navigate("/userlogin");
-                            }}>Logout</Link>
-                        </li>
+                        <li><Link className="links" to="/" onClick={handleUserLogout}>Logout</Link></li>
                     ) : (
-                        admintoken ? null : <li><Link className="links" to="/userlogin">Login</Link></li>
+                        !admintoken && <li><Link className="links" to="/userlogin">Login</Link></li>
                     )}
                     {admintoken ? (
-                        <li>
-                            <Link className="links" to="/" onClick={() => {
-                                localStorage.removeItem("adminlogintoken");
-                                navigate("/adminlogin");
-                            }}>Logout</Link>
-                        </li>
-                    ) : usertoken ? null : <li><Link className="links" to="/adminlogin">Admin Login</Link></li>}
+                        <li><Link className="links" style={{ marginLeft: "5px" }} to="/" onClick={handleAdminLogout}>Logout</Link></li>
+                    ) : (
+                        !usertoken && <li><Link className="links" to="/adminlogin">Admin Login</Link></li>
+                    )}
                 </ul>
             </header>
+
+            {/* Button to open drawer */}
+            <Button onClick={toggleDrawer(true)}>
+                <MenuIcon />
+            </Button>
+            {/* Drawer Component */}
+            <Drawer open={open} onClose={toggleDrawer(false)}>
+                {DrawerList}
+            </Drawer>
         </div>
     );
 };
 
-export default Headers;
+export default Header;

@@ -310,10 +310,10 @@ const Userdashboard = () => {
       doc.setFont("helvetica", "bold");
       const title = "Payment Receipt";
       const titleWidth = doc.getStringUnitWidth(title) * doc.getFontSize() / doc.internal.scaleFactor;
-      const titleX = (doc.internal.pageSize.width - titleWidth) / 2; 
-      doc.text(title, titleX, 20); 
+      const titleX = (doc.internal.pageSize.width - titleWidth) / 2;
+      doc.text(title, titleX, 20);
 
-      doc.setDrawColor(0, 0, 0); 
+      doc.setDrawColor(0, 0, 0);
       doc.line(10, 25, 200, 25);
 
       doc.setFontSize(12);
@@ -324,10 +324,10 @@ const Userdashboard = () => {
 
       doc.line(14, 55, 200, 55);
 
-      const startY = 60; 
-      const headerHeight = 10; 
-      doc.setFillColor(220, 220, 220); 
-      doc.rect(14, startY, 182, headerHeight, "F"); 
+      const startY = 60;
+      const headerHeight = 10;
+      doc.setFillColor(220, 220, 220);
+      doc.rect(14, startY, 182, headerHeight, "F");
 
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
@@ -339,11 +339,11 @@ const Userdashboard = () => {
 
       doc.setFont("helvetica", "normal");
 
-      doc.setDrawColor(0, 0, 0); 
-      doc.line(14, startY + headerHeight, 200, startY + headerHeight); 
+      doc.setDrawColor(0, 0, 0);
+      doc.line(14, startY + headerHeight, 200, startY + headerHeight);
 
       receipt.forEach((e, index) => {
-        const yOffset = startY + headerHeight + 10 + (index * 30); 
+        const yOffset = startY + headerHeight + 10 + (index * 30);
         doc.text(e.product_name, 15, yOffset);
         doc.text(e.category, 75, yOffset);
         doc.text(e.quantity.toString(), 110, yOffset);
@@ -365,40 +365,43 @@ const Userdashboard = () => {
 
 
     <div className='userdash'>
+      <div className="mainformdiv">
+        {update ? (
+          <div className='formdiv'>
+            <form onSubmit={handleUpdateClick} className='updateform'>
+              <div className='updateinp'>
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={updatedata.name}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className='updateinp'>
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={updatedata.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <button className='links' style={{border:"none"}} type='submit'>Update Data</button>
 
-      {update ? (
-        <div className='formdiv'>
-          <form onSubmit={handleUpdateClick} className='updateform'>
-            <div className='updateinp'>
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={updatedata.name}
-                onChange={handleChange}
-              />
-            </div>
-            <div className='updateinp'>
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={updatedata.email}
-                onChange={handleChange}
-              />
-            </div>
-            <button type='submit'>Update Data</button>
-          </form>
-        </div>
-      ) : (
-        <div className='detailsdiv'>
-          <div className="details">
-            <h1>Welcome {data.name}</h1>
-            <button className='links' onClick={() => setUpdate(true)}>Update</button>
+
+            </form>
+            <button style={{display:"block",margin:"10px auto",padding:"5px"}} className='links' onClick={() => setUpdate(false)}>Back</button>
           </div>
-        </div>
-      )}
-
+        ) : (
+          <div className='detailsdiv'>
+            <div className="details">
+              <h1>Welcome {data.name}</h1>
+              <button className='links' onClick={() => setUpdate(true)}>Update</button>
+            </div>
+          </div>
+        )}
+      </div>
       {addProd ?
         <div className='maindivprod'>
           <div className='products'>
@@ -468,7 +471,7 @@ const Userdashboard = () => {
             <div className='num'>
               <input type="number" name="selectedNumber" id="" value={selectedQuantity < 0 ? 0 : selectedQuantity} onChange={(e) => { setSelectedQuantity(e.target.value) }} />
             </div>
-            <button onClick={handleAddProduct}>Add Product</button>
+            <button className='links' onClick={handleAddProduct}>Add Product</button>
 
           </div>
         </div>
@@ -480,7 +483,7 @@ const Userdashboard = () => {
             <>
               <div className='orderdet'>
                 <h1 style={{ margin: "10px 5px" }}>{e.name} <span>quantity:{e.quantity}</span></h1>
-                <button style={{ height: "30px", padding: "0 10px", cursor: "pointer" }} onClick={() => {
+                <button className='links' style={{ height: "30px", padding: "0 10px", cursor: "pointer" }} onClick={() => {
                   removeProduct(index)
                 }}>Remove</button>
 
@@ -493,7 +496,7 @@ const Userdashboard = () => {
         <h2 style={{ margin: "5px" }}>Total amount is:{cart.reduce((total, e) => {
           return total += e.price * e.quantity
         }, 0)} ₹</h2>
-        <button style={{ margin: "20px 5px", padding: "5px 10px", cursor: "pointer" }} onClick={placeOrders}>Place Order</button>
+        <button className='links' style={{ margin: "20px 5px", padding: "5px 10px", cursor: "pointer" }} onClick={placeOrders}>Place Order</button>
       </div>}
       {receipt.length > 0 ? (
         <div className='receipt'>

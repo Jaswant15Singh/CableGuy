@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import jsPDF from 'jspdf';
-
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const IndividualOrders = () => {
     const [search, setSearch] = useState('');
@@ -22,6 +29,39 @@ const IndividualOrders = () => {
         const decodedd = jwtDecode(adminToken);
         id = decodedd.adminId;
     }
+
+    const StyledTableCell = styled(TableCell)(({ theme }) => ({
+        [`&.${tableCellClasses.head}`]: {
+            backgroundColor: theme.palette.common.black,
+            color: theme.palette.common.white,
+        },
+        [`&.${tableCellClasses.body}`]: {
+            fontSize: 14,
+        },
+    }));
+
+    const StyledTableRow = styled(TableRow)(({ theme }) => ({
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
+        // hide last border
+        '&:last-child td, &:last-child th': {
+            border: 0,
+        },
+    }));
+
+    function createData(name, calories, fat, carbs, protein) {
+        return { name, calories, fat, carbs, protein };
+    }
+
+    const rows = [
+        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+        createData('Eclair', 262, 16.0, 24, 6.0),
+        createData('Cupcake', 305, 3.7, 67, 4.3),
+        createData('Gingerbread', 356, 16.0, 49, 3.9),
+    ];
+
 
     useEffect(() => {
         getOrderDetails();
@@ -93,6 +133,8 @@ const IndividualOrders = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = values.slice(indexOfFirstItem, indexOfLastItem);
+    console.log(currentItems);
+
     const totalPages = Math.ceil(values.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
@@ -100,40 +142,75 @@ const IndividualOrders = () => {
     };
 
     return (
-        <div style={{ minHeight: "80vh" }}>
-            <button className='links' onClick={generatePDF} style={{ margin: "10px", padding: "5px", border: "none", display: "block", margin: "20px auto" }}>
+        <div style={{ minHeight: "80vh",backgroundColor:"#D8E3DB",padding:"10px 0" }}>
+            <button className='links' onClick={generatePDF} style={{padding: "5px", border: "none", display: "block", margin: "0px auto" ,marginBottom:"10px"}}>
                 Download PDF
             </button>
-            <table border={2} style={{ width: "80vw", margin: "10px auto" }}>
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Category</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        currentItems.map((order, index) => (
-                            <tr key={index}>
-                                <td>{order.product_name}</td>
-                                <td>{order.category}</td>
-                                <td>{order.quantity}</td>
-                                <td>{order.price_at_purchase} <span>&#8377;</span></td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
+          
+            {/* <div style={{ padding: "0px 30px" }}>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="right">Product Name</TableCell>
+                                <TableCell align="right">Category</TableCell>
+                                <TableCell align="right">Quantity</TableCell>
+                                <TableCell align="right">Price</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {currentItems.map((row) => (
+                                <TableRow
+                                    key={row.name}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                  
+                                    <TableCell align="right">{row.product_name}</TableCell>
+                                    <TableCell align="right">{row.category}</TableCell>
+                                    <TableCell align="right">{row.quantity}</TableCell>
+                                    <TableCell align="right">{row.price_at_purchase}</TableCell>
 
-            <div style={{ textAlign: "center" }}>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div> */}
+
+            <div style={{ padding: "0px 30px" }}>
+
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell align='left'>Product Name</StyledTableCell>
+                                <StyledTableCell align="left"> Category</StyledTableCell>
+                                <StyledTableCell align="left"> Quantity</StyledTableCell>
+                                <StyledTableCell align="left">Price</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {currentItems.map((row) => (
+                                <StyledTableRow key={row.name}>
+
+                                    <StyledTableCell align="left">{row.product_name}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.category}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.quantity}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.price_at_purchase}</StyledTableCell>
+
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+            <div style={{ textAlign: "center" ,marginBottom:"15px"}}>
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
-                    className='links'
-                   
+                        className='links'
+
                         key={index}
-                        style={{ margin: "5px" ,padding:"5px"}}
+                        style={{ margin: "5px", padding: "5px" }}
                         onClick={() => handlePageChange(index + 1)}
                         disabled={currentPage === index + 1}
                     >
@@ -141,11 +218,13 @@ const IndividualOrders = () => {
                     </button>
                 ))}
             </div>
-            <h1 style={{ textAlign: "center", fontWeight: "lighter" }}>
-                Total Bill: <span>&#8377;</span><span style={{ fontWeight: "bold" }}> {values.reduce((accum, e) => accum + e.total_price, 0)}</span>
+            <div style={{ textAlign: "center"}}>
+            <h1 style={{display:"inline", fontWeight: "lighter",margin:"15px 0" ,padding:"10px",borderRadius:"5px",backgroundColor:"rgb(234, 236, 235)",border:"1px solid black"}}>
+                Total Bill: <span>&#8377;</span><span style={{ fontWeight: "600"}}> {values.reduce((accum, e) => accum + e.total_price, 0)}</span>
             </h1>
-            <div style={{ textAlign: "center" }}>
-                {token ? <Link className='links' to={`/userdashboard/${id}`}>Back</Link> : <Link className='links' to={`/admindashboard/${id}`}>Back</Link>}
+            </div>
+            <div style={{ textAlign: "center",marginTop:"20px" }}>
+                {token ? <Link className='links' to={`/orderhistory`}>Back</Link> : <Link className='links' to={`/orderhistory`}>Back</Link>}
             </div>
         </div>
     );

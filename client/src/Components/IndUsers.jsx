@@ -72,8 +72,40 @@ const IndUsers = () => {
     };
 
     return (
-        <div className='ind'>
-            <form onSubmit={handleUpdateClick}>
+        // <div className='ind'>
+        <>
+            <div className="login">
+                <form onSubmit={handleUpdateClick}>
+                    <h1>Update User</h1>
+                    <Link className='links' style={{ margin: "10px auto" }} to={`/admindashboard/${id}`}>Back</Link>
+
+                    <div className='inp'>
+                        <label htmlFor="name">Name</label>
+                        <input
+                            type="text"
+                            name="name"
+                            required={true}
+                            value={updatedata.name}
+                            onChange={handleChange}
+                            placeholder='Name'
+                        />
+                    </div>
+                    <div className='inp'>
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            required={true}
+                            value={updatedata.email}
+                            onChange={handleChange}
+                            placeholder='Email'
+                        />
+                    </div>
+
+                    <button style={{ marginTop: "0px" }} type='submit' className='btn'>Update</button>
+                </form>
+            </div>
+            {/* <form onSubmit={handleUpdateClick}>
                 <div className='indinp'>
                     <label htmlFor="name">Name</label>
                     <input
@@ -95,10 +127,11 @@ const IndUsers = () => {
                     />
                 </div>
                 <button type='submit' className='links'>Update form</button>
-            </form>
-            <Link to={`/admindashboard/${adminidd}`}>Back</Link>
-        </div>
-    );
+            </form> */}
+            {/* <Link to={`/admindashboard/${adminidd}`}>Back</Link> */}
+        {/* </div> */}
+        </>
+    )
 }
 
 export default IndUsers;
