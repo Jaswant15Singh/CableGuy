@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import { toast } from 'react-toastify';
 
 const Adminlogin = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -37,7 +38,7 @@ const Adminlogin = () => {
       console.log(decoded);
       if (decoded.role === "admin") {
         localStorage.setItem("adminlogintoken", res.token);
-        alert(res.message);
+        toast.success(res.message);
         setData({ email: "", password: "" });
 
 
@@ -45,7 +46,7 @@ const Adminlogin = () => {
       }
     }
     if (!res.success) {
-      alert(res.message)
+      toast.error(res.message)
     }
 
 

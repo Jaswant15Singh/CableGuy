@@ -218,12 +218,12 @@ const IndividualOrders = () => {
                     </button>
                 ))}
             </div>
-            <div style={{ textAlign: "center"}}>
-            <h1 style={{display:"inline", fontWeight: "lighter",margin:"15px 0" ,padding:"10px",borderRadius:"5px",backgroundColor:"rgb(234, 236, 235)",border:"1px solid black"}}>
+            <div className='indorderh1' style={{ textAlign: "center"}}>
+            <h1 >
                 Total Bill: <span>&#8377;</span><span style={{ fontWeight: "600"}}> {values.reduce((accum, e) => accum + e.total_price, 0)}</span>
             </h1>
             </div>
-            <div style={{ textAlign: "center",marginTop:"20px" }}>
+            <div style={{ textAlign: "center",marginTop:"30px" }}>
                 {token ? <Link className='links' to={`/orderhistory`}>Back</Link> : <Link className='links' to={`/orderhistory`}>Back</Link>}
             </div>
         </div>

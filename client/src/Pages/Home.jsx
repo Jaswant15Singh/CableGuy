@@ -20,7 +20,7 @@ let id="";
        
             <div className='home'>
                 <div className='homeimage'>
-                    <img src="https://t3.ftcdn.net/jpg/07/52/70/74/360_F_752707422_6wyWHXR0SRmVyvmR2NCObNTW7RbCmSKq.jpg" alt="" />
+                    <img src="https://www.seidenstern.at/wp-content/uploads/2021/10/About-Us-31.jpg" alt="" />
                     <div className='homedesc'>
                         <h1>Welcome To CableGuy Catv</h1>
                         {token && <Link className="homelink links" to={`/userdashboard/${id}`}>Dashboard</Link>}

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 const Footer = () => {
   return (
     <footer>
-      <h1><Link to="/" className='links'>CableGuy</Link></h1>
+      <h1><Link to="/" className='linkss'>CableGuy</Link></h1>
       {/* <ul>
                 <li><Link className='links' to='/'>Home</Link></li>
                 <li><Link className='links' to='/'>Login</Link></li>

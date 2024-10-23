@@ -43,58 +43,66 @@ const Header = () => {
 
     const DrawerList = (
         // <div style={{background:"aliceblue",marginTop:"0px",zIndex:"300",position:"sticky",top:"",left:"0"}} >
-        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
+        <Box sx={{ width: 180 }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
             <List>
                 <ListItem disablePadding>
                     <ListItemButton>
-                        <ListItemText primary={<Link className="links" to="/">Home</Link>} />
+                        <ListItemText primary={<Link className="linkss" to="/">Home</Link>} />
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
                     <ListItemButton>
-                        <ListItemText primary={<Link to="/about" className="links">About</Link>} />
+                        <ListItemText primary={<Link to="/about" className="linkss">About</Link>} />
                     </ListItemButton>
                 </ListItem>
                 {usertoken ? (
                     <>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={handleUserLogout}>
-                                <ListItemText primary="Logout" />
+                    <div style={{marginLeft:"23px"}}>
+                        <ListItem disablePadding  style={{textAlign:"center"}}>
+                            <ListItemButton  onClick={handleUserLogout}>
+                                <ListItemText primary="Logout"/>
                             </ListItemButton>
                         </ListItem>
+                        </div>
+                        <div>
                         <ListItem disablePadding>
                             <ListItemButton>
-                                <ListItemText primary={<Link to={`/userdashboard/${id}`} className="links">Dashboard</Link>} />
+                                <ListItemText primary={<Link to={`/userdashboard/${id}`} className="linkss">Dashboard</Link>} />
                             </ListItemButton>
                         </ListItem>
+                        </div>
                     </>
                 ) : (
                     !admintoken && (
                         <ListItem disablePadding>
                             <ListItemButton>
-                                <ListItemText primary={<Link className="links" to="/userlogin">Login</Link>} />
+                                <ListItemText primary={<Link className="linkss" to="/userlogin">Login</Link>} />
                             </ListItemButton>
                         </ListItem>
                     )
                 )}
                 {admintoken ? (
                     <>
-                        <ListItem disablePadding>
+                      <div style={{marginLeft:"23px"}}>
+                      <ListItem disablePadding>
                             <ListItemButton onClick={handleAdminLogout}>
                                 <ListItemText primary="Logout" />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem disablePadding>
+                      </div>
+                       <div>
+                       <ListItem disablePadding>
                             <ListItemButton>
-                                <ListItemText primary={<Link to={`/admindashboard/${id}`} className="links">Dashboard</Link>} />
+                                <ListItemText primary={<Link to={`/admindashboard/${id}`} className="linkss">Dashboard</Link>} />
                             </ListItemButton>
                         </ListItem>
+                       </div>
                     </>
                 ) : (
                     !usertoken && (
                         <ListItem disablePadding>
                             <ListItemButton>
-                                <ListItemText primary={<Link className="links" to="/adminlogin">Admin Login</Link>} />
+                                <ListItemText primary={<Link className="linkss" to="/adminlogin">Admin Login</Link>} />
                             </ListItemButton>
                         </ListItem>
                     )

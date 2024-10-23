@@ -21,6 +21,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { toast } from 'react-toastify';
 const AdminDashboard = () => {
     const [data, setData] = useState([]);
     const [inp, setInp] = useState({ name: "", email: "", password: "" });
@@ -104,7 +105,7 @@ const AdminDashboard = () => {
 
     const list = (anchor) => (
         <Box
-            sx={{ width: 250 }}
+            sx={{ width: 180 }}
             role="presentation"
             onClick={toggleDrawer(anchor, false)}
             onKeyDown={toggleDrawer(anchor, false)}
@@ -355,15 +356,15 @@ const AdminDashboard = () => {
         });
 
         if (!res.ok) {
-            alert("Some issue occured")
+            toast.error("Some issue occured")
         }
 
         res = await res.json();
         console.log(res);
         if (!res.success) {
-            alert(res.message)
+            toast.error(res.message)
         }
-        alert(res.message);
+        toast.success(res.message);
         setInp({ name: "", email: "", password: "" })
 
         setAdminreg(!addAdmin);
@@ -381,7 +382,7 @@ const AdminDashboard = () => {
 
 
         if (!res.ok) {
-            alert("Some issue occred");
+            toast.error("Some issue occred");
         }
 
 
@@ -389,11 +390,11 @@ const AdminDashboard = () => {
         console.log(res);
 
         if (!res.success) {
-            alert(res.message)
+            toast.error(res.message)
         }
 
         else {
-            alert(res.message);
+            toast.success(res.message);
             getAllAdmin();
 
         }
@@ -411,17 +412,17 @@ const AdminDashboard = () => {
             }
         });
         if (!res.ok) {
-            alert("Some issue occured");
+            toast.error("Some issue occured");
         }
 
         res = await res.json();
         console.log(res);
 
         if (!res.success) {
-            alert(res.message);
+            toast.error(res.message);
         }
 
-        alert(res.message);
+        toast.success(res.message);
         getSingleUser();
     }
 
@@ -443,9 +444,9 @@ const AdminDashboard = () => {
         res = await res.json();
         console.log(res);
         if (!res.success) {
-            alert(res.message)
+            toast.error(res.message)
         }
-        alert(res.message);
+        toast.success(res.message);
         setInpp({ name: "", email: "", password: "" })
 
         setSupplieradd(!supplieradd);
@@ -463,7 +464,7 @@ const AdminDashboard = () => {
             body: JSON.stringify({ name: indProd.name, description: indProd.description, category: indProd.category })
         })
         if (!res.ok) {
-            alert("Issue occured in Individual Products");
+            toast.error("Issue occured in Individual Products");
         }
 
         res = await res.json();
@@ -473,12 +474,12 @@ const AdminDashboard = () => {
 
             setIndProd({ name: "", description: "", category: "" });
 
-            alert(res.message);
+            toast.success(res.message);
             setIsIndividual(!isIndividual)
         }
 
         else {
-            alert(res.message)
+            toast.error(res.message)
         }
     }
     const addMoreProducts = () => {
@@ -531,18 +532,18 @@ const AdminDashboard = () => {
 
             if (!res.ok) {
                 const errorMessage = await res.json();
-                alert(errorMessage.message || 'Some issue occurred');
+                toast.error(errorMessage.message || 'Some issue occurred');
                 return;
             }
 
             const responseData = await res.json();
 
             if (!responseData.success) {
-                alert(responseData.message || 'Some issue occurred');
+                toast.error(responseData.message || 'Some issue occurred');
                 return;
             }
 
-            alert(responseData.message);
+            toast.success(responseData.message);
 
 
             setCart([])
@@ -578,7 +579,7 @@ const AdminDashboard = () => {
     return (
         <div className='admindashboard'>
             <div style={{ float: "right" }} className='dropdown'>
-                <Button style={{zIndex:"999"}} onClick={toggleDrawer('right', true)}><ArrowDropDownIcon /> Add/See</Button>
+                <Button style={{ zIndex: "999" }} onClick={toggleDrawer('right', true)}><ArrowDropDownIcon /> Add/See</Button>
                 <Drawer
                     anchor="right"
                     open={state['right']}
@@ -776,7 +777,7 @@ const AdminDashboard = () => {
                         <label htmlFor="password">Address</label>
                         <input type="text" name="address" id="" value={inpp.address} required={true} onChange={handleeChange} />
                     </div>
-                    <button type='submit'>Add</button>
+                    <button type='submit' className='links'>Add</button>
                 </form> </div> : ""
             }
 
@@ -818,7 +819,7 @@ const AdminDashboard = () => {
                             </div>
 
 
-                            <button type='submit'>Add Product</button>
+                            <button type='submit' className='links'>Add Product</button>
                         </form>
                     </div>
                 ) : ""
@@ -1016,7 +1017,7 @@ const AdminDashboard = () => {
                                 )}
                             </div>
                         ))}
-                        <button type="button" onClick={addMoreProducts}>
+                        <button className='links' type="button" onClick={addMoreProducts}>
                             Add More Products
                         </button>
 
@@ -1029,32 +1030,35 @@ const AdminDashboard = () => {
 
                 {
                     isProd && (
-                        <div className='productss'>
-                            <button className='prod-close' style={{ top: "0" }} onClick={() => { setIsProd(!isProd) }}>
-                                X
-                            </button>
-                            <table className='product-table' border={2}>
-                                <thead>
-                                    <tr>
-                                        <th>batche_no</th>
-                                        <th>batch_quantity</th>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Category</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {currentItemss.map((e) => (
-                                        <tr key={e.id}>
-                                            <td>{e.batche_no}</td>
-                                            <td>{e.batch_quantity}</td>
-                                            <td>{e.name}</td>
-                                            <td>{e.price}</td>
-                                            <td>{e.category}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div style={{ padding: "0px 0px" }} className="productss">
+                            <button onClick={() => { setIsProd(!isProd) }}>X</button>
+
+                            <TableContainer component={Paper} style={{ borderRadius: "0" }}>
+                                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell align="left"> Batch_No</StyledTableCell>
+                                            <StyledTableCell align="left"> Batch_Quantity</StyledTableCell>
+                                            <StyledTableCell align="left"> Name</StyledTableCell>
+                                            <StyledTableCell align="left"> Price</StyledTableCell>
+                                            <StyledTableCell align="left">Category</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {currentItemss.map((row) => (
+                                            <StyledTableRow key={row.name}>
+                                                <StyledTableCell align="left">{row.batche_no}</StyledTableCell>
+                                                <StyledTableCell align="left">{row.batch_quantity}</StyledTableCell>
+
+                                                <StyledTableCell align="left">{row.name}</StyledTableCell>
+                                                <StyledTableCell align="left">{row.price}</StyledTableCell>
+                                                <StyledTableCell align="left">{row.category}</StyledTableCell>
+
+                                            </StyledTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                             <div style={{ textAlign: "center" }}>
                                 {Array.from({ length: totalpagess }, (_, index) => (
                                     <button
@@ -1068,6 +1072,45 @@ const AdminDashboard = () => {
                                 ))}
                             </div>
                         </div>
+                        // <div className='productss'>
+                        //     <button className='prod-close' style={{ top: "0" }} onClick={() => { setIsProd(!isProd) }}>
+                        //         X
+                        //     </button>
+                        //     <table className='product-table' border={2}>
+                        //         <thead>
+                        //             <tr>
+                        //                 <th>batche_no</th>
+                        //                 <th>batch_quantity</th>
+                        //                 <th>Name</th>
+                        //                 <th>Price</th>
+                        //                 <th>Category</th>
+                        //             </tr>
+                        //         </thead>
+                        //         <tbody>
+                        //             {currentItemss.map((e) => (
+                        //                 <tr key={e.id}>
+                        //                     <td>{e.batche_no}</td>
+                        //                     <td>{e.batch_quantity}</td>
+                        //                     <td>{e.name}</td>
+                        //                     <td>{e.price}</td>
+                        //                     <td>{e.category}</td>
+                        //                 </tr>
+                        //             ))}
+                        //         </tbody>
+                        //     </table>
+                        //     <div style={{ textAlign: "center" }}>
+                        //         {Array.from({ length: totalpagess }, (_, index) => (
+                        //             <button
+                        //                 key={index}
+                        //                 style={{ margin: "5px" }}
+                        //                 onClick={() => handlePageChangee(index + 1)}
+                        //                 disabled={currentPageBatch === index + 1}
+                        //             >
+                        //                 {index + 1}
+                        //             </button>
+                        //         ))}
+                        //     </div>
+                        // </div>
                     )
                 }
             </div>
@@ -1076,29 +1119,9 @@ const AdminDashboard = () => {
 
 
                 {isallProd && (
-                    <div className='productss'>
-                        <button className='prod-close' style={{ top: "0" }} onClick={() => setIsallProd(false)}>
-                            X
-                        </button>
-                        <table className='product-table' border={2}>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th>Category</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentItems.map((e) => (
-                                    <tr key={e.id}>
-                                        <td>{e.name}</td>
-                                        <td>{e.price}</td>
-                                        <td>{e.category}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div style={{ textAlign: "center" }}>
+                    <div style={{ padding: "0px 0px" }} className="productss">
+                        <button onClick={() => { setIsallProd(!isallProd) }} >X</button>
+                        <div style={{ textAlign: "center", zIndex: "100" }}>
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <button
                                     key={index}
@@ -1110,7 +1133,54 @@ const AdminDashboard = () => {
                                 </button>
                             ))}
                         </div>
+                        <TableContainer component={Paper} style={{ borderRadius: "0" }}>
+                            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                                <TableHead>
+                                    <TableRow>
+                                        <StyledTableCell align="left"> Name</StyledTableCell>
+                                        <StyledTableCell align="left"> Price</StyledTableCell>
+                                        <StyledTableCell align="left">Category</StyledTableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {currentItems.map((row) => (
+                                        <StyledTableRow key={row.name}>
+                                            <StyledTableCell align="left">{row.name}</StyledTableCell>
+                                            <StyledTableCell align="left">{row.price}</StyledTableCell>
+                                            <StyledTableCell align="left">{row.category}</StyledTableCell>
+
+                                        </StyledTableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+
+                        </TableContainer>
+
                     </div>
+                    // <div className='productss'>
+                    //     <button className='prod-close' style={{ top: "0" }} onClick={() => setIsallProd(false)}>
+                    //         X
+                    //     </button>
+                    //     <table className='product-table' border={2}>
+                    //         <thead>
+                    //             <tr>
+                    //                 <th>Name</th>
+                    //                 <th>Price</th>
+                    //                 <th>Category</th>
+                    //             </tr>
+                    //         </thead>
+                    //         <tbody>
+                    //             {currentItems.map((e) => (
+                    //                 <tr key={e.id}>
+                    //                     <td>{e.name}</td>
+                    //                     <td>{e.price}</td>
+                    //                     <td>{e.category}</td>
+                    //                 </tr>
+                    //             ))}
+                    //         </tbody>
+                    //     </table>
+
+                    // </div>
                 )}
             </div>
 
@@ -1137,7 +1207,7 @@ const AdminDashboard = () => {
                                         <td>{e.category}</td>
                                         <td>{e.price}</td>
                                         <td>{e.batch_quantity}</td>
-                                        <td><button onClick={() => { removeProduct(index) }}>Remove</button></td>
+                                        <td><button onClick={() => { removeProduct(index) }} className='links'>Remove</button></td>
                                     </tr>
                                 )
                             })
@@ -1150,9 +1220,9 @@ const AdminDashboard = () => {
             )}
 
 
-            {cart.length > 0 && <button style={{ width: "60px", margin: "10px auto", display: "block" }} onClick={addProduct}>Submit Products</button>
+            {cart.length > 0 && <button style={{ width: "60px", margin: "10px auto", display: "block" }} onClick={addProduct} className='links'>Submit Products</button>
             }
-            <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
+            <Link style={{ display: "block", width: "70px", margin: "0px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
 
         </div>
     )

@@ -22,12 +22,12 @@ function App() {
   return (
     <>
       <BrowserRouter>
-    
+
         <Headers />
 
         <Routes>
           <Route exact path='/' element={<Home />} />
-          <Route path='/about' element={<About/>}/>
+          <Route path='/about' element={<About />} />
           <Route path='/userdashboard/:id' element={<ProtectedRoute><Userdashboard /></ProtectedRoute>} />
           <Route path='/userlogin' element={<Userlogin />} />
           <Route path='/adminlogin' element={<Adminlogin />} />
@@ -35,7 +35,7 @@ function App() {
           <Route path='/admin/update/:id' element={<AdminProtRoute><AdminUpdate /></AdminProtRoute>} />
           <Route path='/admin/ind/:id' element={<AdminProtRoute><IndUsers /></AdminProtRoute>} />
           <Route path='/orderhistory' element={<ProtRoute><OrderHistory /></ProtRoute>} />
-          <Route path='/individualorders/:order_id' element={<IndividualOrders/>}/>
+          <Route path='/individualorders/:order_id' element={<IndividualOrders />} />
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>
         <Footer />
@@ -101,7 +101,7 @@ const ProtRoute = ({ children }) => {
   if (token || admin_token) {
     return children
   }
-  else{
+  else {
     return <h1>Cannot Access Order History</h1>
   }
 }
@@ -113,7 +113,7 @@ const AdminProtRoute = ({ children }) => {
   if (admin_token) {
     return children
   }
-  else{
+  else {
     return <h1>Cannot Access Order History</h1>
   }
 }

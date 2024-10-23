@@ -2,24 +2,25 @@ import React from 'react'
 import { jwtDecode } from 'jwt-decode';
 
 const About = () => {
-    const token = localStorage.getItem("userlogintoken") ;
-    const admintoken= localStorage.getItem("adminlogintoken");
-    let id="";
-    if(token){
-        const decoded=jwtDecode(token);
-    id=decoded.userId
+    const token = localStorage.getItem("userlogintoken");
+    const admintoken = localStorage.getItem("adminlogintoken");
+    let id = "";
+    if (token) {
+        const decoded = jwtDecode(token);
+        id = decoded.userId
     }
 
-    else if(admintoken){
-        const decoded=jwtDecode(admintoken);
-        id=decoded.adminId;
+    else if (admintoken) {
+        const decoded = jwtDecode(admintoken);
+        id = decoded.adminId;
     }
 
     return (
         <div className='about'>
             <div className='abt'>
                 <div className="image-container">
-                    <img className='img' src="https://www.seidenstern.at/wp-content/uploads/2021/10/About-Us-31.jpg" alt="" />
+
+                    <img className='img' src="https://t3.ftcdn.net/jpg/07/52/70/74/360_F_752707422_6wyWHXR0SRmVyvmR2NCObNTW7RbCmSKq.jpg" alt="" />
                     <div className="moreabt">
                         <h1>Desigers,Thinkers And Collaorators</h1>
                         <h3>Who we are</h3>

@@ -64,7 +64,7 @@ const AdminUpdate = () => {
             <div className="login">
                 <form onSubmit={handleUpdateSubmit}>
                     <h1>Update User</h1>
-                    <Link className='links' style={{ margin: "10px auto" }} to={`/admindashboard/${id}`}>Back</Link>
+                    <Link className='linkss' style={{ margin: "10px auto" }} to={`/admindashboard/${id}`}>Back</Link>
 
                     <div className='inp'>
                         <label htmlFor="name">Name</label>

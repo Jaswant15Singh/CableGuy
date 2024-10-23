@@ -96,7 +96,7 @@ const OrderHistory = () => {
         //     </div>
 
         <Box
-            sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+            sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 180 }}
             role="presentation"
             onClick={toggleDrawer(anchor, false)}
             onKeyDown={toggleDrawer(anchor, false)}
@@ -385,8 +385,8 @@ const OrderHistory = () => {
                 </Drawer>
 
             </div>
-            <h1 style={{ textAlign: "center", margin: "15px", color: "#444444",transform:"translateX(40px)" }}>Hello {name}</h1>
-            <Link className='adnew links' to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{ textDecoration: "underline", display: "block", width: "50px", textAlign: "center", margin: "10px auto" }}>
+            <h1 className='orderhistoryh1' style={{ textAlign: "center", margin: "15px", color: "#444444",transform:"translateX(40px)" }}>Hello {name}</h1>
+            <Link className='adnew links' to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{  display: "block", width: "50px", textAlign: "center", margin: "10px auto" }}>
                 Back
             </Link>
             {/* 
@@ -461,7 +461,7 @@ const OrderHistory = () => {
                                     <StyledTableCell align="right">{row.customer_name}</StyledTableCell>
                                     <StyledTableCell align="right">{row.customer_contact}</StyledTableCell>
                                     <StyledTableCell align="right">{row.email}</StyledTableCell>
-                                    <StyledTableCell><Link className='links' to={`/individualorders/${row.order_id}`}>View Here</Link></StyledTableCell>
+                                    <StyledTableCell align='right'><Link className='links' to={`/individualorders/${row.order_id}`}>View Here</Link></StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>

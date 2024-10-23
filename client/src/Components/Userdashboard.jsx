@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import { jsPDF } from 'jspdf';
+import { toast } from 'react-toastify';
 
 const Userdashboard = () => {
   const [data, setData] = useState({ name: "", email: "" });
@@ -44,6 +45,18 @@ const Userdashboard = () => {
 
   const handleCustomerChange = (e) => {
     setCustomerData({ ...customerData, [e.target.name]: e.target.value })
+  }
+  const handleCustomerContact = (e) => {
+
+    const { name, value } = e.target;
+
+    if (/^\d*$/.test(value) && value.length <= 10) {
+      setCustomerData({
+        ...customerData,
+        [name]: value
+      });
+    }
+
   }
   const getSingleUser = async () => {
     try {
@@ -131,14 +144,14 @@ const Userdashboard = () => {
       });
 
       if (!res.ok) {
-        throw new Error("Some issue occurred");
+        toast.error("Some issue occurred");
       }
 
       const result = await res.json();
 
       setData({ name: updatedata.name, email: updatedata.email });
 
-      alert("Updated Successfully");
+      toast.success("Updated Successfully");
       setUpdate(false);
 
       setTimeout(() => {
@@ -146,12 +159,16 @@ const Userdashboard = () => {
       }, 300);
 
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
     }
   };
 
 
   const handleAddProduct = (e) => {
+    if (customerData.contact.length < 10) {
+      toast.error("Enter phone Number of 10 digits");
+      return;
+    }
     console.log(typeof selectedProduct);
     if (selectedProduct && selectedQuantity) {
       const existingProduct = cart.find((e) => e.id === Number(selectedProduct));
@@ -197,7 +214,7 @@ const Userdashboard = () => {
 
   const placeOrders = async () => {
     if (!customerData.name || !customerData.contact) {
-      alert("Enter User Details ");
+      toast.warn("Enter User Details ");
       return;
     }
     const orderData = {
@@ -240,7 +257,7 @@ const Userdashboard = () => {
           body: JSON.stringify({ order_id })
         });
         if (!res.ok) {
-          alert("Issue dring receipts !200")
+          toast.error("Issue dring receipts !200")
         }
 
         try {
@@ -257,7 +274,7 @@ const Userdashboard = () => {
         alert(res.message)
       }
     } catch (error) {
-      alert(error)
+      toast.error(error)
     }
 
   }
@@ -366,10 +383,13 @@ const Userdashboard = () => {
 
     <div className='userdash'>
       <div className="mainformdiv">
+        <img className='userdashimage' src="https://png.pngtree.com/thumb_back/fh260/background/20230618/pngtree-fully-stocked-warehouse-rack-3d-rendering-of-cardboard-box-inventory-image_3638745.jpg" alt="" />
+
         {update ? (
-          <div className='formdiv'>
-            <form onSubmit={handleUpdateClick} className='updateform'>
-              <div className='updateinp'>
+          <div className=" formdiv loginn">
+            <form onSubmit={handleUpdateClick}>
+              <h1>Login</h1>
+              <div className='inp'>
                 <label htmlFor="name">Name</label>
                 <input
                   type="text"
@@ -378,7 +398,7 @@ const Userdashboard = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className='updateinp'>
+              <div className='inp'>
                 <label htmlFor="email">Email</label>
                 <input
                   type="email"
@@ -387,12 +407,40 @@ const Userdashboard = () => {
                   onChange={handleChange}
                 />
               </div>
-              <button className='links' style={{border:"none"}} type='submit'>Update Data</button>
-
+              <button className='links' style={{ border: "none", marginTop: "20px", cursor: "pointer" }} type='submit'>Update Data</button>
 
             </form>
-            <button style={{display:"block",margin:"10px auto",padding:"5px"}} className='links' onClick={() => setUpdate(false)}>Back</button>
+            <button style={{ display: "block", margin: "10px auto", padding: "5px", cursor: "pointer" }} className='links' onClick={() => setUpdate(false)}>Back</button>
           </div>
+
+          // <div className='formdiv'>
+
+          //   <form onSubmit={handleUpdateClick} className='updateform'>
+          //     <h1 style={{ marginBottom: "-10px" }}>Update User</h1>
+          //     <div className='updateinp'>
+          //       <label htmlFor="name">Name</label>
+          //       <input
+          //         type="text"
+          //         name="name"
+          //         value={updatedata.name}
+          //         onChange={handleChange}
+          //       />
+          //     </div>
+          //     <div className='updateinp'>
+          //       <label htmlFor="email">Email</label>
+          //       <input
+          //         type="email"
+          //         name="email"
+          //         value={updatedata.email}
+          //         onChange={handleChange}
+          //       />
+          //     </div>
+          //     <button className='links' style={{ border: "none", marginTop: "20px", cursor: "pointer" }} type='submit'>Update Data</button>
+
+
+          //   </form>
+          //   <button style={{ display: "block", margin: "10px auto", padding: "5px", cursor: "pointer" }} className='links' onClick={() => setUpdate(false)}>Back</button>
+          // </div>
         ) : (
           <div className='detailsdiv'>
             <div className="details">
@@ -417,8 +465,18 @@ const Userdashboard = () => {
               </div>
               <div>
                 <label htmlFor="contact">Contact</label>
-                <input type="text" required={true} name="contact" id="" value={customerData.contact} onChange={handleCustomerChange} />
-              </div>
+                <input
+                  type="text"
+                  required
+                  name="contact"
+                  id="contact"
+                  value={customerData.contact}
+                  onChange={handleCustomerChange}
+                  minLength={10}
+                  maxLength={10}
+                  pattern="\d{10}"
+                  title="Please enter a valid 10-digit phone number"
+                />              </div>
             </div>
 
 
@@ -529,7 +587,7 @@ const Userdashboard = () => {
       )}
 
 
-      <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "10px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
+      <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "0px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
     </div>
 
 
