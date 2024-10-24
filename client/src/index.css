@@ -70,6 +70,7 @@ footer ul li {
   margin: 2px;
   padding: 10px;
   border: 1px solid black;
+
 }
 
 .links::before {
@@ -90,6 +91,7 @@ footer ul li {
   border-radius: 4px;
   background-color: rgb(32, 180, 190);
   border: 1px solid black;
+  cursor: pointer;
 }
 
 
@@ -142,7 +144,7 @@ footer ul li {
 
 }
 
-.loginn form{
+.loginn form {
   margin: 0 auto;
   max-width: 300px;
   min-height: 400px;
@@ -257,7 +259,7 @@ form h1 {
 }
 
 .home img {
-  height: 85vh;
+  min-height: 85vh;
   width: 100vw;
   position: relative;
   opacity: 0.8;
@@ -694,9 +696,9 @@ option {
   margin: 30px 40px;
 }
 
-.closed {
-  /* display: none; */
-}
+/* .closed {
+  display: none;
+} */
 
 .abt {
   margin: 0;
@@ -735,7 +737,7 @@ option {
   font-size: large;
 }
 
-.mission >p{
+.mission>p {
   margin: 40px 120px;
 }
 
@@ -951,7 +953,37 @@ option {
   border: 1px solid black;
 }
 
+.testimonials {
+  width: 100%;
+  padding: 10px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+}
+
+.test {
+  width: 100%;
+  background-color: #F3F4F6 !important;
+  padding: 50px;
+  height: 35vh;
+  max-height: 42vh;
+  font-family: "Roboto Condensed", sans-serif;
+  letter-spacing: 1.3px;
+}
+
+.test_user {
+  margin-top: 10px;
+  gap: 30px;
+}
+
+.test_user h4 {
+  color: gray;
+}
+
 @media (max-width:500px) {
+
+
 
   .home img {
     object-fit: cover;
@@ -1142,6 +1174,11 @@ option {
     margin: 30px auto;
   }
 
+
+  .mission>p {
+    margin: 20px;
+  }
+
   .customer h1,
   .prods h1 {
     font-size: large;
@@ -1236,6 +1273,16 @@ option {
 
   .indorderh1 h1 {
     font-size: medium !important;
+  }
+
+  .testimonials {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .test {
+    height: 50vh;
+    padding: 30px;
   }
 }
 
@@ -1339,6 +1386,10 @@ option {
     padding: 20px;
   }
 
+  .mission>p {
+    margin: 20px;
+  }
+
   .mission_img {
     width: 100% !important;
   }
@@ -1384,8 +1435,13 @@ option {
     font-size: large !important;
   }
 
-  .productss{
+  .productss {
     width: 400px;
+  }
+
+  .testimonials {
+    flex-direction: column;
+    padding: 20px;
   }
 }
 
@@ -1443,10 +1499,19 @@ option {
   .moreabt {
     left: 42%;
   }
-  .productss{
+
+  .productss {
     width: 400px;
   }
 
+  .mission>p {
+    margin: 20px;
+  }
+
+  .testimonials {
+    flex-direction: column;
+    padding: 20px;
+  }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {

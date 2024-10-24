@@ -1,10 +1,13 @@
 import { jwtDecode } from 'jwt-decode';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 const Home = () => {
     const token = localStorage.getItem("userlogintoken") ;
     const admintoken= localStorage.getItem("adminlogintoken");
+    useEffect(()=>{
+        window.document.title="Home"
+    },[])
 let id="";
     if(token){
         const decoded=jwtDecode(token);

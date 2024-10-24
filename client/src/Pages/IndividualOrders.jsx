@@ -21,6 +21,10 @@ const IndividualOrders = () => {
     const adminToken = localStorage.getItem("adminlogintoken");
     let id = '';
 
+    useEffect(()=>{
+        window.document.title="Individual Orders"
+    },[])
+
     if (token) {
         const decoded = jwtDecode(token);
         id = decoded.userId;
@@ -83,6 +87,8 @@ const IndividualOrders = () => {
 
         res = await res.json();
         if (res.success) {
+            console.log(res.data);
+
             setValues(res.data);
         } else {
             console.log(res.message);
@@ -100,9 +106,17 @@ const IndividualOrders = () => {
         doc.line(10, 25, 200, 25);
 
         if (values.length > 0) {
+            const { customer_name, customer_contact, email } = values[0];
+
             doc.setFontSize(12);
+            doc.text(`Customer Name: ${customer_name}`, 10, 30);
+            doc.text(`Customer Contact: ${customer_contact}`, 10, 40);
+            doc.text(`Customer Email: ${email}`, 10, 50);
+
+            doc.line(10, 55, 200, 55);
+
             const headers = ['Product Name', 'Category', 'Quantity', 'Price', 'Total'];
-            const headerY = 30;
+            const headerY = 60;
 
             headers.forEach((header, index) => {
                 doc.text(header, 10 + (index * 40), headerY);
@@ -116,7 +130,6 @@ const IndividualOrders = () => {
                 doc.text(order.category, 50, y);
                 doc.text(String(order.quantity), 90, y);
                 doc.text(String(order.price_at_purchase), 130, y);
-
                 doc.text(String(order.total_price), 170, y);
                 y += 10;
             });
@@ -142,11 +155,11 @@ const IndividualOrders = () => {
     };
 
     return (
-        <div style={{ minHeight: "80vh",backgroundColor:"#D8E3DB",padding:"10px 0" }}>
-            <button className='links' onClick={generatePDF} style={{padding: "5px", border: "none", display: "block", margin: "0px auto" ,marginBottom:"10px"}}>
+        <div style={{ minHeight: "80vh", padding: "20px", backgroundColor: "#D8E3DB" }}>
+            <button className='links' onClick={generatePDF} style={{ padding: "5px", cursor: "pointer", display: "block", margin: "0px auto", marginBottom: "10px" }}>
                 Download PDF
             </button>
-          
+
             {/* <div style={{ padding: "0px 30px" }}>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -204,7 +217,7 @@ const IndividualOrders = () => {
                     </Table>
                 </TableContainer>
             </div>
-            <div style={{ textAlign: "center" ,marginBottom:"15px"}}>
+            <div style={{ textAlign: "center", marginBottom: "15px" }}>
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
                         className='links'
@@ -218,12 +231,12 @@ const IndividualOrders = () => {
                     </button>
                 ))}
             </div>
-            <div className='indorderh1' style={{ textAlign: "center"}}>
-            <h1 >
-                Total Bill: <span>&#8377;</span><span style={{ fontWeight: "600"}}> {values.reduce((accum, e) => accum + e.total_price, 0)}</span>
-            </h1>
+            <div className='indorderh1' style={{ textAlign: "center" }}>
+                <h1 >
+                    Total Bill: <span>&#8377;</span><span style={{ fontWeight: "600" }}> {values.reduce((accum, e) => accum + e.total_price, 0)}</span>
+                </h1>
             </div>
-            <div style={{ textAlign: "center",marginTop:"30px" }}>
+            <div style={{ textAlign: "center", marginTop: "30px" }}>
                 {token ? <Link className='links' to={`/orderhistory`}>Back</Link> : <Link className='links' to={`/orderhistory`}>Back</Link>}
             </div>
         </div>

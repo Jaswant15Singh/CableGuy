@@ -22,19 +22,20 @@ function App() {
   return (
     <>
       <BrowserRouter>
+        <Footer />
 
         <Headers />
 
         <Routes>
           <Route exact path='/' element={<Home />} />
           <Route path='/about' element={<About />} />
-          <Route path='/userdashboard/:id' element={<ProtectedRoute><Userdashboard /></ProtectedRoute>} />
+          <Route path='/userdashboard/:id' element={<><Userdashboard /></>} />
           <Route path='/userlogin' element={<Userlogin />} />
           <Route path='/adminlogin' element={<Adminlogin />} />
-          <Route path='/admindashboard/:adminid' element={<AdminProtRoute><AdminDashboard /></AdminProtRoute>} />
-          <Route path='/admin/update/:id' element={<AdminProtRoute><AdminUpdate /></AdminProtRoute>} />
-          <Route path='/admin/ind/:id' element={<AdminProtRoute><IndUsers /></AdminProtRoute>} />
-          <Route path='/orderhistory' element={<ProtRoute><OrderHistory /></ProtRoute>} />
+          <Route path='/admindashboard/:adminid' element={<><AdminDashboard /></>} />
+          <Route path='/admin/update/:id' element={<><AdminUpdate /></>} />
+          <Route path='/admin/ind/:id' element={<><IndUsers /></>} />
+          <Route path='/orderhistory' element={<><OrderHistory /></>} />
           <Route path='/individualorders/:order_id' element={<IndividualOrders />} />
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>

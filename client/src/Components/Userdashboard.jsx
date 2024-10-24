@@ -30,6 +30,9 @@ const Userdashboard = () => {
     getAllProducts();
     getIndividyalProducts();
   }, []);
+  useEffect(()=>{
+    window.document.title="About Us"
+},[])
 
   useEffect(() => {
     if (data) {

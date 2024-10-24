@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 
@@ -10,6 +10,9 @@ const Userlogin = () => {
     const handleChange = (e) => {
         setData({ ...data, [e.target.name]: e.target.value })
     }
+    useEffect(()=>{
+        window.document.title="User Login"
+    },[])
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();

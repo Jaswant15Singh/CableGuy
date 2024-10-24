@@ -57,19 +57,19 @@ const Header = () => {
                 </ListItem>
                 {usertoken ? (
                     <>
-                    <div style={{marginLeft:"23px"}}>
-                        <ListItem disablePadding  style={{textAlign:"center"}}>
-                            <ListItemButton  onClick={handleUserLogout}>
-                                <ListItemText primary="Logout"/>
-                            </ListItemButton>
-                        </ListItem>
+                        <div style={{ marginLeft: "23px" }}>
+                            <ListItem disablePadding style={{ textAlign: "center" }}>
+                                <ListItemButton onClick={handleUserLogout}>
+                                    <ListItemText primary="Logout" />
+                                </ListItemButton>
+                            </ListItem>
                         </div>
                         <div>
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                                <ListItemText primary={<Link to={`/userdashboard/${id}`} className="linkss">Dashboard</Link>} />
-                            </ListItemButton>
-                        </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton>
+                                    <ListItemText primary={<Link to={`/userdashboard/${id}`} className="linkss">Dashboard</Link>} />
+                                </ListItemButton>
+                            </ListItem>
                         </div>
                     </>
                 ) : (
@@ -83,20 +83,20 @@ const Header = () => {
                 )}
                 {admintoken ? (
                     <>
-                      <div style={{marginLeft:"23px"}}>
-                      <ListItem disablePadding>
-                            <ListItemButton onClick={handleAdminLogout}>
-                                <ListItemText primary="Logout" />
-                            </ListItemButton>
-                        </ListItem>
-                      </div>
-                       <div>
-                       <ListItem disablePadding>
-                            <ListItemButton>
-                                <ListItemText primary={<Link to={`/admindashboard/${id}`} className="linkss">Dashboard</Link>} />
-                            </ListItemButton>
-                        </ListItem>
-                       </div>
+                        <div style={{ marginLeft: "23px" }}>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={handleAdminLogout}>
+                                    <ListItemText primary="Logout" />
+                                </ListItemButton>
+                            </ListItem>
+                        </div>
+                        <div>
+                            <ListItem disablePadding>
+                                <ListItemButton>
+                                    <ListItemText primary={<Link to={`/admindashboard/${id}`} className="linkss">Dashboard</Link>} />
+                                </ListItemButton>
+                            </ListItem>
+                        </div>
                     </>
                 ) : (
                     !usertoken && (
@@ -133,9 +133,11 @@ const Header = () => {
             </header>
 
             {/* Button to open drawer */}
-            <Button onClick={toggleDrawer(true)}>
+            <div  style={{backgroundColor:"aquamarine",width:"100%"}}>
+            <Button onClick={toggleDrawer(true)} style={{color:"black"}}>
                 <MenuIcon />
             </Button>
+            </div>
             {/* Drawer Component */}
             <Drawer open={open} onClose={toggleDrawer(false)}>
                 {DrawerList}

@@ -12,6 +12,9 @@ const IndUsers = () => {
     const adminidd = decoded.adminId;
     console.log(adminidd);
 
+    useEffect(()=>{
+        window.document.title="Users"
+    },[])
 
     useEffect(() => {
         if (token) {

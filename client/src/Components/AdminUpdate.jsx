@@ -8,6 +8,10 @@ const AdminUpdate = () => {
     const token = localStorage.getItem("adminlogintoken");
     const [data, setData] = useState({ name: "", email: "" });
     const navigate = useNavigate(); 
+    useEffect(()=>{
+        window.document.title="Admin Update"
+    },[])
+
     useEffect(() => {
         const getSingleUser = async () => {
             let res = await fetch(`http://localhost:5000/adminapi/admin/${id}`, {

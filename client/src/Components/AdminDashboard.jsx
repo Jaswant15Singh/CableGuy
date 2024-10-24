@@ -56,6 +56,11 @@ const AdminDashboard = () => {
     const [prodadd, setProdadd] = useState(false);
     const [supplierlist, setSupplierlist] = useState([]);
 
+    useEffect(() => {
+        window.document.title = "Admin Dashboard"
+    }, [])
+
+
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: theme.palette.common.black,
@@ -109,6 +114,7 @@ const AdminDashboard = () => {
             role="presentation"
             onClick={toggleDrawer(anchor, false)}
             onKeyDown={toggleDrawer(anchor, false)}
+
         >
             <List>
                 <ListItem disablePadding>
@@ -117,6 +123,7 @@ const AdminDashboard = () => {
                             className="newad links"
                             onClick={() => setAdminreg(!adminreg)}
                             sx={{ width: '100%', mt: 3 }}
+                            style={{ color: "black" }}
                         >
                             Add New Admin
                         </Button>
@@ -126,6 +133,7 @@ const AdminDashboard = () => {
                 <ListItem disablePadding>
                     <ListItemButton>
                         <Button
+                            style={{ color: "black" }}
                             className="newad links"
                             sx={{ width: '100%', mt: 1 }}
                             onClick={() => setSupplieradd(!supplieradd)}
@@ -138,6 +146,7 @@ const AdminDashboard = () => {
                 <ListItem disablePadding>
                     <ListItemButton>
                         <Button
+                            style={{ color: "black" }}
                             className="newad links"
                             sx={{ width: '100%', mt: 1 }}
                             onClick={() => setIsIndividual(!isIndividual)}
@@ -150,6 +159,7 @@ const AdminDashboard = () => {
                 <ListItem disablePadding>
                     <ListItemButton>
                         <Button
+                            style={{ color: "black" }}
                             className="newad links"
                             sx={{ width: '100%', mt: 1 }}
                             onClick={() => setProdadd(!prodadd)}
@@ -162,6 +172,7 @@ const AdminDashboard = () => {
                 <ListItem disablePadding>
                     <ListItemButton>
                         <Button
+                            style={{ color: "black" }}
                             className="newad links"
                             sx={{ width: '100%', mt: 1 }}
                             onClick={() => setIsProd(!isProd)}
@@ -174,6 +185,7 @@ const AdminDashboard = () => {
                 <ListItem disablePadding>
                     <ListItemButton>
                         <Button
+                            style={{ color: "black" }}
                             className="newad links"
                             sx={{ width: '100%', mt: 1 }}
                             onClick={() => setIsallProd(!isallProd)}
@@ -289,7 +301,7 @@ const AdminDashboard = () => {
             }
         });
         if (!res.ok) {
-            alert("Some issue occured in fetchinf products")
+            alert("Some issue occured in fetching products")
         }
 
         res = await res.json();
@@ -398,8 +410,6 @@ const AdminDashboard = () => {
             getAllAdmin();
 
         }
-
-
 
     }
 
@@ -579,7 +589,7 @@ const AdminDashboard = () => {
     return (
         <div className='admindashboard'>
             <div style={{ float: "right" }} className='dropdown'>
-                <Button style={{ zIndex: "999" }} onClick={toggleDrawer('right', true)}><ArrowDropDownIcon /> Add/See</Button>
+                <Button style={{ zIndex: "999", color: "black" }} onClick={toggleDrawer('right', true)}><ArrowDropDownIcon /> Add/See</Button>
                 <Drawer
                     anchor="right"
                     open={state['right']}
@@ -1030,74 +1040,35 @@ const AdminDashboard = () => {
 
                 {
                     isProd && (
-                        <div style={{ padding: "0px 0px" }} className="productss">
-                            <button onClick={() => { setIsProd(!isProd) }}>X</button>
+                        // <div style={{ padding: "0px 0px" }} className="productss">
+                        //     <button onClick={() => { setIsProd(!isProd) }}>X</button>
 
-                            <TableContainer component={Paper} style={{ borderRadius: "0" }}>
-                                <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                                    <TableHead>
-                                        <TableRow>
-                                            <StyledTableCell align="left"> Batch_No</StyledTableCell>
-                                            <StyledTableCell align="left"> Batch_Quantity</StyledTableCell>
-                                            <StyledTableCell align="left"> Name</StyledTableCell>
-                                            <StyledTableCell align="left"> Price</StyledTableCell>
-                                            <StyledTableCell align="left">Category</StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {currentItemss.map((row) => (
-                                            <StyledTableRow key={row.name}>
-                                                <StyledTableCell align="left">{row.batche_no}</StyledTableCell>
-                                                <StyledTableCell align="left">{row.batch_quantity}</StyledTableCell>
+                        //     <TableContainer component={Paper} style={{ borderRadius: "0" }}>
+                        //         <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                        //             <TableHead>
+                        //                 <TableRow>
+                        //                     <StyledTableCell align="left"> Batch_No</StyledTableCell>
+                        //                     <StyledTableCell align="left"> Batch_Quantity</StyledTableCell>
+                        //                     <StyledTableCell align="left"> Name</StyledTableCell>
+                        //                     <StyledTableCell align="left"> Price</StyledTableCell>
+                        //                     <StyledTableCell align="left">Category</StyledTableCell>
+                        //                 </TableRow>
+                        //             </TableHead>
+                        //             <TableBody>
+                        //                 {currentItemss.map((row) => (
+                        //                     <StyledTableRow key={row.name}>
+                        //                         <StyledTableCell align="left">{row.batche_no}</StyledTableCell>
+                        //                         <StyledTableCell align="left">{row.batch_quantity}</StyledTableCell>
 
-                                                <StyledTableCell align="left">{row.name}</StyledTableCell>
-                                                <StyledTableCell align="left">{row.price}</StyledTableCell>
-                                                <StyledTableCell align="left">{row.category}</StyledTableCell>
+                        //                         <StyledTableCell align="left">{row.name}</StyledTableCell>
+                        //                         <StyledTableCell align="left">{row.price}</StyledTableCell>
+                        //                         <StyledTableCell align="left">{row.category}</StyledTableCell>
 
-                                            </StyledTableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <div style={{ textAlign: "center" }}>
-                                {Array.from({ length: totalpagess }, (_, index) => (
-                                    <button
-                                        key={index}
-                                        style={{ margin: "5px" }}
-                                        onClick={() => handlePageChangee(index + 1)}
-                                        disabled={currentPageBatch === index + 1}
-                                    >
-                                        {index + 1}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                        // <div className='productss'>
-                        //     <button className='prod-close' style={{ top: "0" }} onClick={() => { setIsProd(!isProd) }}>
-                        //         X
-                        //     </button>
-                        //     <table className='product-table' border={2}>
-                        //         <thead>
-                        //             <tr>
-                        //                 <th>batche_no</th>
-                        //                 <th>batch_quantity</th>
-                        //                 <th>Name</th>
-                        //                 <th>Price</th>
-                        //                 <th>Category</th>
-                        //             </tr>
-                        //         </thead>
-                        //         <tbody>
-                        //             {currentItemss.map((e) => (
-                        //                 <tr key={e.id}>
-                        //                     <td>{e.batche_no}</td>
-                        //                     <td>{e.batch_quantity}</td>
-                        //                     <td>{e.name}</td>
-                        //                     <td>{e.price}</td>
-                        //                     <td>{e.category}</td>
-                        //                 </tr>
-                        //             ))}
-                        //         </tbody>
-                        //     </table>
+                        //                     </StyledTableRow>
+                        //                 ))}
+                        //             </TableBody>
+                        //         </Table>
+                        //     </TableContainer>
                         //     <div style={{ textAlign: "center" }}>
                         //         {Array.from({ length: totalpagess }, (_, index) => (
                         //             <button
@@ -1111,6 +1082,46 @@ const AdminDashboard = () => {
                         //         ))}
                         //     </div>
                         // </div>
+                        <div className='productss' style={{ backgroundColor: "aquamarine" }}>
+                            <button className='prod-close' style={{ top: "0" }} onClick={() => { setIsProd(!isProd) }}>
+                                X
+                            </button>
+                            <table className='product-table' border={2}>
+                                <thead>
+                                    <tr>
+                                        <th>batche_no</th>
+                                        <th>batch_quantity</th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {currentItemss.map((e) => (
+                                        <tr key={e.id}>
+                                            <td>{e.batche_no}</td>
+                                            <td>{e.batch_quantity}</td>
+                                            <td>{e.name}</td>
+                                            <td>{e.price}</td>
+                                            <td>{e.category}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <div style={{ textAlign: "center" }}>
+                                {Array.from({ length: totalpagess }, (_, index) => (
+                                    <button
+                                        className='links'
+                                        key={index}
+                                        style={{ margin: "5px" }}
+                                        onClick={() => handlePageChangee(index + 1)}
+                                        disabled={currentPageBatch === index + 1}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     )
                 }
             </div>
@@ -1119,11 +1130,70 @@ const AdminDashboard = () => {
 
 
                 {isallProd && (
-                    <div style={{ padding: "0px 0px" }} className="productss">
-                        <button onClick={() => { setIsallProd(!isallProd) }} >X</button>
+                    // <div style={{ padding: "0px 0px" }} className="productss">
+                    //     <button onClick={() => { setIsallProd(!isallProd) }} >X</button>
+                    //     <div style={{ textAlign: "center", zIndex: "100" }}>
+                    //         {Array.from({ length: totalPages }, (_, index) => (
+                    //             <button
+                    //                 key={index}
+                    //                 style={{ margin: "5px" }}
+                    //                 onClick={() => handlePageChange(index + 1)}
+                    //                 disabled={currentPage === index + 1}
+                    //             >
+                    //                 {index + 1}
+                    //             </button>
+                    //         ))}
+                    //     </div>
+                    //     <TableContainer component={Paper} style={{ borderRadius: "0" }}>
+                    //         <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                    //             <TableHead>
+                    //                 <TableRow>
+                    //                     <StyledTableCell align="left"> Name</StyledTableCell>
+                    //                     <StyledTableCell align="left"> Price</StyledTableCell>
+                    //                     <StyledTableCell align="left">Category</StyledTableCell>
+                    //                 </TableRow>
+                    //             </TableHead>
+                    //             <TableBody>
+                    //                 {currentItems.map((row) => (
+                    //                     <StyledTableRow key={row.name}>
+                    //                         <StyledTableCell align="left">{row.name}</StyledTableCell>
+                    //                         <StyledTableCell align="left">{row.price}</StyledTableCell>
+                    //                         <StyledTableCell align="left">{row.category}</StyledTableCell>
+
+                    //                     </StyledTableRow>
+                    //                 ))}
+                    //             </TableBody>
+                    //         </Table>
+
+                    //     </TableContainer>
+
+                    // </div>
+                    <div className='productss' style={{ backgroundColor: "aquamarine" }}>
+                        <button className='prod-close' style={{ top: "0" }} onClick={() => setIsallProd(false)}>
+                            X
+                        </button>
+                        <table className='product-table' border={2}>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentItems.map((e) => (
+                                    <tr key={e.id}>
+                                        <td>{e.name}</td>
+                                        <td>{e.price}</td>
+                                        <td>{e.category}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                         <div style={{ textAlign: "center", zIndex: "100" }}>
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <button
+                                    className='links'
                                     key={index}
                                     style={{ margin: "5px" }}
                                     onClick={() => handlePageChange(index + 1)}
@@ -1133,54 +1203,8 @@ const AdminDashboard = () => {
                                 </button>
                             ))}
                         </div>
-                        <TableContainer component={Paper} style={{ borderRadius: "0" }}>
-                            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                                <TableHead>
-                                    <TableRow>
-                                        <StyledTableCell align="left"> Name</StyledTableCell>
-                                        <StyledTableCell align="left"> Price</StyledTableCell>
-                                        <StyledTableCell align="left">Category</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {currentItems.map((row) => (
-                                        <StyledTableRow key={row.name}>
-                                            <StyledTableCell align="left">{row.name}</StyledTableCell>
-                                            <StyledTableCell align="left">{row.price}</StyledTableCell>
-                                            <StyledTableCell align="left">{row.category}</StyledTableCell>
-
-                                        </StyledTableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-
-                        </TableContainer>
 
                     </div>
-                    // <div className='productss'>
-                    //     <button className='prod-close' style={{ top: "0" }} onClick={() => setIsallProd(false)}>
-                    //         X
-                    //     </button>
-                    //     <table className='product-table' border={2}>
-                    //         <thead>
-                    //             <tr>
-                    //                 <th>Name</th>
-                    //                 <th>Price</th>
-                    //                 <th>Category</th>
-                    //             </tr>
-                    //         </thead>
-                    //         <tbody>
-                    //             {currentItems.map((e) => (
-                    //                 <tr key={e.id}>
-                    //                     <td>{e.name}</td>
-                    //                     <td>{e.price}</td>
-                    //                     <td>{e.category}</td>
-                    //                 </tr>
-                    //             ))}
-                    //         </tbody>
-                    //     </table>
-
-                    // </div>
                 )}
             </div>
 

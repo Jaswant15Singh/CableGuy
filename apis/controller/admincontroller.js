@@ -85,7 +85,6 @@ const updateAdmin = async (req, res) => {
             res.json({ message: "Admin doesnt exists", success: false })
         }
 
-        // res.json({ message: "Admin updated successfully",data:result.rows[0]});
         res.json({ message: "Admin updated successfully", data: result.rows[0] });
 
     } catch (error) {
@@ -185,7 +184,6 @@ const getProdBatch = async (req, res) => {
     const { batche_no } = req.body;
     try {
         const { rows } = await pool.query('select batch.batche_no,batch.batch_quantity,product.name,product.description,product.category,product.price from batch inner join product on batch.product_id = product.id');
-        // const {rows}=await pool.query('select * from batch');
         if (rows.length === 0) {
             return res.json({ message: "No batches found", success: false });
         }
@@ -208,10 +206,6 @@ const getIndProd = async (req, res) => {
 const addIndProduct = async (req, res) => {
     const { name, description, category } = req.body;
 
-    // const {rows}=await pool.query('select * from ref_products where name=$1,description=$2 and category=$3',[name,description,category]);
-    // if(rows.length>0){
-    //     return res.json({message:"Product already exists in Inventory",success:false})
-    // }
     try {
         const { rows } = await pool.query('insert into ref_products (name,description,category) values ($1,$2,$3) returning *', [name, description, category]);
         res.json({ message: "product added successflly", success: true });
@@ -242,23 +236,7 @@ const createProductsWithBatch = async (req, res) => {
         for (const product of products) {
             const { name, description, category, price, batch_quantity, manufactured, received_data } = product;
 
-            // const existingRefProduct = await pool.query(
-            //     'SELECT * FROM ref_products WHERE name = $1 AND description = $2 AND category = $3',
-            //     [name, description, category]
-            // );
-
             let distProductId;
-
-            // if (existingRefProduct.rows.length === 0) {
-            //     const refProductResult = await pool.query(
-            //         'INSERT INTO ref_products (name, description, category) VALUES ($1, $2, $3) RETURNING id',
-            //         [name, description, category]
-            //     );
-            //     distProductId = refProductResult.rows[0].id;
-            // } else {
-            //     distProductId = existingRefProduct.rows[0].id;
-            // }
-
             const existingProduct = await pool.query(
                 'SELECT * FROM product WHERE name = $1 AND price = $2 AND supp_id = $3',
                 [name, price, supp_id]
@@ -316,35 +294,8 @@ const createProductsWithBatch = async (req, res) => {
 };
 
 
-
-// const getProdBatch = async (req, res) => {
-//     const { batche_no } = req.query;  
-//     try {
-//         const { rows } = await pool.query(
-//             'SELECT batch.batche_no, batch.batch_quantity, product.name, product.description, product.category, product.price ' +
-//             'FROM batch INNER JOIN product ON batch.product_id = product.id ' +
-//             'WHERE batche_no = $1', 
-//             [batche_no]
-//         );
-
-//         if (rows.length === 0) {
-//             return res.json({ message: "No batches found", success: false });
-//         }
-
-//         res.json({ data: rows, success: true });
-//     } catch (error) {
-//         res.json({ message: "Failed to fetch data", success: false });
-//     }
-// };
-
-
 const placeOrder = async (req, res) => {
     const { customer_name, customer_contact, user_id, email, cart } = req.body;
-
-    // const isEmail=await pool.query('select * from orders where email = $1',[email]);
-    // if(isEmail){
-    //     return res.json({messsage:"Email already exists",success:false})
-    // }
 
     const result = await pool.query(
         'INSERT INTO orders (customer_name, customer_contact,email) VALUES ($1, $2,$3) RETURNING order_id',

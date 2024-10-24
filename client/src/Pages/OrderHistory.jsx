@@ -37,6 +37,10 @@ const OrderHistory = () => {
     let decoded;
     let name = "";
 
+    useEffect(() => {
+        window.document.title = "Order History"
+    }, [])
+
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: theme.palette.common.black,
@@ -100,12 +104,14 @@ const OrderHistory = () => {
             role="presentation"
             onClick={toggleDrawer(anchor, false)}
             onKeyDown={toggleDrawer(anchor, false)}
+
         >
             <List>
 
                 <ListItem disablePadding>
                     <ListItemButton>
                         <Button
+                            style={{ color: "black" }}
                             className="newad links"
                             onClick={() => setFilteredProducts(orderhis)}
                             sx={{ width: '100%', mt: 3 }}
@@ -136,6 +142,7 @@ const OrderHistory = () => {
                 <ListItem disablePadding>
                     <ListItemButton>
                         <Button
+                            style={{ color: "black" }}
                             className="newad links"
                             onClick={() => handleSort("asc")} sx={{ width: '100%', mt: 3 }}
                         >
@@ -146,6 +153,7 @@ const OrderHistory = () => {
                 <ListItem disablePadding>
                     <ListItemButton>
                         <Button
+                            style={{ color: "black" }}
                             className="newad links"
                             onClick={() => handleSort("desc")}
                             sx={{ width: '100%', mt: 3 }}
@@ -375,7 +383,7 @@ const OrderHistory = () => {
         <div className='orderhistory' style={{ minHeight: "80vh" }}>
             <div style={{ float: "right" }} className='dropdown'>
 
-                <Button style={{zIndex:"100"}} onClick={toggleDrawer("right", true)}><FilterAltOutlinedIcon /></Button>
+                <Button style={{ zIndex: "100", color: "black" }} onClick={toggleDrawer("right", true)}><FilterAltOutlinedIcon /></Button>
                 <Drawer
                     anchor="right"
                     open={state["right"]}
@@ -385,8 +393,8 @@ const OrderHistory = () => {
                 </Drawer>
 
             </div>
-            <h1 className='orderhistoryh1' style={{ textAlign: "center", margin: "15px", color: "#444444",transform:"translateX(40px)" }}>Hello {name}</h1>
-            <Link className='adnew links' to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{  display: "block", width: "50px", textAlign: "center", margin: "10px auto" }}>
+            <h1 className='orderhistoryh1' style={{ textAlign: "center", margin: "15px", color: "#444444", transform: "translateX(40px)" }}>Hello {name}</h1>
+            <Link className='adnew links' to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{ display: "block", width: "50px", textAlign: "center", margin: "10px auto" }}>
                 Back
             </Link>
             {/* 
@@ -456,7 +464,7 @@ const OrderHistory = () => {
                         <TableBody>
                             {currentItems.map((row) => (
                                 <StyledTableRow key={row.name}>
-                                  
+
                                     <StyledTableCell align="right">{row.order_id}</StyledTableCell>
                                     <StyledTableCell align="right">{row.customer_name}</StyledTableCell>
                                     <StyledTableCell align="right">{row.customer_contact}</StyledTableCell>
