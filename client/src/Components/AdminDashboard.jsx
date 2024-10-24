@@ -501,7 +501,7 @@ const AdminDashboard = () => {
 
         if (hasEmptyFields) {
             alert("Enter previous records first");
-            return; // Stop the function execution if fields are empty
+            return;
         }
         setCart([...cart, ...prod])
         setProd([{ name: '', description: '', category: '', price: '', batch_quantity: '' }]);
@@ -598,18 +598,7 @@ const AdminDashboard = () => {
                     {list('right')}
                 </Drawer>
             </div>
-            {/* <div className='stickylinks'>
-                <button className='newad links' onClick={() => { setAdminreg(!adminreg) }}>Add new admin</button>
-                <button className='newad links' style={{ marginTop: "80px" }} onClick={() => { setSupplieradd(!supplieradd) }}>Add new supplier</button>
-                <button className='newad links' style={{ marginTop: "150px" }} onClick={() => { setIsIndividual(!isIndividual) }}>Add Individual product</button>
-                <button className='newad links' style={{ marginTop: "220px" }} onClick={() => { setProdadd(!prodadd) }}>Add new product</button>
-                <button className='newad links' style={{ marginTop: "290px" }} onClick={() => { setIsProd(!isProd) }}>
-                    See Batch Products
-                </button>
-                <button className='newad links' style={{ marginTop: "360px" }} onClick={() => setIsallProd(!isallProd)}>
-                    See All Products
-                </button>
-            </div> */}
+
 
             <div style={{ padding: "0px 30px" }}>
                 <h1 style={{ textAlign: "center", marginBottom: "10px", transform: "translateX(40px)", color: "#444444" }}>Admin Table</h1>
@@ -618,10 +607,10 @@ const AdminDashboard = () => {
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
                         <TableHead>
                             <TableRow>
-                                <StyledTableCell align='left'>Role</StyledTableCell>
-                                <StyledTableCell align="left"> Name</StyledTableCell>
-                                <StyledTableCell align="left"> Email</StyledTableCell>
-                                <StyledTableCell align="left">Update/Delete</StyledTableCell>
+                                <StyledTableCell style={{ width: "25%" }} align='left'>Role</StyledTableCell>
+                                <StyledTableCell style={{ width: "25%" }} align="left"> Name</StyledTableCell>
+                                <StyledTableCell style={{ width: "25%" }} align="left"> Email</StyledTableCell>
+                                <StyledTableCell style={{ width: "25%" }} align="left">Update/Delete</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -646,10 +635,10 @@ const AdminDashboard = () => {
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
                         <TableHead>
                             <TableRow>
-                                <StyledTableCell align='left'>Role</StyledTableCell>
-                                <StyledTableCell align="left"> Name</StyledTableCell>
-                                <StyledTableCell align="left"> Email</StyledTableCell>
-                                <StyledTableCell align="left">Update/Delete</StyledTableCell>
+                                <StyledTableCell style={{ width: "25%" }} align='left'>Role</StyledTableCell>
+                                <StyledTableCell style={{ width: "25%" }} align="left"> Name</StyledTableCell>
+                                <StyledTableCell style={{ width: "25%" }} align="left"> Email</StyledTableCell>
+                                <StyledTableCell style={{ width: "25%" }} align="left">Update/Delete</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

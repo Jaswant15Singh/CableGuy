@@ -23,19 +23,17 @@ function App() {
     <>
       <BrowserRouter>
         <Footer />
-
         <Headers />
-
         <Routes>
           <Route exact path='/' element={<Home />} />
           <Route path='/about' element={<About />} />
-          <Route path='/userdashboard/:id' element={<><Userdashboard /></>} />
+          <Route path='/userdashboard/:id' element={<ProtectedRoute><Userdashboard /></ProtectedRoute>} />
           <Route path='/userlogin' element={<Userlogin />} />
           <Route path='/adminlogin' element={<Adminlogin />} />
-          <Route path='/admindashboard/:adminid' element={<><AdminDashboard /></>} />
-          <Route path='/admin/update/:id' element={<><AdminUpdate /></>} />
-          <Route path='/admin/ind/:id' element={<><IndUsers /></>} />
-          <Route path='/orderhistory' element={<><OrderHistory /></>} />
+          <Route path='/admindashboard/:adminid' element={<AdminProtRoute><AdminDashboard /></AdminProtRoute>} />
+          <Route path='/admin/update/:id' element={<AdminProtRoute><AdminUpdate /></AdminProtRoute>} />
+          <Route path='/admin/ind/:id' element={<AdminProtRoute><IndUsers /></AdminProtRoute>} />
+          <Route path='/orderhistory' element={<ProtRoute><OrderHistory /></ProtRoute>} />
           <Route path='/individualorders/:order_id' element={<IndividualOrders />} />
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>
@@ -76,17 +74,12 @@ const ProtectedRoute = ({ children }) => {
     const { id: userIdFromParams } = useParams();
     console.log(typeof userIdFromParams);
     console.log(typeof userId);
-
-
-
     console.log("User ID from Token:", userId);
     console.log("User ID from Params:", userIdFromParams);
-
     if (userId !== parseInt(userIdFromParams)) {
       console.log("Unauthorized access detected!");
       return <h1>Unauthorized Access</h1>;
     }
-
     return children;
   } catch (error) {
     console.error("Error decoding token:", error);
@@ -98,7 +91,6 @@ const ProtectedRoute = ({ children }) => {
 const ProtRoute = ({ children }) => {
   const token = localStorage.getItem("userlogintoken");
   const admin_token = localStorage.getItem("adminlogintoken");
-
   if (token || admin_token) {
     return children
   }
@@ -110,7 +102,6 @@ const ProtRoute = ({ children }) => {
 
 const AdminProtRoute = ({ children }) => {
   const admin_token = localStorage.getItem("adminlogintoken");
-
   if (admin_token) {
     return children
   }
@@ -130,19 +121,14 @@ const AdminProtectedRoute = ({ children }) => {
   try {
     const decoded = jwtDecode(token);
     console.log("Decoded Token:", decoded);
-
     const adminIdFromToken = decoded.adminId;
-
     const { adminid: adminIdFromParams } = useParams();
-
     console.log("Admin ID from Token:", adminIdFromToken);
     console.log("Admin ID from Params:", adminIdFromParams);
-
     if (adminIdFromToken !== parseInt(adminIdFromParams, 10)) {
       console.log("Unauthorized access detected!");
       return <h1>Unauthorized Access</h1>;
     }
-
     return children;
   } catch (error) {
     console.error("Error decoding token or invalid token:", error);

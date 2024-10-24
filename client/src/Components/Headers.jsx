@@ -133,10 +133,10 @@ const Header = () => {
             </header>
 
             {/* Button to open drawer */}
-            <div  style={{backgroundColor:"aquamarine",width:"100%"}}>
-            <Button onClick={toggleDrawer(true)} style={{color:"black"}}>
-                <MenuIcon />
-            </Button>
+            <div style={{ position: "fixed", top: "80px",zIndex:"1000" ,backgroundColor:"aquamarine"}}>
+                <Button onClick={toggleDrawer(true)} style={{ color: "black" }}>
+                    <MenuIcon />
+                </Button>
             </div>
             {/* Drawer Component */}
             <Drawer open={open} onClose={toggleDrawer(false)}>
