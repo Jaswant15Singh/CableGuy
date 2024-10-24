@@ -6,11 +6,11 @@ const adminRoute =require("./routes/adminRoute");
 const cors=require("cors");
 const dotenv=require("dotenv").config();
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'First',
-    password: 'cdac',
-    port: 5432,
+    user:process.env.USER,
+    host:process.env.HOST,
+    database:process.env.DATABASE,
+    password:process.env.PASSWORD,
+    port:process.env.PORT,
 });
 app.use(cors({
     origin:"http://localhost:5173"
@@ -30,7 +30,7 @@ app.use('/api', Route);
 app.use("/adminapi",adminRoute)
 
 
-app.listen(5000, () => {
+app.listen(process.env.PORT, () => {
     console.log("connected");
     // console.log(process.env.Secret_key);
     
