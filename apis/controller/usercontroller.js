@@ -2,11 +2,11 @@ const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv").config();
 const pool = new Pool({
-    user:process.env.USER,
-    host:process.env.HOST,
-    database:process.env.DATABASE,
-    password:process.env.PASSWORD,
-    port:process.env.PORT,
+    user: 'postgres',
+    host: 'localhost',
+    database: 'First',
+    password: 'cdac',
+    port: 5432,
 });
 
 const getAlluser = async (req, res) => {
