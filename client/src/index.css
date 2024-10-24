@@ -103,7 +103,7 @@ footer ul li {
   height: 100%;
   border-radius: 0px;
   background-color: rgb(32, 180, 190);
-  border: 1px solid black;
+  /* border: 1px solid black; */
   cursor: pointer;
 }
 
@@ -157,7 +157,7 @@ footer ul li {
 
 }
 
-.login form button{
+.login form button {
   cursor: pointer;
 }
 
@@ -221,7 +221,7 @@ form h1 {
 
 .userdash {
   min-height: 80vh;
-  padding: 10px;
+  padding-bottom: 10px;
   background-color: #D8E3DB;
 }
 
@@ -316,10 +316,7 @@ form h1 {
   background-color: rgb(234, 236, 235);
   padding: 10px 120px;
   border-radius: 10px;
-  /* display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column; */
+
 }
 
 .updateinp label {
@@ -378,8 +375,7 @@ form h1 {
   padding: 30px 50px;
   gap: 50px;
   position: relative;
-  /* display: flex;
-  flex-direction: column; */
+
 }
 
 .supptable {
@@ -414,8 +410,6 @@ td {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  /* position: relative; */
-  /* background: rgb(234, 236, 235); */
   border: 5px solid rgb(0, 0, 0);
 }
 
@@ -550,7 +544,6 @@ td {
 
 .maindivprod {
   box-sizing: border-box;
-  /* width: 100%; */
   margin: 0px 50px;
   background-color: rgba(0, 0, 0, 0);
   padding: 30px;
@@ -1056,16 +1049,12 @@ option {
     position: fixed;
     left: 50%;
     top: 60%;
-
-    /* transform: translate(-50%, -80%) !important; */
     width: calc(100vw - 100px) !important;
     margin: 0 auto;
     margin-top: -100px;
-    /* margin-bottom: 50px; */
     padding: 20px;
     z-index: 99;
     margin-top: -100px;
-    /* margin-bottom: 20px; */
   }
 
   .maindivprod {
@@ -1324,8 +1313,6 @@ option {
   }
 
   .sort {
-    /* gap: 20px; */
-    /* padding: 10px; */
     display: flex;
     flex-wrap: wrap;
   }
@@ -1343,12 +1330,8 @@ option {
 
   .stickylinks {
     display: flex;
-    /* flex-wrap: wrap; */
     justify-content: space-between;
     align-items: center;
-    /* position: sticky !important;
-    top: 20 !important;
-    left: 0; */
     padding: 30px 50px;
     padding-bottom: 0;
   }
@@ -1358,7 +1341,6 @@ option {
     position: sticky !important;
     left: 0;
     top: 0;
-    /* transform: translate(0, -50%); */
     width: 70px;
     padding: 2px 0;
     cursor: pointer;
@@ -1543,15 +1525,6 @@ option {
   .mission_img {
     width: 100% !important;
   }
-
-  /*
-.mission_img img{
-  object-fit: cover;
-  width: 100%;
-  border-radius: 5px !important;
-  height: 400px;
-  width: 100%;
-} */
 
   .offers {
     padding: 60px;

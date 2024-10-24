@@ -30,9 +30,9 @@ const Userdashboard = () => {
     getAllProducts();
     getIndividyalProducts();
   }, []);
-  useEffect(()=>{
-    window.document.title="User Dashboard"
-},[])
+  useEffect(() => {
+    window.document.title = "User Dashboard"
+  }, [])
 
   useEffect(() => {
     if (data) {
@@ -410,10 +410,11 @@ const Userdashboard = () => {
                   onChange={handleChange}
                 />
               </div>
-              <button className='links' style={{ border: "none", marginTop: "20px", cursor: "pointer" }} type='submit'>Update Data</button>
-
+              <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <button className='links' style={{  cursor: "pointer" }} type='submit'>Update Data</button>
+              <button style={{ display: "block", margin: "10px auto", padding: "10px", cursor: "pointer" }} className='links' onClick={() => setUpdate(false)}>Back</button>
+              </div>
             </form>
-            <button style={{ display: "block", margin: "10px auto", padding: "5px", cursor: "pointer" }} className='links' onClick={() => setUpdate(false)}>Back</button>
           </div>
 
           // <div className='formdiv'>
