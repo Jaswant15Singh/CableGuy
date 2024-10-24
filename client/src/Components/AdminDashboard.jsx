@@ -237,7 +237,6 @@ const AdminDashboard = () => {
         getIndividualProducts();
         getProducts();
         getAllProducts()
-
     }, []);
     const getSingleUser = async () => {
         let res = await fetch(`http://localhost:5000/api/users/`, {

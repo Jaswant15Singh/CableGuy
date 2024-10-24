@@ -394,19 +394,10 @@ const OrderHistory = () => {
 
             </div>
             <h1 className='orderhistoryh1' style={{ textAlign: "center", margin: "15px", color: "#444444", transform: "translateX(40px)" }}>Hello {name}</h1>
-            <Link className='adnew links' to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{ display: "block", width: "50px", textAlign: "center", margin: "10px auto" }}>
+            <Link className='adnew links' to={isAdmin === "admin" ? `/admindashboard/${decoded.adminId}` : `/userdashboard/${decoded.userId}`} style={{ display: "block", width: "55px", textAlign: "center", margin: "10px auto" }}>
                 Back
             </Link>
-            {/* 
-            <div className='sort' style={{ display: "flex", justifyContent: "space-around" }}>
-                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => setFilteredProducts(orderhis)}>See all</button>
-                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSortPrice("asc")}>Sort by Price(asc)</button>
-                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSortPrice("desc")}>Sort by Price(desc)</button>
-                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSort("asc")}>Sort by Name(asc)</button>
-                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSort("desc")}>Sort by Name(desc)</button>
-                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSortTotal("asc")}>Sort by Total Price(asc)</button>
-                <button className='links' style={{ padding: "5px", border: "none", margin: "10px auto" }} onClick={() => handleSortTotal("desc")}>Sort by Total Price(desc)</button>
-            </div> */}
+
 
             <div className='searchsort'>
                 <input

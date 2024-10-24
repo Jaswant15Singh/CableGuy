@@ -13,7 +13,7 @@ const IndUsers = () => {
     console.log(adminidd);
 
     useEffect(()=>{
-        window.document.title="Users"
+        window.document.title="Update User"
     },[])
 
     useEffect(() => {

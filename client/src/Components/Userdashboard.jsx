@@ -31,7 +31,7 @@ const Userdashboard = () => {
     getIndividyalProducts();
   }, []);
   useEffect(()=>{
-    window.document.title="About Us"
+    window.document.title="User Dashboard"
 },[])
 
   useEffect(() => {
