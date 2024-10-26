@@ -3,6 +3,7 @@ const Route = express.Router();
 const { getAdmin, signupadmin, adminLogin, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, createBatch, getProdBatch, getSupplier, addSupplier, prodBySupplier, placeOrder, getProducts, createProductsWithBatch, getIndProd, addIndProduct, orderHistory, getReceiptRecord } = require("../controller/admincontroller");
 const mainmiddleware = require("../middleware/mainmiddleware");
 const adminmiddleware = require("../middleware/adminmiddleware");
+const {upload}=require("../controller/admincontroller")
 const usermiddleware = require("../middleware/usermiddleware")
 Route.get("/admin", mainmiddleware, adminmiddleware, getAdmin);
 Route.post("/signupadmin", mainmiddleware, adminmiddleware, signupadmin);
@@ -13,7 +14,7 @@ Route.delete("/admin/delete/:id", mainmiddleware, adminmiddleware, deleteAdmin);
 Route.post("/product/add", mainmiddleware, adminmiddleware, createProduct);
 Route.get("/products", mainmiddleware, getProducts);
 Route.get("/indproducts", mainmiddleware, adminmiddleware, getIndProd);
-Route.post("/indproducts/add", mainmiddleware, adminmiddleware, addIndProduct);
+Route.post("/indproducts/add", upload.single('image'), addIndProduct);
 Route.post("/batch/add", mainmiddleware, adminmiddleware, createBatch);
 Route.get("/product/batch", getProdBatch);
 Route.get("/supplier", mainmiddleware, adminmiddleware, getSupplier);

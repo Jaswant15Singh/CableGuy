@@ -11,7 +11,7 @@ const mainmiddleware = (req, res, next) => {
     try {
         const isVerified = jwt.verify(bearertoken, process.env.Secret_key);
         req.userRole = isVerified.role;
-        console.log(req.userRole);
+        // console.log(req.userRole);
 
 
         next();

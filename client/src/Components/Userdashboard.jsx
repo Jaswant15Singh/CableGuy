@@ -410,9 +410,9 @@ const Userdashboard = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <button className='links' style={{  cursor: "pointer" }} type='submit'>Update Data</button>
-              <button style={{ display: "block", margin: "10px auto", padding: "10px", cursor: "pointer" }} className='links' onClick={() => setUpdate(false)}>Back</button>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <button className='links' style={{ cursor: "pointer" }} type='submit'>Update Data</button>
+                <button style={{ display: "block", margin: "10px auto", padding: "10px", cursor: "pointer" }} className='links' onClick={() => setUpdate(false)}>Back</button>
               </div>
             </form>
           </div>

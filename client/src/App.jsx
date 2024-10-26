@@ -35,7 +35,7 @@ function App() {
           <Route path='/admin/ind/:id' element={<AdminProtRoute><IndUsers /></AdminProtRoute>} />
           <Route path='/orderhistory' element={<ProtRoute><OrderHistory /></ProtRoute>} />
           <Route path='/individualorders/:order_id' element={<IndividualOrders />} />
-          <Route path="*" element={<div style={{minHeight:"80vh",display:"flex",justifyContent:"center",alignItems:"center"}}><h1>404-Page Not Found</h1></div>} />
+          <Route path="*" element={<div style={{ minHeight: "80vh", display: "flex", justifyContent: "center", alignItems: "center" }}><h1>404-Page Not Found</h1></div>} />
         </Routes>
         <Footers />
       </BrowserRouter>

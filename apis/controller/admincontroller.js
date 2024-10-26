@@ -1,5 +1,7 @@
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
+const multer = require("multer");
+const path = require("path");
 
 const pool = new Pool({
     user: 'postgres',
@@ -7,6 +9,28 @@ const pool = new Pool({
     database: 'First',
     password: 'cdac',
     port: 5432,
+});
+
+const multerStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../images')); 
+    },
+    filename: (req, file, cb) => {
+        cb(null, `image-${Date.now()}${path.extname(file.originalname)}`);
+    }
+});
+
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only images are allowed!'), false);
+    }
+};
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter
 });
 
 const getAdmin = async (req, res) => {
@@ -133,7 +157,7 @@ const createProduct = async (req, res) => {
     const { name, description, category, price, supp_id } = req.body;
 
     try {
-        const { rows } = await pool.query('insert into product (name,description,category,price,supp_id) values ($1,$2,$3,$4,$5)', [name, description, category, price, supp_id]);
+        const { rows } = await pool.query('insert into product (name,description,category,price,supp_id,image) values ($1,$2,$3,$4,$5)', [name, description, category, price, supp_id,]);
 
         res.json({ message: "product added successfully", success: true, data: rows[0] });
 
@@ -187,7 +211,7 @@ const getProdBatch = async (req, res) => {
         const { rows } = await pool.query('select batch.batche_no,batch.batch_quantity,product.name,product.description,product.category,product.price from batch inner join product on batch.product_id = product.id');
         // const {rows}=await pool.query('select * from batch');
         if (rows.length === 0) {
-            return res.json({ message: "No batches found", success: false });
+            return res.json({ message: [], success: false });
         }
         res.json({ message: rows, success: true });
     } catch (error) {
@@ -207,21 +231,22 @@ const getIndProd = async (req, res) => {
 
 const addIndProduct = async (req, res) => {
     const { name, description, category } = req.body;
+    const imagePath = req.file ? req.file.path : null; 
 
-    // const {rows}=await pool.query('select * from ref_products where name=$1,description=$2 and category=$3',[name,description,category]);
-    // if(rows.length>0){
-    //     return res.json({message:"Product already exists in Inventory",success:false})
-    // }
     try {
-        const { rows } = await pool.query('insert into ref_products (name,description,category) values ($1,$2,$3) returning *', [name, description, category]);
-        res.json({ message: "product added successflly", success: true });
+        const { rows } = await pool.query(
+            'INSERT INTO ref_products (name, description, category, image) VALUES ($1, $2, $3,$4) RETURNING *',
+            [name, description, category,imagePath]
+        );
+        // console.log(req.file);
 
+        res.json({ message: "Product added successfully", success: true, data: rows[0] });
     } catch (error) {
         console.log(error.message);
-
-        res.json({ message: "Product Already Exists In Inventory", success: false });
+        res.json({ message: "Failed to add product", success: false });
     }
-}
+};
+
 
 
 const createProductsWithBatch = async (req, res) => {
@@ -476,4 +501,4 @@ const getReceiptRecord = async (req, res) => {
 
 
 
-module.exports = { createProductsWithBatch, getAdmin, signupadmin, adminLogin, getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
+module.exports = { upload, createProductsWithBatch, getAdmin, signupadmin, adminLogin, getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };

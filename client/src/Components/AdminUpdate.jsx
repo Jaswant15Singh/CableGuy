@@ -4,13 +4,13 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 const AdminUpdate = () => {
     const { id } = useParams();
     console.log(id);
-    
+
     const token = localStorage.getItem("adminlogintoken");
     const [data, setData] = useState({ name: "", email: "" });
-    const navigate = useNavigate(); 
-    useEffect(()=>{
-        window.document.title="Admin Update"
-    },[])
+    const navigate = useNavigate();
+    useEffect(() => {
+        window.document.title = "Admin Update"
+    }, [])
 
     useEffect(() => {
         const getSingleUser = async () => {

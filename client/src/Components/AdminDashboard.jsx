@@ -285,7 +285,7 @@ const AdminDashboard = () => {
             alert("Some issue occured while fetching individual datas")
         }
         res = await res.json();
-        // console.log(res.data);
+        console.log(res.data);
         setIndividualProduct(res.data);
     }
     useEffect(() => {
@@ -311,7 +311,7 @@ const AdminDashboard = () => {
         }
 
         else {
-            alert(res.message)
+            // alert(res.message)
         }
     }
 
@@ -464,13 +464,22 @@ const AdminDashboard = () => {
 
     const addIndProducts = async (e) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append("name", indProd.name);
+        formData.append("description", indProd.description);
+        formData.append("category", indProd.category);
+
+        const isImg = document.querySelector('input[type="file"]').files[0];
+        if (isImg) {
+            formData.append("image", isImg)
+        }
+
         let res = await fetch("http://localhost:5000/adminapi/indproducts/add", {
             method: "POST",
             headers: {
-                'Authorization': `Bearer ${token}`,
-                "Content-Type": "application/json"
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ name: indProd.name, description: indProd.description, category: indProd.category })
+            body: formData
         })
         if (!res.ok) {
             toast.error("Issue occured in Individual Products");
@@ -815,7 +824,9 @@ const AdminDashboard = () => {
                                     onChange={handleIndProdChange}
                                 />
                             </div>
-
+                            <div className="adminp">
+                                <input type="file" />
+                            </div>
 
                             <button type='submit' className='links'>Add Product</button>
                         </form>
@@ -947,7 +958,7 @@ const AdminDashboard = () => {
                                     >
                                         <option value="">Select Product</option>
                                         {individualProduct
-                                            .filter((prod) => prod.category === selectedCategory)
+                                            .filter((prod) => prod.category === product.category)
                                             .map((filteredProduct) => (
                                                 <option key={filteredProduct.name} value={filteredProduct.name}>
                                                     {filteredProduct.name}
@@ -962,9 +973,7 @@ const AdminDashboard = () => {
                                         disabled={true}
                                         value={product.prod_desc}
                                         name="prod_desc"
-                                        onChange={(e) => handleProdChange(e, index)}
                                     >
-                                        {/* <option value="">Product Description</option> */}
                                         {individualProduct
                                             .filter((prod) => prod.name === product.name)
                                             .map((filteredProduct) => (
@@ -975,6 +984,34 @@ const AdminDashboard = () => {
                                     </select>
                                 </div>
 
+                                {/* Displaying Image */}
+                                <div className="adminp">
+                                    {individualProduct
+                                        .filter((prod) => prod.name === product.name)
+                                        .map((filteredProduct) => (
+                                            <img
+                                                key={filteredProduct.image}
+                                                src={`http://localhost:5000${filteredProduct.image}`}
+                                                alt={filteredProduct.name}
+                                                style={{ maxWidth: '150px', height: 'auto' }}
+                                            />
+                                        ))}
+                                </div>
+                                <div className="adminp">
+                                    {individualProduct
+                                        .filter((prod) => prod.name === product.name)
+                                        .map((filteredProduct) => (
+                                            <img
+                                                key={filteredProduct.image}
+                                                src={`http://localhost:5000${filteredProduct.image.replace('D:\\Practise4\\apis', '')}`}
+                                                alt={filteredProduct.name}
+                                                style={{ maxWidth: '150px', height: 'auto' }}
+                                            />
+                                        ))}
+                                </div>
+
+
+                                {/* Additional Fields */}
                                 <div className="adminp">
                                     <label htmlFor="description">Description</label>
                                     <input
@@ -1015,6 +1052,7 @@ const AdminDashboard = () => {
                                 )}
                             </div>
                         ))}
+
                         <button className='links' type="button" onClick={addMoreProducts}>
                             Add More Products
                         </button>

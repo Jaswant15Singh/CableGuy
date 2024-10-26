@@ -5,6 +5,8 @@ const Route = require("./routes/route");
 const adminRoute = require("./routes/adminRoute");
 const cors = require("cors");
 const dotenv = require("dotenv").config();
+const path = require("path");
+
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
@@ -14,7 +16,9 @@ const pool = new Pool({
 });
 app.use(cors({
     origin: "http://localhost:5173"
-}))
+}));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use(express.json());
 
 pool.query('SELECT NOW()', (err, res) => {
