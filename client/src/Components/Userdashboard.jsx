@@ -11,6 +11,8 @@ const Userdashboard = () => {
   const [customerData, setCustomerData] = useState({ name: "", contact: "", email: "" });
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
+  // const [selectedImage, setSelectedImage] = useState(null);
+
   const [selectedProduct, setSelectedProduct] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState('');
   const [addProd, setAddProd] = useState(true);
@@ -85,36 +87,32 @@ const Userdashboard = () => {
   const getAllProducts = async () => {
     let res = await fetch("http://localhost:5000/adminapi/products", {
       method: "GET",
-
       headers: {
         'Authorization': `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
+
     if (!res.ok) {
       alert("Failed to fetch products");
       return;
     }
 
     res = await res.json();
-    // console.log(res.data);
-    // console.log(12);
+    // console.log(res.data); 
+    for (let data of res.data) {
+      // console.log(data.image);
+      // const imagePath = data.image;
+      // const imageUrl = `http://localhost:5000/images/${imagePath}`; 
+      // console.log(imageUrl); 
+      console.log(`http://localhost:5000/${data.image}`);
 
+    }
 
-
-    //     res.data.forEach((e)=>{
-    //       console.log(e.category);
-
-    //     })
-    // setTimeout(()=>{
-    //   console.log(`cat is ${selectedCategory}`);
-
-    // },1000)    
     setProducts(res.data);
-    console.log([...new Set(products.map((e) => e.category))]);
 
-
-  }
+    console.log([...new Set(res.data.map((e) => e.category))]);
+  };
 
   const getIndividyalProducts = async () => {
     let res = await fetch("http://localhost:5000/adminapi/indproducts", {
@@ -130,7 +128,7 @@ const Userdashboard = () => {
       return;
     }
     res = await res.json();
-    // console.log(res.data);
+    // console.log(`data ${res.data}`);
     setIndividualProduct(res.data)
 
   }
@@ -173,14 +171,20 @@ const Userdashboard = () => {
       return;
     }
     console.log(typeof selectedProduct);
+    console.log(selectedProduct);
+
     if (selectedProduct && selectedQuantity) {
       const existingProduct = cart.find((e) => e.id === Number(selectedProduct));
+      console.log(existingProduct);
+
       if (existingProduct) {
         const updatedCart = cart.map((e) =>
           e.id === Number(selectedProduct)
             ? { ...e, quantity: e.quantity + Number(selectedQuantity) }
             : e
         );
+        console.log(updatedCart);
+
         setCart(updatedCart)
       }
       else {
@@ -192,28 +196,6 @@ const Userdashboard = () => {
       }
     }
   }
-
-  // const handleAddProduct = (e) => {
-  //   if (selectedProduct && selectedQuantity) {
-  //     const existingProduct = cart.find((e) => e.id === Number(selectedProduct));
-  //     if (existingProduct) {
-  //       // Update the quantity of the existing product
-  //       const updatedCart = cart.map((e) =>
-  //         e.id === Number(selectedProduct)
-  //           ? { ...e, quantity: e.quantity + Number(selectedQuantity) }
-  //           : e
-  //       );
-  //       setCart(updatedCart);
-  //     } else {
-  //       // Add new product to cart
-  //       const prod = products.find((e) => e.id === Number(selectedProduct));
-  //       if (prod) {
-  //         setCart([...cart, { ...prod, quantity: Number(selectedQuantity) }]);
-  //       }
-  //     }
-  //   }
-  // };
-
 
   const placeOrders = async () => {
     if (!customerData.name || !customerData.contact) {
@@ -416,35 +398,6 @@ const Userdashboard = () => {
               </div>
             </form>
           </div>
-
-          // <div className='formdiv'>
-
-          //   <form onSubmit={handleUpdateClick} className='updateform'>
-          //     <h1 style={{ marginBottom: "-10px" }}>Update User</h1>
-          //     <div className='updateinp'>
-          //       <label htmlFor="name">Name</label>
-          //       <input
-          //         type="text"
-          //         name="name"
-          //         value={updatedata.name}
-          //         onChange={handleChange}
-          //       />
-          //     </div>
-          //     <div className='updateinp'>
-          //       <label htmlFor="email">Email</label>
-          //       <input
-          //         type="email"
-          //         name="email"
-          //         value={updatedata.email}
-          //         onChange={handleChange}
-          //       />
-          //     </div>
-          //     <button className='links' style={{ border: "none", marginTop: "20px", cursor: "pointer" }} type='submit'>Update Data</button>
-
-
-          //   </form>
-          //   <button style={{ display: "block", margin: "10px auto", padding: "5px", cursor: "pointer" }} className='links' onClick={() => setUpdate(false)}>Back</button>
-          // </div>
         ) : (
           <div className='detailsdiv'>
             <div className="details">
@@ -490,6 +443,7 @@ const Userdashboard = () => {
                 setSelectedCategory(e.target.value);
                 console.log("Selected Category:", e.target.value);
                 console.log(typeof selectedCategory);
+                // console.log(`http://localhost:5000/${products.image}`);
 
               }}>
                 <option value="">Select Category</option>
@@ -513,22 +467,46 @@ const Userdashboard = () => {
                 <option value="high-price"><button>Price-Higher to Lower</button></option>
                 <option value="name">Sort By name</option>
               </select>
-              <select className='select' name="" id="" value={selectedProduct} onChange={(e) => { setSelectedProduct(e.target.value) }}>
+              <select className='select' name="" id="" value={selectedProduct} onChange={(e) => { setSelectedProduct(e.target.value) }} >
                 <option value="">Select</option>
 
                 {
-
-                  sortedBasis()
-                    .map((e) => (
-                      <option value={e.id} key={e.id}>
-                        {e.name} - ${e.price} (Available: {e.quantity}) - {e.description}
-                      </option>
-                    ))
-
+                  sortedBasis().map((e) => (
+                    <option value={e.id} key={e.id}>
+                      {e.name} - ${e.price} (Available: {e.quantity}) - {e.description}
+                      <img
+                        src={`http://localhost:5000/${e.image.replace('D:\\Practise4\\apis\\', '')}`}
+                        height={"10px"}
+                        alt="not found"
+                      />
+                    </option>
+                  ))
                 }
 
-
               </select>
+
+              <input type="radio" name="" id="" />
+              {/* 
+              {
+                sortedBasis().map((e) => (
+                 e.selectedCategory && <img src={`http://localhost:5000/${e.image.replace('D:\\Practise4\\apis\\', '')}`} height={"40px"} alt="" />
+                ))
+              } */}
+
+              {products.map((e) => (
+                <div key={e.id}>
+                  {/* <h1>{`http://localhost:5000/${e.image.replace('D:\\Practise4\\apis\\images\\', '')}`}</h1> */}
+                  {/* <img src={`http://localhost:5000/${e.image.replace('D:\\Practise4\\apis\\', '')}`} height={"50px"} alt="not found" /> */}
+                </div>
+              ))}
+              {/* http://localhost:5000/image-1730100692267.jpg */}
+              {/* {
+                products.map((e) => (
+                  <h1>{`http://localhost:5000/${e.image}`}</h1>
+                ))
+              } */}
+
+              {/* {`http://localhost:5000${filteredProduct.image.replace('D:\\Practise4\\apis', '')}`} */}
             </div>
             <div className='num'>
               <input type="number" name="selectedNumber" id="" value={selectedQuantity < 0 ? 0 : selectedQuantity} onChange={(e) => { setSelectedQuantity(e.target.value) }} />
@@ -545,6 +523,7 @@ const Userdashboard = () => {
             <>
               <div className='orderdet'>
                 <h1 style={{ margin: "10px 5px" }}>{e.name} <span>quantity:{e.quantity}</span></h1>
+
                 <button className='links' style={{ height: "30px", padding: "0 10px", cursor: "pointer" }} onClick={() => {
                   removeProduct(index)
                 }}>Remove</button>

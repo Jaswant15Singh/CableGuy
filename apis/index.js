@@ -17,7 +17,12 @@ const pool = new Pool({
 app.use(cors({
     origin: "http://localhost:5173"
 }));
+// app.use('/images', express.static(path.join(__dirname, '../images')));
+
+// Serve static files from the 'apis/images' directory
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// Your other routes and middleware
 
 app.use(express.json());
 

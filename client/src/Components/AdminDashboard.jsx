@@ -26,7 +26,7 @@ const AdminDashboard = () => {
     const [data, setData] = useState([]);
     const [inp, setInp] = useState({ name: "", email: "", password: "" });
     const [inpp, setInpp] = useState({ name: "", contact: "", address: "" });
-    const [prod, setProd] = useState([{ name: "", prod_desc: "", description: "", category: "", price: "", supp_id: "" }]);
+    const [prod, setProd] = useState([{ name: "", prod_desc: "", description: "", category: "", price: "", supp_id: "", image: null }]);
     const [indProd, setIndProd] = useState({ name: "", description: "", category: "" })
     const [dataa, setDataa] = useState([]);
     const [supplierId, setSupplierId] = useState("")
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
 
 
     const { adminid } = useParams();
-    console.log(adminid);
+    // console.log(adminid);
     const token = localStorage.getItem("adminlogintoken");
     const [adminreg, setAdminreg] = useState(false);
     const [supplieradd, setSupplieradd] = useState(false);
@@ -210,16 +210,28 @@ const AdminDashboard = () => {
 
     const category = [{ id: 1, name: "Vegetable" }, { id: 2, name: "Fruit" }, { id: 3, name: "Gaming" }, { id: 4, name: "Study" }]
 
-    const handleProdChange = (e, index) => {
-        const { name, value } = e.target;
-        const updatedProducts = [...prod];
-        updatedProducts[index] = {
-            ...updatedProducts[index],
-            [name]: value,
-        };
-        setProd(updatedProducts);
-    };
+    // const handleProdChange = (e, index) => {
+    //     const { name, value } = e.target;
+    //     const updatedProducts = [...prod];
+    //     updatedProducts[index] = {
+    //         ...updatedProducts[index],
+    //         [name]: value,
+    //     };
+    //     setProd(updatedProducts);
+    // };
 
+    const handleProdChange = (e, index) => {
+        const { name, value, files } = e.target;
+        const updatedProd = [...prod];
+
+        if (name === "image") {
+            updatedProd[index][name] = files[0];  // Handle file upload
+        } else {
+            updatedProd[index][name] = value;
+        }
+
+        setProd(updatedProd);
+    };
     const handleIndProdChange = (e) => {
         setIndProd({ ...indProd, [e.target.name]: e.target.value })
     }
@@ -304,7 +316,7 @@ const AdminDashboard = () => {
         }
 
         res = await res.json();
-        console.log(res.message);
+        // console.log(res.message);
 
         if (res.success) {
             setGetProd(res.message)
@@ -327,7 +339,7 @@ const AdminDashboard = () => {
         }
 
         res = await res.json();
-        console.log(res.data);
+        // console.log(res.data);
 
         if (res.success) {
             setGetAllProd(res.data)
@@ -371,7 +383,7 @@ const AdminDashboard = () => {
         }
 
         res = await res.json();
-        console.log(res);
+        // console.log(res);
         if (!res.success) {
             toast.error(res.message)
         }
@@ -398,7 +410,7 @@ const AdminDashboard = () => {
 
 
         res = await res.json();
-        console.log(res);
+        // console.log(res);
 
         if (!res.success) {
             toast.error(res.message)
@@ -425,7 +437,7 @@ const AdminDashboard = () => {
         }
 
         res = await res.json();
-        console.log(res);
+        // console.log(res);
 
         if (!res.success) {
             toast.error(res.message);
@@ -505,47 +517,110 @@ const AdminDashboard = () => {
             !product.name || !product.description || !product.category || !product.price || !product.batch_quantity
         );
         console.log(hasEmptyFields);
-
-
         if (hasEmptyFields) {
             alert("Enter previous records first");
             return;
         }
         setCart([...cart, ...prod])
-        setProd([{ name: '', description: '', category: '', price: '', batch_quantity: '' }]);
+        // setProd([{ name: '', description: '', category: '', price: '', batch_quantity: '' }]);
+        console.log(cart);
+
+
+        setProd([...prod, { name: "", prod_desc: "", description: "", category: "", price: "", supp_id: "", image: null }]);
+
 
     }
+
+
     const removeProduct = (index) => {
         const updatedProducts = cart.filter((_, i) => i !== index);
         setCart(updatedProducts);
     }
+    // const addProduct = async (e) => {
+
+    //     if (cart.length < 1) {
+    //         alert("No orders placed");
+    //         return;
+    //     }
+    //     const products = cart.map((product) => ({
+    //         name: product.name,
+    //         description: product.description,
+    //         category: product.category,
+    //         price: Number(product.price),
+    //         batch_quantity: Number(product.batch_quantity),
+    //     }));
+    //     console.log(products);
+
+    //     const requestData = {
+    //         supp_id: Number(supplierId),
+    //         products: products,
+    //     };
+    //     try {
+    //         let res = await fetch("http://localhost:5000/adminapi/cr", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Authorization": `Bearer ${token}`,
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify(requestData)
+    //         });
+
+    //         if (!res.ok) {
+    //             const errorMessage = await res.json();
+    //             toast.error(errorMessage.message || 'Some issue occurred');
+    //             return;
+    //         }
+
+    //         const responseData = await res.json();
+
+    //         if (!responseData.success) {
+    //             toast.error(responseData.message || 'Some issue occurred');
+    //             return;
+    //         }
+
+    //         toast.success(responseData.message);
+
+
+    //         setCart([])
+
+    //         setProdadd(false);
+    //     } catch (error) {
+    //         console.error("Error while adding product:", error);
+    //         alert("Failed to add product");
+    //     }
+    // };
+
     const addProduct = async (e) => {
+        e.preventDefault();
 
         if (cart.length < 1) {
             alert("No orders placed");
             return;
         }
-        const products = cart.map((product) => ({
-            name: product.name,
-            description: product.description,
-            category: product.category,
-            price: Number(product.price),
-            batch_quantity: Number(product.batch_quantity),
-        }));
-        console.log(products);
 
-        const requestData = {
-            supp_id: Number(supplierId),
-            products: products,
-        };
+        const formData = new FormData();
+        formData.append('supp_id', Number(supplierId));
+
+        cart.forEach((product, index) => {
+            formData.append(`products[${index}][name]`, product.name);
+            formData.append(`products[${index}][description]`, product.description);
+            formData.append(`products[${index}][category]`, product.category);
+            formData.append(`products[${index}][price]`, Number(product.price));
+            formData.append(`products[${index}][batch_quantity]`, Number(product.batch_quantity));
+
+            if (product.image) {
+                formData.append(`products[${index}][image]`, product.image);
+            }
+        });
+
         try {
             let res = await fetch("http://localhost:5000/adminapi/cr", {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
+                    // No Content-Type header; FormData will handle it
                 },
-                body: JSON.stringify(requestData)
+                body: formData
             });
 
             if (!res.ok) {
@@ -562,16 +637,55 @@ const AdminDashboard = () => {
             }
 
             toast.success(responseData.message);
-
-
-            setCart([])
-
+            setCart([]);
             setProdadd(false);
         } catch (error) {
             console.error("Error while adding product:", error);
             alert("Failed to add product");
         }
     };
+
+    // const addProduct = async (e) => {
+    //     e.preventDefault();
+
+    //     if (cart.length < 1) {
+    //         alert("No orders placed");
+    //         return;
+    //     }
+
+    //     const formData = new FormData();
+    //     formData.append('supp_id', Number(supplierId));
+
+    //     cart.forEach((product) => {
+    //         formData.append('products[]', JSON.stringify({
+    //             name: product.name,
+    //             description: product.description,
+    //             category: product.category,
+    //             price: Number(product.price),
+    //             batch_quantity: Number(product.batch_quantity),
+    //         }));
+    //         if (product.image) {
+    //             formData.append('images', product.image); // Using 'images' instead of 'images[]'
+    //         }
+    //     });
+
+    //     try {
+    //         let res = await fetch("http://localhost:5000/adminapi/cr", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Authorization": `Bearer ${token}`,
+    //                 // No Content-Type header
+    //             },
+    //             body: formData
+    //         });
+
+    //         // Handle response...
+    //     } catch (error) {
+    //         console.error("Error while adding product:", error);
+    //         alert("Failed to add product");
+    //     }
+    // };
+
 
     // const uniqueCategories = Array.from(new Set(individualProduct.map((prod) => prod.category)));
 
@@ -932,7 +1046,7 @@ const AdminDashboard = () => {
                         ))} */}
 
                         {prod.map((product, index) => (
-                            <div key={index}>
+                            <div key={index} style={{ overflowY: "auto" }}>
                                 <div className="adminp">
                                     <label htmlFor="category">Category</label>
                                     <select
@@ -983,8 +1097,7 @@ const AdminDashboard = () => {
                                             ))}
                                     </select>
                                 </div>
-
-                                {/* Displaying Image */}
+                                {/*                                 
                                 <div className="adminp">
                                     {individualProduct
                                         .filter((prod) => prod.name === product.name)
@@ -996,8 +1109,8 @@ const AdminDashboard = () => {
                                                 style={{ maxWidth: '150px', height: 'auto' }}
                                             />
                                         ))}
-                                </div>
-                                <div className="adminp">
+                                </div> */}
+                                {/* <div className="adminp">
                                     {individualProduct
                                         .filter((prod) => prod.name === product.name)
                                         .map((filteredProduct) => (
@@ -1008,10 +1121,9 @@ const AdminDashboard = () => {
                                                 style={{ maxWidth: '150px', height: 'auto' }}
                                             />
                                         ))}
-                                </div>
+                                </div> */}
 
 
-                                {/* Additional Fields */}
                                 <div className="adminp">
                                     <label htmlFor="description">Description</label>
                                     <input
@@ -1044,6 +1156,15 @@ const AdminDashboard = () => {
                                         required
                                     />
                                 </div>
+                                <div className="adminp">
+                                    <label htmlFor="image">Upload Image</label>
+                                    <input
+                                        type="file"
+                                        name="image"
+                                        onChange={(e) => handleProdChange(e, index)}
+                                        required
+                                    />
+                                </div>
 
                                 {prod.length > 1 && (
                                     <button type="button" onClick={() => removeProduct(index)}>
@@ -1066,48 +1187,7 @@ const AdminDashboard = () => {
 
                 {
                     isProd && (
-                        // <div style={{ padding: "0px 0px" }} className="productss">
-                        //     <button onClick={() => { setIsProd(!isProd) }}>X</button>
 
-                        //     <TableContainer component={Paper} style={{ borderRadius: "0" }}>
-                        //         <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                        //             <TableHead>
-                        //                 <TableRow>
-                        //                     <StyledTableCell align="left"> Batch_No</StyledTableCell>
-                        //                     <StyledTableCell align="left"> Batch_Quantity</StyledTableCell>
-                        //                     <StyledTableCell align="left"> Name</StyledTableCell>
-                        //                     <StyledTableCell align="left"> Price</StyledTableCell>
-                        //                     <StyledTableCell align="left">Category</StyledTableCell>
-                        //                 </TableRow>
-                        //             </TableHead>
-                        //             <TableBody>
-                        //                 {currentItemss.map((row) => (
-                        //                     <StyledTableRow key={row.name}>
-                        //                         <StyledTableCell align="left">{row.batche_no}</StyledTableCell>
-                        //                         <StyledTableCell align="left">{row.batch_quantity}</StyledTableCell>
-
-                        //                         <StyledTableCell align="left">{row.name}</StyledTableCell>
-                        //                         <StyledTableCell align="left">{row.price}</StyledTableCell>
-                        //                         <StyledTableCell align="left">{row.category}</StyledTableCell>
-
-                        //                     </StyledTableRow>
-                        //                 ))}
-                        //             </TableBody>
-                        //         </Table>
-                        //     </TableContainer>
-                        //     <div style={{ textAlign: "center" }}>
-                        //         {Array.from({ length: totalpagess }, (_, index) => (
-                        //             <button
-                        //                 key={index}
-                        //                 style={{ margin: "5px" }}
-                        //                 onClick={() => handlePageChangee(index + 1)}
-                        //                 disabled={currentPageBatch === index + 1}
-                        //             >
-                        //                 {index + 1}
-                        //             </button>
-                        //         ))}
-                        //     </div>
-                        // </div>
                         <div className='productss' style={{ backgroundColor: "aquamarine" }}>
                             <button className='prod-close' style={{ top: "0" }} onClick={() => { setIsProd(!isProd) }}>
                                 X
@@ -1156,44 +1236,7 @@ const AdminDashboard = () => {
 
 
                 {isallProd && (
-                    // <div style={{ padding: "0px 0px" }} className="productss">
-                    //     <button onClick={() => { setIsallProd(!isallProd) }} >X</button>
-                    //     <div style={{ textAlign: "center", zIndex: "100" }}>
-                    //         {Array.from({ length: totalPages }, (_, index) => (
-                    //             <button
-                    //                 key={index}
-                    //                 style={{ margin: "5px" }}
-                    //                 onClick={() => handlePageChange(index + 1)}
-                    //                 disabled={currentPage === index + 1}
-                    //             >
-                    //                 {index + 1}
-                    //             </button>
-                    //         ))}
-                    //     </div>
-                    //     <TableContainer component={Paper} style={{ borderRadius: "0" }}>
-                    //         <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                    //             <TableHead>
-                    //                 <TableRow>
-                    //                     <StyledTableCell align="left"> Name</StyledTableCell>
-                    //                     <StyledTableCell align="left"> Price</StyledTableCell>
-                    //                     <StyledTableCell align="left">Category</StyledTableCell>
-                    //                 </TableRow>
-                    //             </TableHead>
-                    //             <TableBody>
-                    //                 {currentItems.map((row) => (
-                    //                     <StyledTableRow key={row.name}>
-                    //                         <StyledTableCell align="left">{row.name}</StyledTableCell>
-                    //                         <StyledTableCell align="left">{row.price}</StyledTableCell>
-                    //                         <StyledTableCell align="left">{row.category}</StyledTableCell>
 
-                    //                     </StyledTableRow>
-                    //                 ))}
-                    //             </TableBody>
-                    //         </Table>
-
-                    //     </TableContainer>
-
-                    // </div>
                     <div className='productss' style={{ backgroundColor: "aquamarine" }}>
                         <button className='prod-close' style={{ top: "0" }} onClick={() => setIsallProd(false)}>
                             X

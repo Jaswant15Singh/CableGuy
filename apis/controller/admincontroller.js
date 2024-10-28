@@ -13,7 +13,7 @@ const pool = new Pool({
 
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../images')); 
+        cb(null, path.join(__dirname, '../images'));
     },
     filename: (req, file, cb) => {
         cb(null, `image-${Date.now()}${path.extname(file.originalname)}`);
@@ -33,6 +33,12 @@ const upload = multer({
     fileFilter: multerFilter
 });
 
+const multipleUpload = upload.fields([
+    { name: 'products[0][image]', maxCount: 1 },
+    { name: 'products[1][image]', maxCount: 1 },
+    { name: 'products[2][image]', maxCount: 1 }
+    // Add more fields as per your needs
+]);
 const getAdmin = async (req, res) => {
     try {
         const result = await pool.query('select * from admin');
@@ -231,12 +237,12 @@ const getIndProd = async (req, res) => {
 
 const addIndProduct = async (req, res) => {
     const { name, description, category } = req.body;
-    const imagePath = req.file ? req.file.path : null; 
+    const imagePath = req.file ? req.file.path : null;
 
     try {
         const { rows } = await pool.query(
             'INSERT INTO ref_products (name, description, category, image) VALUES ($1, $2, $3,$4) RETURNING *',
-            [name, description, category,imagePath]
+            [name, description, category, imagePath]
         );
         // console.log(req.file);
 
@@ -247,6 +253,100 @@ const addIndProduct = async (req, res) => {
     }
 };
 
+
+
+// const createProductsWithBatch = async (req, res) => {
+//     const { supp_id, products } = req.body;
+
+
+//     try {
+//         const supplierCheck = await pool.query('SELECT * FROM supplier WHERE id = $1', [supp_id]);
+//         if (supplierCheck.rows.length === 0) {
+//             return res.json({ message: "Supplier not found", success: false });
+//         }
+
+//         const createdProducts = [];
+
+//         const batchNoResult = await pool.query('SELECT MAX(batche_no) AS max_batch_no FROM batch');
+//         const maxBatchNo = batchNoResult.rows[0].max_batch_no || 0;
+//         const newBatchNo = maxBatchNo + 1;
+
+//         for (const product of products) {
+//             const { name, description, category, price, batch_quantity, manufactured, received_data } = product;
+//             const imagePath = req.file ? req.file.path : null;
+
+
+//             // const existingRefProduct = await pool.query(
+//             //     'SELECT * FROM ref_products WHERE name = $1 AND description = $2 AND category = $3',
+//             //     [name, description, category]
+//             // );
+
+//             let distProductId;
+
+//             // if (existingRefProduct.rows.length === 0) {
+//             //     const refProductResult = await pool.query(
+//             //         'INSERT INTO ref_products (name, description, category) VALUES ($1, $2, $3) RETURNING id',
+//             //         [name, description, category]
+//             //     );
+//             //     distProductId = refProductResult.rows[0].id;
+//             // } else {
+//             //     distProductId = existingRefProduct.rows[0].id;
+//             // }
+
+//             const existingProduct = await pool.query(
+//                 'SELECT * FROM product WHERE name = $1 AND price = $2 AND supp_id = $3',
+//                 [name, price, supp_id]
+//             );
+
+//             if (existingProduct.rows.length > 0) {
+//                 const product_id = existingProduct.rows[0].id;
+
+//                 const newQuantity = existingProduct.rows[0].quantity + batch_quantity;
+//                 await pool.query(
+//                     'UPDATE product SET quantity = $1 WHERE id = $2',
+//                     [newQuantity, product_id]
+//                 );
+
+//                 const manufacturedDate = manufactured || new Date();
+//                 await pool.query(
+//                     'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured, supp_id) VALUES ($1, $2, $3, $4, $5)',
+//                     [product_id, newBatchNo, batch_quantity, manufacturedDate, supp_id]
+//                 );
+
+//                 createdProducts.push({
+//                     product: existingProduct.rows[0],
+//                     batch: { batche_no: newBatchNo, batch_quantity }
+//                 });
+//             } else {
+//                 const productResult = await pool.query(
+//                     'INSERT INTO product (name, description, category, price, supp_id, quantity, received_quantity,received_data,image) VALUES ($1, $2, $3, $4, $5, $6, $7, $8,$9) RETURNING *',
+//                     [name, description, category, price, supp_id, batch_quantity, batch_quantity, new Date(), imagePath]
+//                 );
+//                 const product_id = productResult.rows[0].id;
+//                 const manufacturedDate = manufactured || new Date();
+//                 await pool.query(
+//                     'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured, supp_id,image) VALUES ($1, $2, $3, $4, $5,$6)',
+//                     [product_id, newBatchNo, batch_quantity, manufacturedDate, supp_id, imagePath]
+//                 );
+
+//                 createdProducts.push({
+//                     product: productResult.rows[0],
+//                     batch: { batche_no: newBatchNo, batch_quantity }
+//                 });
+//             }
+//         }
+
+//         res.json({
+//             message: "Products and batches added/updated successfully",
+//             success: true,
+//             data: createdProducts
+//         });
+
+//     } catch (error) {
+//         console.error("Error adding products and batches:", error);
+//         res.json({ message: "Failed to add/update products and batches", success: false });
+//     }
+// };
 
 
 const createProductsWithBatch = async (req, res) => {
@@ -264,25 +364,15 @@ const createProductsWithBatch = async (req, res) => {
         const maxBatchNo = batchNoResult.rows[0].max_batch_no || 0;
         const newBatchNo = maxBatchNo + 1;
 
-        for (const product of products) {
+        for (let i = 0; i < products.length; i++) {
+            const product = products[i];
+            console.log(product);
+
             const { name, description, category, price, batch_quantity, manufactured, received_data } = product;
 
-            // const existingRefProduct = await pool.query(
-            //     'SELECT * FROM ref_products WHERE name = $1 AND description = $2 AND category = $3',
-            //     [name, description, category]
-            // );
-
-            let distProductId;
-
-            // if (existingRefProduct.rows.length === 0) {
-            //     const refProductResult = await pool.query(
-            //         'INSERT INTO ref_products (name, description, category) VALUES ($1, $2, $3) RETURNING id',
-            //         [name, description, category]
-            //     );
-            //     distProductId = refProductResult.rows[0].id;
-            // } else {
-            //     distProductId = existingRefProduct.rows[0].id;
-            // }
+            // Fetch the corresponding image from req.files
+            const imageField = `products[${i}][image]`;
+            const imagePath = req.files[imageField] ? req.files[imageField][0].path : null;
 
             const existingProduct = await pool.query(
                 'SELECT * FROM product WHERE name = $1 AND price = $2 AND supp_id = $3',
@@ -290,18 +380,20 @@ const createProductsWithBatch = async (req, res) => {
             );
 
             if (existingProduct.rows.length > 0) {
+                // Update existing product's quantity
                 const product_id = existingProduct.rows[0].id;
-
                 const newQuantity = existingProduct.rows[0].quantity + batch_quantity;
+
                 await pool.query(
-                    'UPDATE product SET quantity = $1 WHERE id = $32',
+                    'UPDATE product SET quantity = $1 WHERE id = $2',
                     [newQuantity, product_id]
                 );
 
+                // Insert into batch table
                 const manufacturedDate = manufactured || new Date();
                 await pool.query(
-                    'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured, supp_id) VALUES ($1, $2, $3, $4, $5)',
-                    [product_id, newBatchNo, batch_quantity, manufacturedDate, supp_id]
+                    'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured, supp_id, image) VALUES ($1, $2, $3, $4, $5, $6)',
+                    [product_id, newBatchNo, batch_quantity, manufacturedDate, supp_id, imagePath]
                 );
 
                 createdProducts.push({
@@ -309,16 +401,19 @@ const createProductsWithBatch = async (req, res) => {
                     batch: { batche_no: newBatchNo, batch_quantity }
                 });
             } else {
+                // Insert new product
                 const productResult = await pool.query(
-                    'INSERT INTO product (name, description, category, price, supp_id, quantity, received_quantity,received_data) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-                    [name, description, category, price, supp_id, batch_quantity, batch_quantity, new Date()]
+                    'INSERT INTO product (name, description, category, price, supp_id, quantity, received_quantity, received_data, image) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+                    [name, description, category, price, supp_id, batch_quantity, batch_quantity, new Date(), imagePath]
                 );
-                const product_id = productResult.rows[0].id;
 
+                const product_id = productResult.rows[0].id;
                 const manufacturedDate = manufactured || new Date();
+
+                // Insert into batch table
                 await pool.query(
-                    'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured, supp_id) VALUES ($1, $2, $3, $4, $5)',
-                    [product_id, newBatchNo, batch_quantity, manufacturedDate, supp_id]
+                    'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured, supp_id, image) VALUES ($1, $2, $3, $4, $5, $6)',
+                    [product_id, newBatchNo, batch_quantity, manufacturedDate, supp_id, imagePath]
                 );
 
                 createdProducts.push({
@@ -334,12 +429,13 @@ const createProductsWithBatch = async (req, res) => {
             data: createdProducts
         });
 
+
+
     } catch (error) {
         console.error("Error adding products and batches:", error);
         res.json({ message: "Failed to add/update products and batches", success: false });
     }
 };
-
 
 
 // const getProdBatch = async (req, res) => {
@@ -366,10 +462,6 @@ const createProductsWithBatch = async (req, res) => {
 const placeOrder = async (req, res) => {
     const { customer_name, customer_contact, user_id, email, cart } = req.body;
 
-    // const isEmail=await pool.query('select * from orders where email = $1',[email]);
-    // if(isEmail){
-    //     return res.json({messsage:"Email already exists",success:false})
-    // }
 
     const result = await pool.query(
         'INSERT INTO orders (customer_name, customer_contact,email) VALUES ($1, $2,$3) RETURNING order_id',
@@ -501,4 +593,4 @@ const getReceiptRecord = async (req, res) => {
 
 
 
-module.exports = { upload, createProductsWithBatch, getAdmin, signupadmin, adminLogin, getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
+module.exports = { multipleUpload, upload, createProductsWithBatch, getAdmin, signupadmin, adminLogin, getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
