@@ -363,6 +363,12 @@ const Userdashboard = () => {
 
     doc.save("receipt.pdf");
   };
+
+  console.log(selectedCategory);
+
+  const filteredProducts = selectedCategory
+    ? products.filter((prod) => prod.category === selectedCategory)
+    : products;
   return (
 
 
@@ -467,7 +473,7 @@ const Userdashboard = () => {
                 <option value="high-price"><button>Price-Higher to Lower</button></option>
                 <option value="name">Sort By name</option>
               </select>
-              <select className='select' name="" id="" value={selectedProduct} onChange={(e) => { setSelectedProduct(e.target.value) }} >
+              {/* <select className='select' name="" id="" value={selectedProduct} onChange={(e) => { setSelectedProduct(e.target.value) }} >
                 <option value="">Select</option>
 
                 {
@@ -483,9 +489,8 @@ const Userdashboard = () => {
                   ))
                 }
 
-              </select>
+              </select> */}
 
-              <input type="radio" name="" id="" />
               {/* 
               {
                 sortedBasis().map((e) => (
@@ -493,18 +498,28 @@ const Userdashboard = () => {
                 ))
               } */}
 
-              {products.map((e) => (
-                <div key={e.id}>
-                  {/* <h1>{`http://localhost:5000/${e.image.replace('D:\\Practise4\\apis\\images\\', '')}`}</h1> */}
-                  {/* <img src={`http://localhost:5000/${e.image.replace('D:\\Practise4\\apis\\', '')}`} height={"50px"} alt="not found" /> */}
-                </div>
-              ))}
-              {/* http://localhost:5000/image-1730100692267.jpg */}
-              {/* {
-                products.map((e) => (
-                  <h1>{`http://localhost:5000/${e.image}`}</h1>
-                ))
-              } */}
+              <div className="product-selection">
+                {filteredProducts.map((product) => (
+                  <label key={product.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                    <input
+                      type="radio"
+                      name="product"
+                      value={product.id}
+                      checked={selectedProduct === product.id}
+                      onChange={() => setSelectedProduct(product.id)}
+                      style={{ marginRight: '10px' }}
+                    />
+
+                    <img
+                      src={`http://localhost:5000/${product.image.replace('D:\\Practise4\\apis\\', '')}`}
+                      alt="not found"
+                      height="50px"
+                      style={{ marginRight: '10px' }}
+                    />
+                    {`${product.name} - $${product.price} (Available: ${product.quantity}) - ${product.description}`}
+                  </label>
+                ))}
+              </div>
 
               {/* {`http://localhost:5000${filteredProduct.image.replace('D:\\Practise4\\apis', '')}`} */}
             </div>
@@ -517,61 +532,65 @@ const Userdashboard = () => {
         </div>
         : ""}
 
-      {cart.length > 0 && <div className='orderplace'>
-        {cart.map((e, index) => {
-          return (
-            <>
-              <div className='orderdet'>
-                <h1 style={{ margin: "10px 5px" }}>{e.name} <span>quantity:{e.quantity}</span></h1>
+      {
+        cart.length > 0 && <div className='orderplace'>
+          {cart.map((e, index) => {
+            return (
+              <>
+                <div className='orderdet'>
+                  <h1 style={{ margin: "10px 5px" }}>{e.name} <span>quantity:{e.quantity}</span></h1>
 
-                <button className='links' style={{ height: "30px", padding: "0 10px", cursor: "pointer" }} onClick={() => {
-                  removeProduct(index)
-                }}>Remove</button>
+                  <button className='links' style={{ height: "30px", padding: "0 10px", cursor: "pointer" }} onClick={() => {
+                    removeProduct(index)
+                  }}>Remove</button>
 
 
-              </div>
-              <hr /></>
-          )
-        })}
-        <div className='totalitems' style={{ margin: "5px" }}>{cart.length}</div>
-        <h2 style={{ margin: "5px" }}>Total amount is:{cart.reduce((total, e) => {
-          return total += e.price * e.quantity
-        }, 0)} ₹</h2>
-        <button className='links' style={{ margin: "20px 5px", padding: "5px 10px", cursor: "pointer" }} onClick={placeOrders}>Place Order</button>
-      </div>}
-      {receipt.length > 0 ? (
-        <div className='receipt'>
-          <h1 style={{ textAlign: "center" }}>Payment Receipt</h1>
-          <p><strong>Customer Name:</strong> {receipt[0].customer_name}</p>
-          <p><strong>Contact:</strong> {receipt[0].customer_contact}</p>
-          <p><strong>Email:</strong> {receipt[0].email}</p>
-          <hr />
-          {receipt.map((e, index) => (
-            <div key={index}>
-
-              <p><strong>Product Name:</strong> {e.product_name}</p>
-              <p><strong>Category:</strong> {e.category}</p>
-              <p><strong>Quantity:</strong> {e.quantity}</p>
-              <p><strong>Price at Purchase:</strong> {e.price_at_purchase}</p>
-              <p><strong>Total Price:</strong> {e.total_price}</p>
-              <hr />
-              <hr />
-            </div>
-          ))}
-          <h2>Cumulative Total</h2>
-          <p><strong>Total Amount Paid:</strong> ₹{
-            receipt.reduce((acc, curr) => acc + curr.total_price, 0)
-          }</p>
-
-          <button onClick={generatePDF}>Download Receipt as PDF</button>
+                </div>
+                <hr /></>
+            )
+          })}
+          <div className='totalitems' style={{ margin: "5px" }}>{cart.length}</div>
+          <h2 style={{ margin: "5px" }}>Total amount is:{cart.reduce((total, e) => {
+            return total += e.price * e.quantity
+          }, 0)} ₹</h2>
+          <button className='links' style={{ margin: "20px 5px", padding: "5px 10px", cursor: "pointer" }} onClick={placeOrders}>Place Order</button>
         </div>
-      ) : (
-        ""
-      )}
+      }
+      {
+        receipt.length > 0 ? (
+          <div className='receipt'>
+            <h1 style={{ textAlign: "center" }}>Payment Receipt</h1>
+            <p><strong>Customer Name:</strong> {receipt[0].customer_name}</p>
+            <p><strong>Contact:</strong> {receipt[0].customer_contact}</p>
+            <p><strong>Email:</strong> {receipt[0].email}</p>
+            <hr />
+            {receipt.map((e, index) => (
+              <div key={index}>
+
+                <p><strong>Product Name:</strong> {e.product_name}</p>
+                <p><strong>Category:</strong> {e.category}</p>
+                <p><strong>Quantity:</strong> {e.quantity}</p>
+                <p><strong>Price at Purchase:</strong> {e.price_at_purchase}</p>
+                <p><strong>Total Price:</strong> {e.total_price}</p>
+                <hr />
+                <hr />
+              </div>
+            ))}
+            <h2>Cumulative Total</h2>
+            <p><strong>Total Amount Paid:</strong> ₹{
+              receipt.reduce((acc, curr) => acc + curr.total_price, 0)
+            }</p>
+
+            <button onClick={generatePDF}>Download Receipt as PDF</button>
+          </div>
+        ) : (
+          ""
+        )
+      }
 
 
       <Link style={{ textDecoration: "underline", display: "block", width: "70px", margin: "0px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
-    </div>
+    </div >
 
 
   );
