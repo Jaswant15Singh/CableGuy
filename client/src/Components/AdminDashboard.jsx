@@ -222,16 +222,13 @@ const AdminDashboard = () => {
 
     const handleProdChange = (e, index) => {
         const { name, value, files } = e.target;
-        const updatedProd = [...prod];
-
-        if (name === "image") {
-            updatedProd[index][name] = files[0];  // Handle file upload
-        } else {
-            updatedProd[index][name] = value;
-        }
-
-        setProd(updatedProd);
+        setProd((prevProd) =>
+            prevProd.map((product, i) =>
+                i === index ? { ...product, [name]: name === "image" ? files[0] : value } : product
+            )
+        );
     };
+
     const handleIndProdChange = (e) => {
         setIndProd({ ...indProd, [e.target.name]: e.target.value })
     }
@@ -287,19 +284,32 @@ const AdminDashboard = () => {
     const getIndividualProducts = async () => {
         let res = await fetch("http://localhost:5000/adminapi/indproducts", {
             method: "GET",
-
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "Content-Type": "application/json"
             }
         });
+
         if (!res.ok) {
-            alert("Some issue occured while fetching individual datas")
+            alert("Some issue occurred while fetching individual data");
+            return; // Early exit if there's an error
         }
+
         res = await res.json();
-        console.log(res.data);
-        setIndividualProduct(res.data);
-    }
+
+        const formattedProducts = res.data.map(i => {
+            // console.log(i.image);
+
+            const imagePath = i.image.replace(/\\/g, "/");
+            return {
+                ...i,
+                image: `http://localhost:5000/${imagePath}`
+            };
+        });
+        console.log(formattedProducts);
+        setIndividualProduct(formattedProducts);
+    };
+
     useEffect(() => {
         getAllAdmin();
     }, [adminreg])
@@ -341,7 +351,13 @@ const AdminDashboard = () => {
         res = await res.json();
         // console.log(res.data);
 
+        // for(let i of res.data){
+        //     console.log(`${i.image.replace("D:\\Practise4\\apis\\images","ind_images")}`);
+
+        // }
+
         if (res.success) {
+
             setGetAllProd(res.data)
         }
 
@@ -516,20 +532,24 @@ const AdminDashboard = () => {
         const hasEmptyFields = prod.some((product) =>
             !product.name || !product.description || !product.category || !product.price || !product.batch_quantity
         );
-        console.log(hasEmptyFields);
+
         if (hasEmptyFields) {
             alert("Enter previous records first");
             return;
         }
-        setCart([...cart, ...prod])
-        // setProd([{ name: '', description: '', category: '', price: '', batch_quantity: '' }]);
-        console.log(cart);
 
+        setCart((prevCart) => [
+            ...prevCart,
+            ...prod.map((product) => ({
+                ...product,
+                image: product.image,  // Ensure the image is included here
+            })),
+        ]);
 
-        setProd([...prod, { name: "", prod_desc: "", description: "", category: "", price: "", supp_id: "", image: null }]);
+        // Reset `prod` state to prepare for new entries
+        setProd([{ name: "", description: "", category: "", price: "", batch_quantity: "", image: null }]);
+    };
 
-
-    }
 
 
     const removeProduct = (index) => {
@@ -708,6 +728,14 @@ const AdminDashboard = () => {
     const handlePageChangee = (newPage) => {
         setCurrentPageBatch(newPage);
     };
+
+    const handleImageChange = (e, index) => {
+        const file = e.target.files[0];
+        const newProd = [...prod];
+        newProd[index] = { ...newProd[index], image: file }; // Update the image for the specific product
+        setProd(newProd);
+    };
+
     return (
         <div className='admindashboard'>
             <div style={{ float: "right" }} className='dropdown'>
@@ -949,7 +977,7 @@ const AdminDashboard = () => {
             }
 
             {prodadd ? (
-                <div className="admreg" style={{ minHeight: "80vh" }}>
+                <div className="admregs" style={{ minHeight: "80vh" }}>
                     <form >
                         <button
                             className="close"
@@ -975,75 +1003,6 @@ const AdminDashboard = () => {
                                 ))}
                             </select>
                         </div>
-
-                        {/* {prod.map((product, index) => (
-                            <div key={index}>
-                                <div className="adminp">
-                                    <label htmlFor="name">Product Name</label>
-                                 
-                                    <select value={product.name} name="name" id="" onChange={(e) => handleProdChange(e, index)}>
-                                        <option value="">Select</option>
-                                        {
-                                            individualProduct.map((e) => (
-                                                <option value={e.name}>{e.name}</option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-                                <div className="adminp">
-                                    <label htmlFor="description">Description</label>
-                                    <input
-                                        type="text"
-                                        name="description"
-                                        value={product.description}
-                                        onChange={(e) => handleProdChange(e, index)}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="adminp">
-                                    <label htmlFor="category">Category</label>
-                                    <select name="category" value={product.category} onChange={(e) => handleCategoryChange(e, index)}>
-                                        <option value="">Select Category</option>
-                                        {
-                                            [...new Set(individualProduct.map((prod) => prod.category))].map((uniqueCategory) => (
-                                                <option key={uniqueCategory} value={uniqueCategory}>{uniqueCategory}</option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-
-                                <div className="adminp">
-                                    <label htmlFor="price">Price</label>
-                                    <input
-                                        type="number"
-                                        name="price"
-                                        value={product.price}
-                                        onChange={(e) => handleProdChange(e, index)}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="adminp">
-                                    <label htmlFor="batch_quantity">Batch Quantity</label>
-                                    <input
-                                        type="number"
-                                        name="batch_quantity"
-                                        value={product.batch_quantity}
-                                        onChange={(e) => handleProdChange(e, index)}
-                                        required
-                                    />
-                                </div>
-
-                                {prod.length > 1 && (
-                                    <button type="button" onClick={() => removeProduct(index)}>
-                                        Remove Product
-                                    </button>
-                                )}
-                            </div>
-                        ))} */}
 
                         {prod.map((product, index) => (
                             <div key={index} style={{ overflowY: "auto" }}>
@@ -1097,32 +1056,24 @@ const AdminDashboard = () => {
                                             ))}
                                     </select>
                                 </div>
-                                {/*                                 
+
                                 <div className="adminp">
                                     {individualProduct
                                         .filter((prod) => prod.name === product.name)
                                         .map((filteredProduct) => (
-                                            <img
-                                                key={filteredProduct.image}
-                                                src={`http://localhost:5000${filteredProduct.image}`}
-                                                alt={filteredProduct.name}
-                                                style={{ maxWidth: '150px', height: 'auto' }}
-                                            />
-                                        ))}
-                                </div> */}
-                                {/* <div className="adminp">
-                                    {individualProduct
-                                        .filter((prod) => prod.name === product.name)
-                                        .map((filteredProduct) => (
-                                            <img
-                                                key={filteredProduct.image}
-                                                src={`http://localhost:5000${filteredProduct.image.replace('D:\\Practise4\\apis', '')}`}
-                                                alt={filteredProduct.name}
-                                                style={{ maxWidth: '150px', height: 'auto' }}
-                                            />
-                                        ))}
-                                </div> */}
 
+                                            <img
+                                                key={filteredProduct.image}
+                                                src={`http://localhost:5000${filteredProduct.image.replace("D:\\Practise4\\apis", "")}`}
+                                                alt={filteredProduct.description}
+                                                style={{ maxWidth: '150px', height: 'auto' }}
+                                            />
+
+                                            // http://localhost:5000/images/image-1730093365236.jpg
+                                            /* <h1>{`http://localhost:5000${filteredProduct.image.replace("D:\\Practise4\\apis","")}`}</h1> */
+
+                                        ))}
+                                </div>
 
                                 <div className="adminp">
                                     <label htmlFor="description">Description</label>
@@ -1156,6 +1107,36 @@ const AdminDashboard = () => {
                                         required
                                     />
                                 </div>
+                                {/* <div className="adminp">
+                                    <label htmlFor="image">Upload Image</label>
+                                    <input
+                                        type="file"
+                                        name="image"
+                                        onChange={(e) => handleProdChange(e, index)}
+                                        required
+                                    />
+                                </div> */}
+
+                                {/* <div className="adminp">
+                                    {individualProduct
+                                        .filter((prod) => prod.name === product.name)
+                                        .map((filteredProduct) => (
+                                            <img
+                                                key={filteredProduct.image}
+                                                src={filteredProduct.image} 
+                                                alt={filteredProduct.description}
+                                                style={{ maxWidth: '150px', height: 'auto' }}
+                                            />
+                                        ))}
+                                </div> */}
+
+
+                                <div>
+                                    {individualProduct.filter((e) => e.name === product.name).map((e) => (
+                                        <img src={e.image} alt="" value={prod.image} />
+                                    ))}
+                                </div>
+
                                 <div className="adminp">
                                     <label htmlFor="image">Upload Image</label>
                                     <input
@@ -1165,6 +1146,7 @@ const AdminDashboard = () => {
                                         required
                                     />
                                 </div>
+
 
                                 {prod.length > 1 && (
                                     <button type="button" onClick={() => removeProduct(index)}>
@@ -1304,10 +1286,7 @@ const AdminDashboard = () => {
                                     </tr>
                                 )
                             })
-
-
                         }
-
                     </tbody>
                 </table>
             )}
@@ -1315,6 +1294,9 @@ const AdminDashboard = () => {
 
             {cart.length > 0 && <button style={{ width: "60px", margin: "10px auto", display: "block" }} onClick={addProduct} className='links'>Submit Products</button>
             }
+            {/* {cart.length>0 && <button onClick={()=>{setProdadd(true);
+                setProd({ name: "", prod_desc: "", description: "", category: "", price: "", supp_id: "", image: null })
+            }}>Add More Product</button>} */}
             <Link style={{ display: "block", width: "70px", margin: "0px auto" }} className='links' to={`/orderhistory`}>Order History</Link>
 
         </div>

@@ -21,6 +21,9 @@ app.use(cors({
 
 // Serve static files from the 'apis/images' directory
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use("/ind_images",express.static(path.join(__dirname,"ind_images")))
+// app.use('/ind_images', express.static(path.join(__dirname, '../ind_images')));
+
 
 // Your other routes and middleware
 

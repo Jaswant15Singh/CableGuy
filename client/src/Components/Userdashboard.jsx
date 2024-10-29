@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import { jsPDF } from 'jspdf';
 import { toast } from 'react-toastify';
-
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 const Userdashboard = () => {
   const [data, setData] = useState({ name: "", email: "" });
   const [update, setUpdate] = useState(false);
@@ -230,7 +231,7 @@ const Userdashboard = () => {
       if (res.success) {
         alert("Order placed successfully");
         setCart([]);
-        setCustomerData({ name: "", contact: "" });
+        setCustomerData({ name: "", contact: "" ,email:""});
         setSelectedProduct("");
         setSelectedQuantity("");
         let res = await fetch("http://localhost:5000/adminapi/receipt", {
@@ -380,6 +381,7 @@ const Userdashboard = () => {
           <div className=" formdiv loginn">
             <form onSubmit={handleUpdateClick}>
               <h1>Login</h1>
+
               <div className='inp'>
                 <label htmlFor="name">Name</label>
                 <input
@@ -418,7 +420,28 @@ const Userdashboard = () => {
           <div className='products'>
             <div className='customer'>
               <h1>Customer's information</h1>
-              <div>
+              <Box style={{ zIndex: "10" ,marginLeft:"-5px"}}
+                component="form"
+                sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
+                noValidate
+                autoComplete="off"
+              >
+                <TextField id="outlined-basic" label="Name" variant="outlined" name="name" value={customerData.name} onChange={handleCustomerChange} />
+                <br />
+                <TextField id="outlined-basic" label="Email" variant="outlined" name="email" value={customerData.email} onChange={handleCustomerChange} />
+                <br />
+                <TextField id="outlined-basic" label="Contact" variant="outlined" name="contact"
+                  value={customerData.contact}
+                  onChange={handleCustomerChange}
+                  minLength={10}
+                  maxLength={10}
+                  pattern="\d{10}"
+                  title="Please enter a valid 10-digit phone number" />
+
+                {/* <TextField id="filled-basic" label="Filled" variant="filled" />
+                <TextField id="standard-basic" label="Standard" variant="standard" /> */}
+              </Box>
+              {/* <div>
                 <label htmlFor="name">Name</label>
                 <input type="text" required={true} name="name" id="" value={customerData.name} onChange={handleCustomerChange} />
               </div>
@@ -439,7 +462,8 @@ const Userdashboard = () => {
                   maxLength={10}
                   pattern="\d{10}"
                   title="Please enter a valid 10-digit phone number"
-                />              </div>
+                />         
+             </div> */}
             </div>
 
 
@@ -498,26 +522,32 @@ const Userdashboard = () => {
                 ))
               } */}
 
-              <div className="product-selection">
-                {filteredProducts.map((product) => (
-                  <label key={product.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                    <input
-                      type="radio"
-                      name="product"
-                      value={product.id}
-                      checked={selectedProduct === product.id}
-                      onChange={() => setSelectedProduct(product.id)}
-                      style={{ marginRight: '10px' }}
-                    />
+              <div className="product-selection" style={{ width: "400px" }}>
+                {sortedBasis().map((product) => (
+                  <div style={{ margin: "30px 0" }}>
+                    <label key={product.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                      <input
 
-                    <img
-                      src={`http://localhost:5000/${product.image.replace('D:\\Practise4\\apis\\', '')}`}
-                      alt="not found"
-                      height="50px"
-                      style={{ marginRight: '10px' }}
-                    />
-                    {`${product.name} - $${product.price} (Available: ${product.quantity}) - ${product.description}`}
-                  </label>
+                        type="radio"
+                        name="product"
+                        value={product.id}
+                        checked={selectedProduct === product.id}
+                        onChange={() => setSelectedProduct(product.id)}
+                        style={{ marginRight: '10px' }}
+                      />
+                      <div>
+                        <div className='radiodiv' style={{ width: "40%", height: "40%" }}>
+                          <img
+                            src={`http://localhost:5000/${product.image.replace('D:\\Practise4\\apis\\', '')}`}
+                            alt="not found"
+                            height="60px"
+                            style={{ marginRight: '10px', marginBottom: "10px" }}
+                          />
+                        </div>
+                        {`${product.name} - $${product.price} (Available: ${product.quantity}) `}
+                      </div>
+                    </label>
+                  </div>
                 ))}
               </div>
 

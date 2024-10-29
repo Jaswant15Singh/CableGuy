@@ -20,6 +20,15 @@ const multerStorage = multer.diskStorage({
     }
 });
 
+
+const multerStorages = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../ind_images'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `image-${Date.now()}${path.extname(file.originalname)}`);
+    }
+});
 const multerFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
@@ -28,6 +37,17 @@ const multerFilter = (req, file, cb) => {
     }
 };
 
+const multerFilters = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only images are allowed!'), false);
+    }
+};
+const uploads = multer({
+    storage: multerStorages,
+    fileFilter: multerFilters
+})
 const upload = multer({
     storage: multerStorage,
     fileFilter: multerFilter
@@ -36,8 +56,14 @@ const upload = multer({
 const multipleUpload = upload.fields([
     { name: 'products[0][image]', maxCount: 1 },
     { name: 'products[1][image]', maxCount: 1 },
-    { name: 'products[2][image]', maxCount: 1 }
-    // Add more fields as per your needs
+    { name: 'products[2][image]', maxCount: 1 },
+    { name: 'products[3][image]', maxCount: 1 },
+    { name: 'products[4][image]', maxCount: 1 },
+    { name: 'products[5][image]', maxCount: 1 },
+    { name: 'products[6][image]', maxCount: 1 },
+    { name: 'products[7][image]', maxCount: 1 },
+    { name: 'products[8][image]', maxCount: 1 },
+    { name: 'products[9][image]', maxCount: 1 }
 ]);
 const getAdmin = async (req, res) => {
     try {
@@ -238,11 +264,12 @@ const getIndProd = async (req, res) => {
 const addIndProduct = async (req, res) => {
     const { name, description, category } = req.body;
     const imagePath = req.file ? req.file.path : null;
+    const publicImagePath = imagePath.replace("D:\\Practise4\\apis\\", "");
 
     try {
         const { rows } = await pool.query(
             'INSERT INTO ref_products (name, description, category, image) VALUES ($1, $2, $3,$4) RETURNING *',
-            [name, description, category, imagePath]
+            [name, description, category, publicImagePath]
         );
         // console.log(req.file);
 
@@ -438,6 +465,90 @@ const createProductsWithBatch = async (req, res) => {
 };
 
 
+// const createProductsWithBatch = async (req, res) => {
+//     const { supp_id, products } = req.body;
+
+//     try {
+//         const supplierCheck = await pool.query('SELECT * FROM supplier WHERE id = $1', [supp_id]);
+//         if (supplierCheck.rows.length === 0) {
+//             return res.json({ message: "Supplier not found", success: false });
+//         }
+
+//         const createdProducts = [];
+
+//         const batchNoResult = await pool.query('SELECT MAX(batche_no) AS max_batch_no FROM batch');
+//         const maxBatchNo = batchNoResult.rows[0].max_batch_no || 0;
+//         const newBatchNo = maxBatchNo + 1;
+
+//         // for (let i = 0; i < products.length; i++) {
+//         //     const product = products[i];
+//         for (let product of products) {
+//             const { name, description, category, price, batch_quantity, manufactured, received_data, imageUrl } = product; // Added 'imageUrl' to handle the image path
+
+//             // Check if the product already exists in the product table
+//             const existingProduct = await pool.query(
+//                 'SELECT * FROM product WHERE name = $1 AND price = $2 AND supp_id = $3',
+//                 [name, price, supp_id]
+//             );
+
+//             if (existingProduct.rows.length > 0) {
+//                 const product_id = existingProduct.rows[0].id;
+//                 const newQuantity = existingProduct.rows[0].quantity + batch_quantity;
+
+//                 // Update the quantity of the existing product
+//                 await pool.query(
+//                     'UPDATE product SET quantity = $1 WHERE id = $2',
+//                     [newQuantity, product_id]
+//                 );
+
+//                 const manufacturedDate = manufactured || new Date(); // Use current date if manufactured date is not provided
+
+//                 // Insert the new batch information into the batch table
+//                 await pool.query(
+//                     'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured, supp_id, image) VALUES ($1, $2, $3, $4, $5, $6)', // Added 'image' column for batch
+//                     [product_id, newBatchNo, batch_quantity, manufacturedDate, supp_id, imageUrl] // Use 'imageUrl' for the image column
+//                 );
+
+//                 createdProducts.push({
+//                     product: existingProduct.rows[0],
+//                     batch: { batche_no: newBatchNo, batch_quantity, image: imageUrl } // Added image field in response
+//                 });
+//             } else {
+//                 // Insert the new product and associated details if it doesn't already exist
+//                 const productResult = await pool.query(
+//                     'INSERT INTO product (name, description, category, price, supp_id, quantity, received_quantity, received_data, image) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *', // Added 'image' column in product table
+//                     [name, description, category, price, supp_id, batch_quantity, batch_quantity, new Date(), imageUrl] // Use 'imageUrl' for the image column
+//                 );
+
+//                 const product_id = productResult.rows[0].id;
+//                 const manufacturedDate = manufactured || new Date();
+
+//                 // Insert the batch details for the new product
+//                 await pool.query(
+//                     'INSERT INTO batch (product_id, batche_no, batch_quantity, manufactured, supp_id, image) VALUES ($1, $2, $3, $4, $5, $6)', // Added 'image' column for batch
+//                     [product_id, newBatchNo, batch_quantity, manufacturedDate, supp_id, imageUrl]
+//                 );
+
+//                 createdProducts.push({
+//                     product: productResult.rows[0],
+//                     batch: { batche_no: newBatchNo, batch_quantity, image: imageUrl }
+//                 });
+//             }
+//         }
+
+//         res.json({
+//             message: "Products and batches added/updated successfully",
+//             success: true,
+//             data: createdProducts
+//         });
+
+//     } catch (error) {
+//         console.error("Error adding products and batches:", error);
+//         res.json({ message: "Failed to add/update products and batches", success: false });
+//     }
+// };
+
+
 // const getProdBatch = async (req, res) => {
 //     const { batche_no } = req.query;  
 //     try {
@@ -593,4 +704,4 @@ const getReceiptRecord = async (req, res) => {
 
 
 
-module.exports = { multipleUpload, upload, createProductsWithBatch, getAdmin, signupadmin, adminLogin, getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
+module.exports = { multipleUpload, upload, uploads, createProductsWithBatch, getAdmin, signupadmin, adminLogin, getReceiptRecord, getSingleAdmin, updateAdmin, deleteAdmin, createProduct, getProducts, createBatch, getProdBatch, getIndProd, addIndProduct, getSupplier, addSupplier, prodBySupplier, placeOrder, orderHistory };
